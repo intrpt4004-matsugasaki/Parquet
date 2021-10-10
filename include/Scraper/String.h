@@ -23,6 +23,8 @@ typedef struct String_t {
 	bool (* Equals)(struct String_t *, struct String_t *anString);
 	bool (* StartsWith)(struct String_t *, struct String_t *prefix);
 	bool (* StartsWithChar)(struct String_t *, const uint8_t ch);
+
+	void (* Delete)(struct String_t *);
 } String_t;
 
 typedef struct {

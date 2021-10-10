@@ -1,7 +1,7 @@
 #include "Scraper/String.h"
 
 static uint8_t *GetPrimitive(String_t *str) {
-	return str->_String;
+	return strdup(str->_String);
 }
 
 static uint32_t GetLength(String_t *str) {
@@ -10,7 +10,7 @@ static uint32_t GetLength(String_t *str) {
 
 static uint8_t GetCharAt(String_t *str, const uint32_t index) {
 	if (String.GetLength(str) < index) {
-		Error.Panic(u8"\e[34m", u8"String#GetCharAt");
+		Error.Panic(u8"\e[32m", u8"String#GetCharAt");
 	}
 
 	return String.GetPrimitive(str)[index];
@@ -18,7 +18,7 @@ static uint8_t GetCharAt(String_t *str, const uint32_t index) {
 
 static uint8_t GetHeadChar(String_t *str) {
 	if (String.GetLength(str) < 1) {
-		Error.Panic(u8"\e[34m", u8"String#GetHeadChar");
+		Error.Panic(u8"\e[32m", u8"String#GetHeadChar");
 	}
 
 	return String.GetCharAt(str, 0);
@@ -28,7 +28,7 @@ static String_t *Substring(String_t *str, const uint32_t beginIndex, const uint3
 	if (   String.GetLength(str) + 1 < beginIndex
 		|| String.GetLength(str) + 1 < lastIndex
 		|| beginIndex > lastIndex ) {
-			Error.Panic(u8"\e[34m", u8"String#Substring");
+			Error.Panic(u8"\e[32m", u8"String#Substring");
 		}
 
 	uint8_t *s = (uint8_t *)(
@@ -55,7 +55,7 @@ static bool Equals(String_t *str, String_t *anString) {
 
 static bool StartsWith(String_t *str, String_t *prefix) {
 	if (String.GetLength(str) < String.GetLength(prefix))
-		Error.Panic(u8"\e[34m", u8"String#StartsWith");
+		Error.Panic(u8"\e[32m", u8"String#StartsWith");
 
 	for (uint32_t i = 0; i < String.GetLength(prefix); i++)
 		if (String.GetCharAt(str, i) != String.GetCharAt(prefix, i))
@@ -66,6 +66,11 @@ static bool StartsWith(String_t *str, String_t *prefix) {
 
 static bool StartsWithChar(String_t *str, const uint8_t ch) {
 	return String.GetHeadChar(str) == ch;
+}
+
+static void Delete(String_t *str) {
+	Memory.Free(str->_String);
+	Memory.Free(str);
 }
 
 static String_t *New(const uint8_t *string) {
@@ -85,12 +90,9 @@ static String_t *New(const uint8_t *string) {
 	str->Equals					= Equals;
 	str->StartsWith				= StartsWith;
 	str->StartsWithChar			= StartsWithChar;
+	str->Delete					= Delete;
 
 	return str;
-}
-
-static void Delete(String_t *str) {
-	Memory.Delete(str);
 }
 
 _String String = {

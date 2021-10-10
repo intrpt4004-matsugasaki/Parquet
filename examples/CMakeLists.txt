@@ -1,6 +1,7 @@
 add_custom_target(examples)
 add_dependencies(examples
 	Error
+	Memory
 
 	String
 	List
@@ -10,6 +11,11 @@ add_dependencies(examples
 
 add_executable(Error Error.c)
 target_link_libraries(Error
+    Scraper
+)
+
+add_executable(Memory Memory.c)
+target_link_libraries(Memory
     Scraper
 )
 

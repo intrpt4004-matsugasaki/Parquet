@@ -1,20 +1,20 @@
-#include "Scraper.h"
+#include <Scraper.h>
 
 void main() {
-	String_t s = String.New(u8"var123");
+	String_t *s = String.New(u8"var123");
 
-	Parser_t p = Parser.New();
+	Parser_t *p = Parser.New();
 
 	p->Bind(p,
-		Parser.New(Primitive.Char.Lower));
+		Parser.From(Primitive.Char.Lower));
 
 	p->Bind(p,
 		Parser.Many(
-			Parser.New(Primitive.Char.AlphaNum)));
+			Parser.From(Primitive.Char.AlphaNum)));
 
 	p->Select(p, 
-		Parser.New(Primitive.Char.Char('')),
-		Parser.New(Primitive.Char.Char(';')));
+		Parser.From(Primitive.Char.Char('')),
+		Parser.FromPrimitive.Char.Char(';')));
 
 	Scraper.ParseTest(p, s);
 }
