@@ -13,7 +13,6 @@ target_sources(Scraper
 	Memory.c
 
 	String.c
-	List.c
 
 	Parser.c
 	Primitive.c

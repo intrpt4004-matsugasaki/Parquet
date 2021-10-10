@@ -4,9 +4,10 @@ add_dependencies(examples
 	Memory
 
 	String
-	List
 
-	Identifier
+	AnyChar3
+
+	#Identifier
 )
 
 add_executable(Error Error.c)
@@ -24,8 +25,8 @@ target_link_libraries(String
     Scraper
 )
 
-add_executable(List List.c)
-target_link_libraries(List
+add_executable(AnyChar3 AnyChar3.c)
+target_link_libraries(AnyChar3
     Scraper
 )
 

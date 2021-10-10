@@ -1,5 +1,82 @@
 #include "Scraper/Primitive.h"
 
-_Primitive Primitive = {
+static Parse OneOf(String_t *cs, String_t *s) {
+	if (s->IsEmpty(s)) return Parser.makeErr();
 
+	for (uint32_t i = 0; i < cs->GetLength(cs); i++) {
+		if (cs->GetHeadChar(cs) == s->GetHeadChar(s)) { // 複数当て嵌る可能性の考慮は？
+			return Parser.makeOkChar(s);
+		}
+	}
+
+	return Parser.makeErr();
+}
+
+static Parse NoneOf(String_t *cs, String_t *s) {
+	if (s->IsEmpty(s)) return Parser.makeErr();
+
+	for (uint32_t i = 0; i < cs->GetLength(cs); i++) {
+		if (cs->GetHeadChar(cs) == s->GetHeadChar(s)) {
+			return Parser.makeErr();
+		}
+	}
+
+	return Parser.makeOkChar(s);
+}
+
+static Parse Spaces(String_t *s) {
+}
+
+static Parse NewLine(String_t *s) {
+	return Primitive.Char.Char('\n', s);
+}
+
+static Parse Crlf(String_t *s) {
+//	Primitive.Char.Char('\r', s);
+//	NewLine
+}
+
+static Parse Any(String_t *s) {
+	if (s->IsEmpty(s)) return Parser.makeErr();
+
+	return Parser.makeOkChar(s);
+}
+
+static Parse Lower(String_t *) {
+
+}
+
+static Parse Upper(String_t *) {
+
+}
+
+static Parse AlphaNum(String_t *) {
+
+}
+
+static Parse Char(uint8_t c, String_t *s) {
+	if (s->IsEmpty(s)) return Parser.makeErr();
+
+	if (!s->StartsWithChar(s, c)) return Parser.makeErr();
+
+	return Parser.makeOkChar(s);
+}
+
+static Parse Tab(String_t *s) {
+	return Primitive.Char.Char('\t', s);
+}
+
+static Parse Space(String_t *s) {
+	return Primitive.Char.Char(' ', s);
+}
+
+static Parse Str(String_t *s) {
+	
+}
+
+_Primitive Primitive = {
+	.Char = {
+		.Any	= Any,
+		.Space	= Space,
+	},
 };
