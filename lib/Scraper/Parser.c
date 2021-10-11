@@ -26,12 +26,12 @@ static Parse makeOkRead1(String_t *s) {
 
 static Parse Bind(Parse (* fst)(String_t *), Parse (* snd)(String_t *), String_t *s) {
 	Parse prs = fst(s);
-	if (prs.Reply == Err) return Parser.makeErr(s);
-	String_t *precip = prs.Precipitate;
+	  if (prs.Reply == Err) return Parser.makeErr(s);
+	  String_t *precip = prs.Precipitate;
 
 	prs = snd(prs.Subsequent);
-	if (prs.Reply == Err) return Parser.makeErr(s);
-	precip = String.Concat(precip, prs.Precipitate);
+	  if (prs.Reply == Err) return Parser.makeErr(s);
+	  precip = String.Concat(precip, prs.Precipitate);
 
 	return (Parse){
 		.Reply			= Ok,
@@ -42,12 +42,12 @@ static Parse Bind(Parse (* fst)(String_t *), Parse (* snd)(String_t *), String_t
 
 static Parse Bind3(Parse (* fst)(String_t *), Parse (* snd)(String_t *), Parse (* trd)(String_t *), String_t *s) {
 	Parse prs = Parser.Bind(fst, snd, s);
-	if (prs.Reply == Err) return Parser.makeErr(s);
-	String_t *precip = prs.Precipitate;
+	  if (prs.Reply == Err) return Parser.makeErr(s);
+	  String_t *precip = prs.Precipitate;
 
 	prs = trd(prs.Subsequent);
-	if (prs.Reply == Err) return Parser.makeErr(s);
-	precip = String.Concat(precip, prs.Precipitate);
+	  if (prs.Reply == Err) return Parser.makeErr(s);
+	  precip = String.Concat(precip, prs.Precipitate);
 
 	return (Parse){
 		.Reply			= Ok,
@@ -58,12 +58,12 @@ static Parse Bind3(Parse (* fst)(String_t *), Parse (* snd)(String_t *), Parse (
 
 static Parse Bind4(Parse (* fst)(String_t *), Parse (* snd)(String_t *), Parse (* trd)(String_t *), Parse (* fth)(String_t *), String_t *s) {
 	Parse prs = Parser.Bind3(fst, snd, trd, s);
-	if (prs.Reply == Err) return Parser.makeErr(s);
-	String_t *precip = prs.Precipitate;
+	  if (prs.Reply == Err) return Parser.makeErr(s);
+	  String_t *precip = prs.Precipitate;
 
 	prs = fth(prs.Subsequent);
-	if (prs.Reply == Err) return Parser.makeErr(s);
-	precip = String.Concat(precip, prs.Precipitate);
+	  if (prs.Reply == Err) return Parser.makeErr(s);
+	  precip = String.Concat(precip, prs.Precipitate);
 
 	return (Parse){
 		.Reply			= Ok,

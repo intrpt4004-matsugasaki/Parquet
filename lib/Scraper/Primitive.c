@@ -44,12 +44,12 @@ static Parse CRLF(String_t *s) {
 	if (s->GetLength(s) < 2) return Parser.makeErr(s);
 
 	Parse prs = Primitive.Char.Char('\r', s);
-	if (prs.Reply == Err) return Parser.makeErr(s);
-	String_t *precip = prs.Precipitate;
+	  if (prs.Reply == Err) return Parser.makeErr(s);
+	  String_t *precip = prs.Precipitate;
 
 	prs = Primitive.Char.LF(prs.Subsequent);
-	if (prs.Reply == Err) return Parser.makeErr(s);
-	precip = String.Concat(precip, prs.Precipitate);
+	  if (prs.Reply == Err) return Parser.makeErr(s);
+	  precip = String.Concat(precip, prs.Precipitate);
 
 	return (Parse){
 		.Reply			= Ok,
