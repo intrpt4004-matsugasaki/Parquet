@@ -3,6 +3,7 @@
 #include <ctype.h>
 
 #include "Scraper/String.h"
+#include "Scraper/List.h"
 
 #include "Scraper/Parse.h"
 #include "Scraper/Parser.h"
@@ -30,6 +31,7 @@ typedef struct {
 
 typedef struct {
 	Parse (* Match)(String_t *pattern, String_t *s);
+	Parse (* OneOf)(List_t *list, String_t *);
 } _String_;
 
 typedef struct {

@@ -4,6 +4,7 @@
 #include "Scraper/Memory.h"
 
 #include "Scraper/String.h"
+#include "Scraper/List.h"
 
 #include "Scraper/Parse.h"
 #include "Scraper/Parser.h"

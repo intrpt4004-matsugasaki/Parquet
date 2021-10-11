@@ -4,6 +4,7 @@ add_dependencies(examples
 	Memory
 
 	String
+	List
 
 	AnyChar3-6-12
 	DeclVar
@@ -23,6 +24,11 @@ target_link_libraries(Memory
 
 add_executable(String other/String.c)
 target_link_libraries(String
+    Scraper
+)
+
+add_executable(List other/List.c)
+target_link_libraries(List
     Scraper
 )
 

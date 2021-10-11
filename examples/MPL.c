@@ -1,26 +1,26 @@
 #include <Scraper.h>
 
 Parse Parser_Comment(String_t *code) {
+	Parse open(String_t *str) {
+		return Primitive.Char.Char('{', code);
+	}
+
+	Parse nonClose(String_t *code) {
+		return Primitive.Char.NoneOf(
+			String.New(u8"}"),
+			code
+		);
+	}
+
+	Parse content(String_t *code) {
+		return Parser.Many0(nonClose, code);
+	}
+
+	Parse close(String_t *str) {
+		return Primitive.Char.Char('}', code);
+	}
+
 	Parse line(String_t *code) {
-		Parse open(String_t *str) {
-			return Primitive.Char.Char('{', code);
-		}
-
-		Parse nonClose(String_t *code) {
-			return Primitive.Char.NoneOf(
-				String.New(u8"}"),
-				code
-			);
-		}
-
-		Parse content(String_t *code) {
-			return Parser.Many0(nonClose, code);
-		}
-
-		Parse close(String_t *str) {
-			return Primitive.Char.Char('}', code);
-		}
-
 		return Parser.Bind3(
 			open,
 			content,
@@ -59,7 +59,8 @@ Parse Parser_Comment(String_t *code) {
 		}
 	}
 
-	return Parser.Choise(line, block, code);
+return line(code);
+	//return Parser.Choise(line, block, code);
 }
 
 Parse Parser_Separator(String_t *code) {
@@ -108,41 +109,22 @@ Parse Parser_Symbol(String_t *code) {
 		);
 	}
 
-	// List実装で OneOf :: [String] -> String -> Parse
-	Parse not(String_t *str) {
-		return Primitive.String.Match(
-			String.New(u8"<>"),
+	Parse not_leq_geq_subst(String_t *str) {
+		List_t *syms = List.New();
+		syms->Add(syms, String.New(u8"<>"));
+		syms->Add(syms, String.New(u8"<="));
+		syms->Add(syms, String.New(u8">="));
+		syms->Add(syms, String.New(u8":="));
+
+		return Primitive.String.OneOf(
+			syms,
 			code
 		);
 	}
 
-	Parse leq(String_t *str) {
-		return Primitive.String.Match(
-			String.New(u8"<="),
-			code
-		);
-	}
-
-	Parse geq(String_t *str) {
-		return Primitive.String.Match(
-			String.New(u8">="),
-			code
-		);
-	}
-
-	Parse subst(String_t *str) {
-		return Primitive.String.Match(
-			String.New(u8":="),
-			code
-		);
-	}
-
-	return Parser.Choise5(
+	return Parser.Choise(
 		add_sub_mul_eq_lt_gt_open_close_openb_closeb_dot,
-		not,
-		leq,
-		geq,
-		subst,
+		not_leq_geq_subst,
 		code
 	);
 }
@@ -176,269 +158,39 @@ Parse Parser_UInt(String_t *code) {
 }
 
 Parse Parser_Keyword(String_t *code) {
-	Parse program(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"program"),
-			code
-		);
-	}
+	List_t *keywords = List.New();
+	keywords->Add(keywords, String.New(u8"program"));
+	keywords->Add(keywords, String.New(u8"var"));
+	keywords->Add(keywords, String.New(u8"array"));
+	keywords->Add(keywords, String.New(u8"of"));
+	keywords->Add(keywords, String.New(u8"begin"));
+	keywords->Add(keywords, String.New(u8"if"));
+	keywords->Add(keywords, String.New(u8"then"));
+	keywords->Add(keywords, String.New(u8"else"));
+	keywords->Add(keywords, String.New(u8"procedure"));
+	keywords->Add(keywords, String.New(u8"call"));
+	keywords->Add(keywords, String.New(u8"while"));
+	keywords->Add(keywords, String.New(u8"do"));
+	keywords->Add(keywords, String.New(u8"not"));
+	keywords->Add(keywords, String.New(u8"or"));
+	keywords->Add(keywords, String.New(u8"div"));
+	keywords->Add(keywords, String.New(u8"and"));
+	keywords->Add(keywords, String.New(u8"char"));
+	keywords->Add(keywords, String.New(u8"integer"));
+	keywords->Add(keywords, String.New(u8"boolean"));
+	keywords->Add(keywords, String.New(u8"read"));
+	keywords->Add(keywords, String.New(u8"write"));
+	keywords->Add(keywords, String.New(u8"readln"));
+	keywords->Add(keywords, String.New(u8"writeln"));
+	keywords->Add(keywords, String.New(u8"true"));
+	keywords->Add(keywords, String.New(u8"false"));
+	keywords->Add(keywords, String.New(u8"break"));
 
-	Parse var(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"var"),
-			code
-		);
-	}
-
-	Parse array(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"array"),
-			code
-		);
-	}
-
-	Parse of(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"of"),
-			code
-		);
-	}
-
-	Parse begin(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"begin"),
-			code
-		);
-	}
-
-	Parse end(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"end"),
-			code
-		);
-	}
-
-	Parse program_var_array_of_begin_end(String_t *code) {
-		return Parser.Choise5(
-			program,
-			var,
-			array,
-			of,
-			end,
-			code
-		);
-	}
-
-	Parse if_(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"if"),
-			code
-		);
-	}
-
-	Parse then(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"then"),
-			code
-		);
-	}
-
-	Parse else_(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"else"),
-			code
-		);
-	}
-
-	Parse procedure(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"procedure"),
-			code
-		);
-	}
-
-	Parse return_(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"return"),
-			code
-		);
-	}
-
-	Parse call(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"call"),
-			code
-		);
-	}
-
-	Parse if_then_else_procedure_return_call(String_t *code) {
-		return Parser.Choise6(
-			if_,
-			then,
-			else_,
-			procedure,
-			return_,
-			call,
-			code
-		);
-	}
-
-	Parse while_(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"while"),
-			code
-		);
-	}
-
-	Parse do_(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"do"),
-			code
-		);
-	}
-
-	Parse not(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"not"),
-			code
-		);
-	}
-
-	Parse or(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"or"),
-			code
-		);
-	}
-
-	Parse div(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"div"),
-			code
-		);
-	}
-
-	Parse and(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"and"),
-			code
-		);
-	}
-
-	Parse while_do_not_or_div_and(String_t *code) {
-		return Parser.Choise6(
-			while_,
-			do_,
-			not,
-			or,
-			div,
-			and,
-			code
-		);
-	}
-
-	Parse char_(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"char"),
-			code
-		);
-	}
-
-	Parse integer(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"integer"),
-			code
-		);
-	}
-
-	Parse boolean(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"boolean"),
-			code
-		);
-	}
-
-	Parse read(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"read"),
-			code
-		);
-	}
-
-	Parse write(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"write"),
-			code
-		);
-	}
-
-	Parse readln(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"readln"),
-			code
-		);
-	}
-
-	Parse char_integer_boolean_read_write_readln(String_t *code) {
-		return Parser.Choise6(
-			char_,
-			integer,
-			boolean,
-			read,
-			write,
-			readln,
-			code
-		);
-	}
-
-	Parse writeln(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"writeln"),
-			code
-		);
-	}
-
-	Parse true_(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"true"),
-			code
-		);
-	}
-
-	Parse false_(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"false"),
-			code
-		);
-	}
-
-	Parse break_(String_t *code) {
-		return Primitive.String.Match(
-			String.New(u8"break"),
-			code
-		);
-	}
-
-	Parse writeln_true_false_break(String_t *code) {
-		return Parser.Choise4(
-			writeln,
-			true_,
-			false_,
-			break_,
-			code
-		);
-	}
-
-	return Parser.Choise5(
-		program_var_array_of_begin_end,
-		if_then_else_procedure_return_call,
-		while_do_not_or_div_and,
-		char_integer_boolean_read_write_readln,
-		while_do_not_or_div_and,
+	return Primitive.String.OneOf(
+		keywords,
 		code
 	);
 }
-
 
 Parse Parser_Name(String_t *code) {
 	Parse al_num(String_t *code) {
@@ -478,6 +230,7 @@ Parse Parser_Token(String_t *code) {
 Parse Parser_Program(String_t *code) {
 	Parse tok_sep(String_t *code) {
 		return Parser.Choise(
+
 			Parser_Token,
 			Parser_Separator,
 			code
@@ -488,5 +241,11 @@ Parse Parser_Program(String_t *code) {
 }
 
 void main(const int32_t argc, uint8_t *argv[]) {
-	Parser.ParseTest(Parser_Program, String.FromFile(argv[1]));
+	for (;;) {
+		uint8_t str[256];
+		scanf("%s", str);
+		Parser.ParseTest(Parser_Keyword, String.New(str));
+	}
+
+	//Parser.ParseTest(Parser_Program, String.FromFile(argv[1]));
 }

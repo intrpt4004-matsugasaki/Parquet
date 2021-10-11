@@ -170,6 +170,21 @@ static Parse Match(String_t *pattern, String_t *s) {
 	};
 }
 
+static Parse String_OneOf(List_t *list, String_t *s) {
+	for (uint32_t i = 0; i < list->GetLength(list); i++)
+		if (s->StartsWith(s, list->Get(list, i)))
+			return (Parse){
+				.Reply			= Ok,
+				.Precipitate	= String.Copy(list->Get(list, i)),
+				.Subsequent		= String.Substring(s,
+					String.GetLength(list->Get(list, i)),
+					String.GetLength(s) + 1
+				),
+			};
+
+	return Parser.makeErr(s);
+}
+
 _Primitive Primitive = {
 	.Char = {
 		.OneOf		= OneOf,
@@ -194,5 +209,6 @@ _Primitive Primitive = {
 
 	.String = {
 		.Match		= Match,
+		.OneOf		= String_OneOf,
 	},
 };

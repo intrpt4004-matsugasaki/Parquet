@@ -70,7 +70,7 @@ static bool Equals(String_t *str, String_t *anString) {
 
 static bool StartsWith(String_t *str, String_t *prefix) {
 	if (String.GetLength(str) < String.GetLength(prefix))
-		Error.Panic(u8"\e[32m", u8"String#StartsWith");
+		return false;
 
 	for (uint32_t i = 0; i < String.GetLength(prefix); i++)
 		if (String.GetCharAt(str, i) != String.GetCharAt(prefix, i))
