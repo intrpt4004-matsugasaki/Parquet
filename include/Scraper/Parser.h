@@ -3,7 +3,7 @@
 #include "Scraper/Parse.h"
 
 typedef struct {
-	/* Util */
+	/* Maker */
 	Parse (* makeErr)(String_t *);
 	Parse (* makeOk)(String_t *);
 	Parse (* makeOkRead1)(String_t *);
@@ -32,7 +32,7 @@ typedef struct {
 		Parse (* right)(String_t *),
 		String_t *);
 
-	Parse (* Many)(Parse (* parser)(String_t *), String_t *);
+	Parse (* Many0)(Parse (* parser)(String_t *), String_t *);
 	Parse (* Many1)(Parse (* parser)(String_t *), String_t *);
 
 	/* Tester */

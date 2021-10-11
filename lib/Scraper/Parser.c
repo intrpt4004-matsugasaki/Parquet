@@ -82,11 +82,22 @@ static Parse Choise(Parse (* left)(String_t *), Parse (* right)(String_t *), Str
 	return Parser.makeErr(s);
 }
 
-static Parse Many(Parse (* parser)(String_t *), String_t *s) {
-	String_t *precip = String.New(u8"");
+static Parse Many0(Parse (* parser)(String_t *), String_t *s) {
+	Parse prs = parser(s);
+	if (prs.Reply == Err) return Parser.makeOk(s);
+
+	String_t *precip = prs.Precipitate;
+	String_t *subseq = prs.Subsequent;
 	for (;;) {
-		Parse prs = parser(s);
-//		if (prs.Reply == Err) return Parser.makeOk(s);
+		prs = parser(prs.Subsequent);
+		if (prs.Reply == Err) return (Parse){
+			.Reply			= Ok,
+			.Precipitate	= precip,
+			.Subsequent		= subseq,
+		};
+
+		precip = String.Concat(precip, prs.Precipitate);
+		subseq = prs.Subsequent;
 	}
 }
 
@@ -112,7 +123,7 @@ _Parser Parser = {
 	.Bind3			= Bind3,
 	.Bind4			= Bind4,
 	.Choise			= Choise,
-	.Many			= Many,
+	.Many0			= Many0,
 	.Many1			= Many1,
 
 	.ParseTest		= ParseTest,
