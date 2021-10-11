@@ -35,7 +35,8 @@ typedef struct {
 	Parse (* Many0)(Parse (* parser)(String_t *), String_t *);
 	Parse (* Many1)(Parse (* parser)(String_t *), String_t *);
 
-	/* Tester */
+	/* Invoker/Tester */
+	void (* Invoke)(Parse (* parser)(String_t *), String_t *);
 	void (* ParseTest)(Parse (* parser)(String_t *), String_t *);
 } _Parser;
 

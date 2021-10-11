@@ -120,6 +120,10 @@ static Parse Many1(Parse (* parser)(String_t *), String_t *s) {
 	}
 }
 
+static void Invoke(Parse (* parser)(String_t *), String_t *s) {
+	parser(s);
+}
+
 static void ParseTest(Parse (* parser)(String_t *), String_t *s) {
 	Parse prs = parser(s);
 	if (prs.Reply == Err) {
@@ -142,5 +146,6 @@ _Parser Parser = {
 	.Many0			= Many0,
 	.Many1			= Many1,
 
+	.Invoke			= Invoke,
 	.ParseTest		= ParseTest,
 };

@@ -34,7 +34,21 @@ Parse declVar(String_t *s) {
 
 void main() {
 	String_t *s = String.New(u8"var mIkO352;");
-	Parser.ParseTest(declVar, s);
 
+	/* 簡易テスタ */
+	Parser.ParseTest(declVar, s);
 	printf(u8"varname: %s\n", String.GetPrimitive(ident));
+
+
+	/* 解析動作のみ */
+	Parser.Invoke(declVar, String.New(u8"var parser3;"));
+	printf(u8"varname: %s\n", String.GetPrimitive(ident));
+
+	Parser.ParseTest(declVar, String.New(u8"var Parser;")); // error
+	Parser.ParseTest(declVar, String.New(u8"var 9arser;")); // error
+	Parser.ParseTest(declVar, String.New(u8"var parser ;")); // error
+	Parser.ParseTest(declVar, String.New(u8"var  parser ;")); // error
+	Parser.ParseTest(declVar, String.New(u8" var parser ;")); // error
+	Parser.ParseTest(declVar, String.New(u8"vaa parser ;")); // error
+	Parser.ParseTest(declVar, String.New(u8"var parser; ")); // Ok...
 }
