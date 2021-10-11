@@ -103,7 +103,7 @@ Parse Parser_Alphabet(String_t *code) {
 Parse Parser_Symbol(String_t *code) {
 	Parse add_sub_mul_eq_lt_gt_open_close_openb_closeb_dot(String_t *str) {
 		return Primitive.Char.OneOf(
-			String.New(u8"+-*=<>()[]."),
+			String.New(u8"+-*=<>()[].,:;"),
 			code
 		);
 	}
@@ -148,12 +148,28 @@ Parse Parser_Symbol(String_t *code) {
 }
 
 Parse Parser_String(String_t *code) {
-	/*Primitive.Char.Char('\'', code)
+	Parse apostr(String_t *str) {
+		return Primitive.Char.Char('\'', code);
+	}
 
-	//
+	Parse nonapostr(String_t *code) {
+		return Primitive.Char.NoneOf(
+			String.New(u8"\'"),
+			code
+		);
+	}
 
-	Primitive.Char.Char('\'', code)
-*/}
+	Parse content(String_t *code) {
+		return Parser.Many0(nonapostr, code);
+	}
+
+	return Parser.Bind3(
+		apostr,
+		content,
+		apostr,
+		code
+	);
+}
 
 Parse Parser_UInt(String_t *code) {
 	return Parser.Many1(Parser_Digit, code);
@@ -445,7 +461,7 @@ Parse Parser_Name(String_t *code) {
 }
 
 Parse Parser_Token(String_t *code) {
-	return Parser.Choise5(
+	Parse prs = Parser.Choise5(
 		Parser_Name,
 		Parser_Keyword,
 		Parser_UInt,
@@ -453,6 +469,10 @@ Parse Parser_Token(String_t *code) {
 		Parser_Symbol,
 		code
 	);
+
+  printf("(%s)", String.GetPrimitive(prs.Precipitate)); fflush(stdout);
+
+	return prs;
 }
 
 Parse Parser_Program(String_t *code) {
