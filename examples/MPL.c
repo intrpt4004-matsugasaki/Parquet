@@ -63,13 +63,12 @@ return line(code);
 	//return Parser.Choise(line, block, code);
 }
 
-Parse Parser_Separator(String_t *code) {
+Parse Parser_Separator(String_t *code) { // Ok
 	List_t *seps = List.New();
-	// 括り出し \r and \n choise branch
-	seps->Add(seps, String.New(u8"\r"));
-	seps->Add(seps, String.New(u8"\n"));
 	seps->Add(seps, String.New(u8"\r\n"));
+	seps->Add(seps, String.New(u8"\r"));
 	seps->Add(seps, String.New(u8"\n\r"));
+	seps->Add(seps, String.New(u8"\n"));
 
 	return Primitive.String.OneOf(
 		seps,
@@ -77,21 +76,24 @@ Parse Parser_Separator(String_t *code) {
 	);
 }
 
-Parse Parser_Digit(String_t *code) {
+Parse Parser_Digit(String_t *code) { // Ok?
 	return Primitive.Char.Digit(code);
 }
 
-Parse Parser_Alphabet(String_t *code) {
+Parse Parser_Alphabet(String_t *code) { // Ok?
 	return Primitive.Char.Letter(code);
 }
 
-Parse Parser_Symbol(String_t *code) {
+Parse Parser_Symbol(String_t *code) { // Ok
 	List_t *syms = List.New();
 	syms->Add(syms, String.New(u8"+"));
 	syms->Add(syms, String.New(u8"-"));
 	syms->Add(syms, String.New(u8"*"));
 	syms->Add(syms, String.New(u8"="));
+	syms->Add(syms, String.New(u8"<>"));
+	syms->Add(syms, String.New(u8"<="));
 	syms->Add(syms, String.New(u8"<"));
+	syms->Add(syms, String.New(u8">="));
 	syms->Add(syms, String.New(u8">"));
 	syms->Add(syms, String.New(u8"("));
 	syms->Add(syms, String.New(u8")"));
@@ -99,12 +101,9 @@ Parse Parser_Symbol(String_t *code) {
 	syms->Add(syms, String.New(u8"]"));
 	syms->Add(syms, String.New(u8"."));
 	syms->Add(syms, String.New(u8","));
+	syms->Add(syms, String.New(u8":="));
 	syms->Add(syms, String.New(u8":"));
 	syms->Add(syms, String.New(u8";"));
-	syms->Add(syms, String.New(u8"<>"));
-	syms->Add(syms, String.New(u8"<="));
-	syms->Add(syms, String.New(u8">="));
-	syms->Add(syms, String.New(u8":="));
 
 	return Primitive.String.OneOf(
 		syms,
@@ -136,7 +135,7 @@ Parse Parser_String(String_t *code) {
 	);
 }
 
-Parse Parser_UInt(String_t *code) {
+Parse Parser_UInt(String_t *code) { // Ok?
 	return Parser.Many1(Parser_Digit, code);
 }
 
@@ -223,14 +222,20 @@ Parse Parser_Program(String_t *code) {
 }
 
 void main(const int32_t argc, uint8_t *argv[]) {
-//	for (;;) {
-//		uint8_t str[256];
-//		scanf("%s", str);
-		Parser.ParseTest(Parser_Separator, String.New("\r"));
-		Parser.ParseTest(Parser_Separator, String.New("\r\n"));
-		Parser.ParseTest(Parser_Separator, String.New("\n"));
-		Parser.ParseTest(Parser_Separator, String.New("\n\r"));
-//	}
+	for (;;) {
+		uint8_t str[256];
+		scanf("%s", str);
+//		Parser.ParseTest(Parser_String, String.New(str));
+
+		Parse prs = Primitive.Char.NoneOf(String.New("'"), String.New(str));
+		if (prs.Reply == Err) {
+			printf("Parser.ParseTest: parse failed.\n");
+		} else if (!prs.Subsequent->IsEmpty(prs.Subsequent)) {
+			printf("Parser.ParseTest: parse incorrect.\n");
+			printf("\"%s\" [%s]\n", String.GetPrimitive(prs.Precipitate), String.GetPrimitive(prs.Subsequent));
+		} else
+			printf("\"%s\"\n", String.GetPrimitive(prs.Precipitate));
+	}
 
 	//Parser.ParseTest(Parser_Program, String.FromFile(argv[1]));
 }

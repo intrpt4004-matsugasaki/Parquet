@@ -205,7 +205,7 @@ static void ParseTest(Parse (* parser)(String_t *), String_t *s) {
 
 	if (!prs.Subsequent->IsEmpty(prs.Subsequent)) {
 		printf("Parser.ParseTest: parse incorrect.\n");
-		printf("\"%s\"~\n", String.GetPrimitive(prs.Precipitate));
+		printf("\"%s\" [%s]\n", String.GetPrimitive(prs.Precipitate), String.GetPrimitive(prs.Subsequent));
 		return;
 	}
 
