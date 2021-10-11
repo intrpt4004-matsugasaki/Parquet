@@ -64,31 +64,15 @@ return line(code);
 }
 
 Parse Parser_Separator(String_t *code) {
-	Parse carret(String_t *str) {
-		return Primitive.Char.Char('\r', code);
-	}
+	List_t *seps = List.New();
+	// 括り出し \r and \n choise branch
+	seps->Add(seps, String.New(u8"\r"));
+	seps->Add(seps, String.New(u8"\n"));
+	seps->Add(seps, String.New(u8"\r\n"));
+	seps->Add(seps, String.New(u8"\n\r"));
 
-	Parse feedret(String_t *str) {
-		return Primitive.String.Match(
-			String.New(u8"\n\r"),
-			code
-		);
-	}
-
-	Parse newline(String_t *code) {
-		return Parser.Choise3(
-			Primitive.Char.EndOfLine,
-			carret,
-			feedret,
-			code
-		);
-	}
-
-	return Parser.Choise4(
-		Primitive.Char.Space,
-		Primitive.Char.Tab,
-		newline,
-		Parser_Comment,
+	return Primitive.String.OneOf(
+		seps,
 		code
 	);
 }
@@ -102,29 +86,28 @@ Parse Parser_Alphabet(String_t *code) {
 }
 
 Parse Parser_Symbol(String_t *code) {
-	Parse add_sub_mul_eq_lt_gt_open_close_openb_closeb_dot(String_t *str) {
-		return Primitive.Char.OneOf(
-			String.New(u8"+-*=<>()[].,:;"),
-			code
-		);
-	}
+	List_t *syms = List.New();
+	syms->Add(syms, String.New(u8"+"));
+	syms->Add(syms, String.New(u8"-"));
+	syms->Add(syms, String.New(u8"*"));
+	syms->Add(syms, String.New(u8"="));
+	syms->Add(syms, String.New(u8"<"));
+	syms->Add(syms, String.New(u8">"));
+	syms->Add(syms, String.New(u8"("));
+	syms->Add(syms, String.New(u8")"));
+	syms->Add(syms, String.New(u8"["));
+	syms->Add(syms, String.New(u8"]"));
+	syms->Add(syms, String.New(u8"."));
+	syms->Add(syms, String.New(u8","));
+	syms->Add(syms, String.New(u8":"));
+	syms->Add(syms, String.New(u8";"));
+	syms->Add(syms, String.New(u8"<>"));
+	syms->Add(syms, String.New(u8"<="));
+	syms->Add(syms, String.New(u8">="));
+	syms->Add(syms, String.New(u8":="));
 
-	Parse not_leq_geq_subst(String_t *str) {
-		List_t *syms = List.New();
-		syms->Add(syms, String.New(u8"<>"));
-		syms->Add(syms, String.New(u8"<="));
-		syms->Add(syms, String.New(u8">="));
-		syms->Add(syms, String.New(u8":="));
-
-		return Primitive.String.OneOf(
-			syms,
-			code
-		);
-	}
-
-	return Parser.Choise(
-		add_sub_mul_eq_lt_gt_open_close_openb_closeb_dot,
-		not_leq_geq_subst,
+	return Primitive.String.OneOf(
+		syms,
 		code
 	);
 }
@@ -157,7 +140,7 @@ Parse Parser_UInt(String_t *code) {
 	return Parser.Many1(Parser_Digit, code);
 }
 
-Parse Parser_Keyword(String_t *code) {
+Parse Parser_Keyword(String_t *code) { // OK
 	List_t *keywords = List.New();
 	keywords->Add(keywords, String.New(u8"program"));
 	keywords->Add(keywords, String.New(u8"var"));
@@ -230,7 +213,6 @@ Parse Parser_Token(String_t *code) {
 Parse Parser_Program(String_t *code) {
 	Parse tok_sep(String_t *code) {
 		return Parser.Choise(
-
 			Parser_Token,
 			Parser_Separator,
 			code
@@ -241,11 +223,14 @@ Parse Parser_Program(String_t *code) {
 }
 
 void main(const int32_t argc, uint8_t *argv[]) {
-	for (;;) {
-		uint8_t str[256];
-		scanf("%s", str);
-		Parser.ParseTest(Parser_Keyword, String.New(str));
-	}
+//	for (;;) {
+//		uint8_t str[256];
+//		scanf("%s", str);
+		Parser.ParseTest(Parser_Separator, String.New("\r"));
+		Parser.ParseTest(Parser_Separator, String.New("\r\n"));
+		Parser.ParseTest(Parser_Separator, String.New("\n"));
+		Parser.ParseTest(Parser_Separator, String.New("\n\r"));
+//	}
 
 	//Parser.ParseTest(Parser_Program, String.FromFile(argv[1]));
 }
