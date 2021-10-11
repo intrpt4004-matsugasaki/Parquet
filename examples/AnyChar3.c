@@ -17,9 +17,17 @@ Parse anyChar6(String_t *s) {
 	);
 }
 
+Parse anyChar12(String_t *s) {
+	return Parser.Bind(
+		anyChar6,
+		anyChar6,
+		s
+	);
+}
+
 void main() {
 	String_t *s = String.New(u8"var123");
 	Parser.ParseTest(anyChar3, s);
-
 	Parser.ParseTest(anyChar6, s);
+	Parser.ParseTest(anyChar12, s); // error
 }
