@@ -170,6 +170,14 @@ static Parse Match(String_t *pattern, String_t *s) {
 	};
 }
 
+static Parse UnMatch(String_t *pattern, String_t *s) {
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
+
+	if (s->StartsWith(s, pattern)) return Parser.makeErr(s);
+
+	return Parser.makeOkRead1(s);
+}
+
 static Parse String_OneOf(List_t *list, String_t *s) {
 	for (uint32_t i = 0; i < list->GetLength(list); i++)
 		if (s->StartsWith(s, list->Get(list, i)))
@@ -209,6 +217,7 @@ _Primitive Primitive = {
 
 	.String = {
 		.Match		= Match,
+		.UnMatch	= UnMatch,
 		.OneOf		= String_OneOf,
 	},
 };

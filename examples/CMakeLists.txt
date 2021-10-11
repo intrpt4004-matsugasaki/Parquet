@@ -46,3 +46,6 @@ add_executable(MPL MPL.c)
 target_link_libraries(MPL
     Scraper
 )
+
+# debug
+set(CMAKE_C_FLAGS "-g3 -O0")

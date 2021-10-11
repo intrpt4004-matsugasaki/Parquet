@@ -31,6 +31,7 @@ typedef struct {
 
 typedef struct {
 	Parse (* Match)(String_t *pattern, String_t *s);
+	Parse (* UnMatch)(String_t *pattern, String_t *s);
 	Parse (* OneOf)(List_t *list, String_t *);
 } _String_;
 

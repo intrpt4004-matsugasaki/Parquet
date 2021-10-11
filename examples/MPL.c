@@ -1,26 +1,26 @@
 #include <Scraper.h>
 
-Parse Parser_Comment(String_t *code) {
-	Parse open(String_t *str) {
-		return Primitive.Char.Char('{', code);
-	}
-
-	Parse nonClose(String_t *code) {
-		return Primitive.Char.NoneOf(
-			String.New(u8"}"),
-			code
-		);
-	}
-
-	Parse content(String_t *code) {
-		return Parser.Many0(nonClose, code);
-	}
-
-	Parse close(String_t *str) {
-		return Primitive.Char.Char('}', code);
-	}
-
+Parse Parser_Comment(String_t *code) { // Ok
 	Parse line(String_t *code) {
+		Parse open(String_t *code) {
+			return Primitive.Char.Char('{', code);
+		}
+
+		Parse nonClose(String_t *code) {
+			return Primitive.Char.NoneOf(
+				String.New(u8"}"),
+				code
+			);
+		}
+
+		Parse content(String_t *code) {
+			return Parser.Many0(nonClose, code);
+		}
+
+		Parse close(String_t *code) {
+			return Primitive.Char.Char('}', code);
+		}
+
 		return Parser.Bind3(
 			open,
 			content,
@@ -30,50 +30,59 @@ Parse Parser_Comment(String_t *code) {
 	}
 
 	Parse block(String_t *code) {
-		Parse nonClose(String_t *code) {
-			Parse nonaster(String_t *code) {
-				return Primitive.Char.NoneOf(
-					String.New(u8"*"),
-					code
-				);
-			}
-
-			Parse nonasterseq(String_t *code) {
-				return Parser.Many0(nonaster, code);
-			}
-
-			Parse aster(String_t *code) {
-				return Primitive.Char.Char('*', code);
-			}
-
-			Parse slash(String_t *code) {
-				return Primitive.Char.Char('/', code);
-			}
-
-			return Parser.Bind3(
-				nonasterseq,
-				aster,
-				slash,
+		Parse open(String_t *code) {
+			return Primitive.String.Match(
+				String.New(u8"/*"),
 				code
 			);
 		}
+
+		Parse nonClose(String_t *code) {
+			return Primitive.String.UnMatch(
+				String.New(u8"*/"),
+				code
+			);
+		}
+
+		Parse content(String_t *code) {
+			return Parser.Many0(nonClose, code);
+		}
+
+		Parse close(String_t *code) {
+			return Primitive.String.Match(
+				String.New(u8"*/"),
+				code
+			);
+		}
+
+		return Parser.Bind3(
+			open,
+			content,
+			close,
+			code
+		);
 	}
 
-return line(code);
-	//return Parser.Choise(line, block, code);
+	return Parser.Choise(line, block, code);
 }
 
 Parse Parser_Separator(String_t *code) { // Ok
-	List_t *seps = List.New();
-	seps->Add(seps, String.New(u8"\r\n"));
-	seps->Add(seps, String.New(u8"\r"));
-	seps->Add(seps, String.New(u8"\n\r"));
-	seps->Add(seps, String.New(u8"\n"));
+	Parse space_tab_newline(String_t *code) {
+		List_t *seps = List.New();
+		seps->Add(seps, String.New(u8" "));
+		seps->Add(seps, String.New(u8"\t"));
+		seps->Add(seps, String.New(u8"\r\n"));
+		seps->Add(seps, String.New(u8"\r"));
+		seps->Add(seps, String.New(u8"\n\r"));
+		seps->Add(seps, String.New(u8"\n"));
 
-	return Primitive.String.OneOf(
-		seps,
-		code
-	);
+		return Primitive.String.OneOf(
+			seps,
+			code
+		);
+	}
+
+	return Parser.Choise(space_tab_newline, Parser_Comment, code); 
 }
 
 Parse Parser_Digit(String_t *code) { // Ok?
@@ -111,14 +120,14 @@ Parse Parser_Symbol(String_t *code) { // Ok
 	);
 }
 
-Parse Parser_String(String_t *code) {
-	Parse apostr(String_t *str) {
+Parse Parser_String(String_t *code) { // Ok*?
+	Parse apostr(String_t *code) {
 		return Primitive.Char.Char('\'', code);
 	}
 
 	Parse nonapostr(String_t *code) {
 		return Primitive.Char.NoneOf(
-			String.New(u8"\'"),
+			String.New(u8"'"),
 			code
 		);
 	}
@@ -174,7 +183,7 @@ Parse Parser_Keyword(String_t *code) { // OK
 	);
 }
 
-Parse Parser_Name(String_t *code) {
+Parse Parser_Name(String_t *code) { // Ok
 	Parse al_num(String_t *code) {
 		return Parser.Choise(
 			Parser_Alphabet,
@@ -204,7 +213,7 @@ Parse Parser_Token(String_t *code) {
 		code
 	);
 
-  printf("(%s)", String.GetPrimitive(prs.Precipitate)); fflush(stdout);
+  //printf("(%s)", String.GetPrimitive(prs.Precipitate)); fflush(stdout);
 
 	return prs;
 }
@@ -222,20 +231,5 @@ Parse Parser_Program(String_t *code) {
 }
 
 void main(const int32_t argc, uint8_t *argv[]) {
-	for (;;) {
-		uint8_t str[256];
-		scanf("%s", str);
-//		Parser.ParseTest(Parser_String, String.New(str));
-
-		Parse prs = Primitive.Char.NoneOf(String.New("'"), String.New(str));
-		if (prs.Reply == Err) {
-			printf("Parser.ParseTest: parse failed.\n");
-		} else if (!prs.Subsequent->IsEmpty(prs.Subsequent)) {
-			printf("Parser.ParseTest: parse incorrect.\n");
-			printf("\"%s\" [%s]\n", String.GetPrimitive(prs.Precipitate), String.GetPrimitive(prs.Subsequent));
-		} else
-			printf("\"%s\"\n", String.GetPrimitive(prs.Precipitate));
-	}
-
-	//Parser.ParseTest(Parser_Program, String.FromFile(argv[1]));
+	Parser.ParseTest(Parser_Program, String.FromFile(argv[1]));
 }
