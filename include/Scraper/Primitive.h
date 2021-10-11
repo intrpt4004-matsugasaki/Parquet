@@ -19,7 +19,7 @@ typedef struct {
 	Parse (* Upper)(String_t *);
 	Parse (* Lower)(String_t *);
 	Parse (* AlphaNum)(String_t *);
-	//Parse (* Letter)(String_t *);
+	Parse (* Letter)(String_t *);
 	Parse (* Digit)(String_t *);
 	Parse (* HexDigit)(String_t *);
 	Parse (* OctDigit)(String_t *);

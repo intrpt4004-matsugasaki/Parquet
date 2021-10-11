@@ -1,27 +1,27 @@
 #include "Scraper/Primitive.h"
 
 static Parse OneOf(String_t *list, String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
 	for (uint32_t i = 0; i < list->GetLength(list); i++) {
 		if (list->GetCharAt(list, i) == s->GetHeadChar(s)) { // 複数当て嵌る可能性の考慮は？
-			return Parser.makeOkChar(s);
+			return Parser.makeOkRead1(s);
 		}
 	}
 
-	return Parser.makeErr();
+	return Parser.makeErr(s);
 }
 
 static Parse NoneOf(String_t *list, String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
 	for (uint32_t i = 0; i < list->GetLength(list); i++) {
 		if (list->GetCharAt(list, i) == s->GetHeadChar(s)) {
-			return Parser.makeErr();
+			return Parser.makeErr(s);
 		}
 	}
 
-	return Parser.makeOkChar(s);
+	return Parser.makeOkRead1(s);
 }
 
 static Parse Spaces(String_t *s) {
@@ -29,26 +29,26 @@ static Parse Spaces(String_t *s) {
 }
 
 static Parse Space(String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
 	return Primitive.Char.Char(' ', s);
 }
 
 static Parse LF(String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
 	return Primitive.Char.Char('\n', s);
 }
 
 static Parse CRLF(String_t *s) {
-	if (s->GetLength(s) < 2) return Parser.makeErr();
+	if (s->GetLength(s) < 2) return Parser.makeErr(s);
 
 	Parse prs = Primitive.Char.Char('\r', s);
-	if (prs.Reply == Err) return Parser.makeErr();
+	if (prs.Reply == Err) return Parser.makeErr(s);
 	String_t *precip = prs.Precipitate;
 
 	prs = Primitive.Char.LF(prs.Subsequent);
-	if (prs.Reply == Err) return Parser.makeErr();
+	if (prs.Reply == Err) return Parser.makeErr(s);
 	precip = String.Concat(precip, prs.Precipitate);
 
 	return (Parse){
@@ -59,61 +59,63 @@ static Parse CRLF(String_t *s) {
 }
 
 static Parse EndOfLine(String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
 	return Parser.Choise(LF, CRLF, s);
 }
 
 static Parse Tab(String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
 	return Primitive.Char.Char('\t', s);
 }
 
 static Parse Upper(String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
-	if (!isupper(s->GetHeadChar(s))) return Parser.makeErr();
+	if (!isupper(s->GetHeadChar(s))) return Parser.makeErr(s);
 
-	return Parser.makeOkChar(s);
+	return Parser.makeOkRead1(s);
 }
 
 static Parse Lower(String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
-	if (!islower(s->GetHeadChar(s))) return Parser.makeErr();
+	if (!islower(s->GetHeadChar(s))) return Parser.makeErr(s);
 
-	return Parser.makeOkChar(s);
+	return Parser.makeOkRead1(s);
 }
 
 static Parse AlphaNum(String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
-	if (!isalnum(s->GetHeadChar(s))) return Parser.makeErr();
+	if (!isalnum(s->GetHeadChar(s))) return Parser.makeErr(s);
 
-	return Parser.makeOkChar(s);
+	return Parser.makeOkRead1(s);
 }
 
 static Parse Letter(String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
-	//
+	if (!isalpha(s->GetHeadChar(s))) return Parser.makeErr(s);
+
+	return Parser.makeOkRead1(s);
 }
 
 static Parse Digit(String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
-	if (!isdigit(s->GetHeadChar(s))) return Parser.makeErr();
+	if (!isdigit(s->GetHeadChar(s))) return Parser.makeErr(s);
 
-	return Parser.makeOkChar(s);
+	return Parser.makeOkRead1(s);
 }
 
 static Parse HexDigit(String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
-	if (!isxdigit(s->GetHeadChar(s))) return Parser.makeErr();
+	if (!isxdigit(s->GetHeadChar(s))) return Parser.makeErr(s);
 
-	return Parser.makeOkChar(s);
+	return Parser.makeOkRead1(s);
 }
 
 static bool isodigit(uint8_t c) {
@@ -127,39 +129,39 @@ static bool isodigit(uint8_t c) {
 }
 
 static Parse OctDigit(String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
-	if (!isodigit(s->GetHeadChar(s))) return Parser.makeErr();
+	if (!isodigit(s->GetHeadChar(s))) return Parser.makeErr(s);
 
-	return Parser.makeOkChar(s);
+	return Parser.makeOkRead1(s);
 }
 
 static Parse Char(uint8_t c, String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
-	if (!s->StartsWithChar(s, c)) return Parser.makeErr();
+	if (!s->StartsWithChar(s, c)) return Parser.makeErr(s);
 
-	return Parser.makeOkChar(s);
+	return Parser.makeOkRead1(s);
 }
 
 static Parse Any(String_t *s) {
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
-	return Parser.makeOkChar(s);
+	return Parser.makeOkRead1(s);
 }
 
 static Parse Satisfy(bool (* judge)(uint8_t c), String_t *s) {	
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
-	if (!judge(s->GetHeadChar(s))) return Parser.makeErr();
+	if (!judge(s->GetHeadChar(s))) return Parser.makeErr(s);
 
-	return Parser.makeOkChar(s);
+	return Parser.makeOkRead1(s);
 }
 
 static Parse Match(String_t *pattern, String_t *s) {	
-	if (s->IsEmpty(s)) return Parser.makeErr();
+	if (s->IsEmpty(s)) return Parser.makeErr(s);
 
-	if (!s->StartsWith(s, pattern)) return Parser.makeErr();
+	if (!s->StartsWith(s, pattern)) return Parser.makeErr(s);
 
 	return (Parse){
 		.Reply			= Ok,
@@ -181,7 +183,7 @@ _Primitive Primitive = {
 		.Upper		= Upper,
 		.Lower		= Lower,
 		.AlphaNum	= AlphaNum,
-		//.Letter		= Letter,
+		.Letter		= Letter,
 		.Digit		= Digit,
 		.HexDigit	= HexDigit,
 		.OctDigit	= OctDigit,

@@ -3,11 +3,12 @@
 #include "Scraper/Parse.h"
 
 typedef struct {
-	/* util */
-	Parse (* makeErr)();
-	Parse (* makeOkChar)(String_t *);
+	/* Util */
+	Parse (* makeErr)(String_t *);
+	Parse (* makeOk)(String_t *);
+	Parse (* makeOkRead1)(String_t *);
 
-	/* combinator */
+	/* Combinator */
 	Parse (* Bind)(
 		Parse (* fst)(String_t *),
 		Parse (* snd)(String_t *),
@@ -31,7 +32,10 @@ typedef struct {
 		Parse (* right)(String_t *),
 		String_t *);
 
-	/* tester */
+	Parse (* Many)(Parse (* parser)(String_t *), String_t *);
+	Parse (* Many1)(Parse (* parser)(String_t *), String_t *);
+
+	/* Tester */
 	void (* ParseTest)(Parse (* parser)(String_t *), String_t *);
 } _Parser;
 
