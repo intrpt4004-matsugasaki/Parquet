@@ -7,6 +7,8 @@ add_dependencies(examples
 
 	AnyChar3-6-12
 	DeclVar
+
+	MPL
 )
 
 add_executable(Error other/Error.c)
@@ -31,5 +33,10 @@ target_link_libraries(AnyChar3-6-12
 
 add_executable(DeclVar DeclVar.c)
 target_link_libraries(DeclVar
+    Scraper
+)
+
+add_executable(MPL MPL.c)
+target_link_libraries(MPL
     Scraper
 )

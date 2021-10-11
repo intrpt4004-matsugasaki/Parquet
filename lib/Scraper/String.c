@@ -112,10 +112,33 @@ static String_t *New(const uint8_t *string) {
 	return str;
 }
 
+static String_t *FromChar(const uint8_t ch) {
+	uint8_t tmp[] = { ch };
+	return String.New(tmp);
+}
+
+static String_t *FromFile(const uint8_t *path) {
+	FILE *file;
+	if ((file = fopen(path, "r")) == NULL)
+		Error.Panic(u8"\e[32m", u8"file open failed.\n");
+
+	String_t *text = String.New(u8"");
+
+	int8_t c;
+	while ((c = fgetc(file)) != EOF)
+		text = String.Concat(text, String.FromChar(c));
+
+	fclose(file);
+
+	return text;
+}
+
 _String String = {
 	.NUL						= '\0',
 
 	.New						= New,
+	.FromChar					= FromChar,
+	.FromFile					= FromFile,
 	.Delete						= Delete,
 
 	.GetPrimitive				= GetPrimitive,

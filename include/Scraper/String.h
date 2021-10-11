@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "Scraper/Error.h"
 #include "Scraper/Memory.h"
@@ -33,6 +34,8 @@ typedef struct {
 	uint8_t NUL;
 
 	String_t *(* New)(const uint8_t *);
+	String_t *(*  FromChar)(const uint8_t ch);
+	String_t *(* FromFile)(const uint8_t *path);
 	void (* Delete)(String_t *);
 
 	uint8_t *(* GetPrimitive)(String_t *);
