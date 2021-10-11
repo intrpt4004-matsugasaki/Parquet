@@ -19,6 +19,7 @@ typedef struct String_t {
 
 	struct String_t *(* Substring)(struct String_t *, const uint32_t beginIndex, const uint32_t lastIndex);
 	struct String_t *(* Concat)(struct String_t *, struct String_t *anString);
+	struct String_t *(* Copy)(struct String_t *);
 
 	bool (* IsEmpty)(struct String_t *);
 	bool (* Equals)(struct String_t *, struct String_t *anString);
@@ -41,6 +42,7 @@ typedef struct {
 
 	String_t *(* Substring)(String_t *, const uint32_t beginIndex, const uint32_t lastIndex);
 	String_t *(* Concat)(String_t *, String_t *anString);
+	String_t *(* Copy)(String_t *);
 
 	bool (* IsEmpty)(String_t *);
 	bool (* Equals)(String_t *, String_t *anString);

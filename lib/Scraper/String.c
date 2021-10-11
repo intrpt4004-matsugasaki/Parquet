@@ -51,6 +51,10 @@ static String_t *Concat(String_t *str, String_t *anString) {
 	return String.New(s);
 }
 
+static String_t *Copy(String_t *s) {
+	return String.New(String.GetPrimitive(s));
+}
+
 static bool IsEmpty(String_t *str) {
 	return String.GetLength(str) == 0;
 }
@@ -88,7 +92,7 @@ static String_t *New(const uint8_t *string) {
 	String_t *str = (String_t *)(Memory.Allocate(sizeof(String_t)));
 
 	str->_Size					= (string != NULL)? strlen(string) + 1 : 1;
-	str->_String				= (uint8_t *)(calloc(str->_Size, sizeof(uint8_t)));
+	str->_String				= (uint8_t *)(calloc(str->_Size, sizeof(uint8_t))); // strdup?
 	if (string != NULL) strncpy(str->_String, string, strlen(string));
 	str->_String[(string != NULL)? str->_Size - 1 : 0] = String.NUL;
 
@@ -98,6 +102,7 @@ static String_t *New(const uint8_t *string) {
 	str->GetHeadChar			= GetHeadChar;
 	str->Substring				= Substring;
 	str->Concat					= Concat;
+	str->Copy					= Copy;
 	str->IsEmpty				= IsEmpty;
 	str->Equals					= Equals;
 	str->StartsWith				= StartsWith;
@@ -119,6 +124,7 @@ _String String = {
 	.GetHeadChar				= GetHeadChar,
 	.Substring					= Substring,
 	.Concat						= Concat,
+	.Copy						= Copy,
 	.IsEmpty					= IsEmpty,
 	.Equals						= Equals,
 	.StartsWith					= StartsWith,

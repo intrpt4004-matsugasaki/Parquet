@@ -31,7 +31,6 @@ typedef struct {
 		Parse (* right)(String_t *),
 		String_t *);
 
-
 	/* tester */
 	void (* ParseTest)(Parse (* parser)(String_t *), String_t *);
 } _Parser;
