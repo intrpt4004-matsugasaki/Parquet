@@ -25,6 +25,7 @@ static Parse NoneOf(String_t *cs, String_t *s) {
 }
 
 static Parse Spaces(String_t *s) {
+	// skip spaces
 }
 
 static Parse NewLine(String_t *s) {

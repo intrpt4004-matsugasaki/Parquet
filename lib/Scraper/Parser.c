@@ -14,7 +14,19 @@ static Parse makeOkChar(String_t *s) {
 	};
 }
 
+static void ParseTest(Parse (* parser)(String_t *), String_t *s) {
+	Parse prs = parser(s);
+	if (prs.Reply == Err) {
+		printf("Parser.ParseTest: parse failed.\n");
+		return;
+	}
+
+	printf("\"%s\"\n", String.GetPrimitive(prs.Precipitate));
+}
+
 _Parser Parser = {
-	.makeErr	= makeErr,
-	.makeOkChar	= makeOkChar,
+	.makeErr		= makeErr,
+	.makeOkChar		= makeOkChar,
+
+	.ParseTest		= ParseTest,
 };

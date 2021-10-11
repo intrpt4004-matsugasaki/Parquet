@@ -18,6 +18,7 @@ typedef struct String_t {
 	uint8_t (* GetHeadChar)(struct String_t *);
 
 	struct String_t *(* Substring)(struct String_t *, const uint32_t beginIndex, const uint32_t lastIndex);
+	struct String_t *(* Concat)(struct String_t *, struct String_t *anString);
 
 	bool (* IsEmpty)(struct String_t *);
 	bool (* Equals)(struct String_t *, struct String_t *anString);
@@ -38,7 +39,8 @@ typedef struct {
 	uint8_t (* GetCharAt)(String_t *, const uint32_t index);
 	uint8_t (* GetHeadChar)(String_t *);
 
-	struct String_t *(* Substring)(struct String_t *, const uint32_t beginIndex, const uint32_t lastIndex);
+	String_t *(* Substring)(String_t *, const uint32_t beginIndex, const uint32_t lastIndex);
+	String_t *(* Concat)(String_t *, String_t *anString);
 
 	bool (* IsEmpty)(String_t *);
 	bool (* Equals)(String_t *, String_t *anString);

@@ -40,6 +40,17 @@ static String_t *Substring(String_t *str, const uint32_t beginIndex, const uint3
 	return String.New(s);
 }
 
+static String_t *Concat(String_t *str, String_t *anString) {
+	uint8_t *s = (uint8_t *)(
+		Memory.CountedAllocate(String.GetLength(str) + String.GetLength(anString) + 1, sizeof(uint8_t))
+	);
+
+	strncpy(s, String.GetPrimitive(str), String.GetLength(str));
+	strncat(s, String.GetPrimitive(anString), String.GetLength(anString));
+
+	return String.New(s);
+}
+
 static bool IsEmpty(String_t *str) {
 	return String.GetLength(str) == 0;
 }
@@ -86,6 +97,7 @@ static String_t *New(const uint8_t *string) {
 	str->GetCharAt				= GetCharAt;
 	str->GetHeadChar			= GetHeadChar;
 	str->Substring				= Substring;
+	str->Concat					= Concat;
 	str->IsEmpty				= IsEmpty;
 	str->Equals					= Equals;
 	str->StartsWith				= StartsWith;
@@ -96,18 +108,19 @@ static String_t *New(const uint8_t *string) {
 }
 
 _String String = {
-	.NUL								= '\0',
+	.NUL						= '\0',
 
-	.New								= New,
-	.Delete								= Delete,
+	.New						= New,
+	.Delete						= Delete,
 
-	.GetPrimitive						= GetPrimitive,
-	.GetLength							= GetLength,
-	.GetCharAt							= GetCharAt,
-	.GetHeadChar						= GetHeadChar,
-	.Substring							= Substring,
-	.IsEmpty							= IsEmpty,
-	.Equals								= Equals,
-	.StartsWith							= StartsWith,
-	.StartsWithChar						= StartsWithChar,
+	.GetPrimitive				= GetPrimitive,
+	.GetLength					= GetLength,
+	.GetCharAt					= GetCharAt,
+	.GetHeadChar				= GetHeadChar,
+	.Substring					= Substring,
+	.Concat						= Concat,
+	.IsEmpty					= IsEmpty,
+	.Equals						= Equals,
+	.StartsWith					= StartsWith,
+	.StartsWithChar				= StartsWithChar,
 };

@@ -1,40 +1,26 @@
 #include <Scraper.h>
 
-void parse(String_t *s) {
+Parse anyChar3(String_t *s) {
 	Parse prs = Primitive.Char.Any(s);
-	if (prs.Reply == Err) {
-		printf("parse failed.\n");
-		return;
-	}
-	printf("%s:%s\n",
-		String.GetPrimitive(prs.Precipitate),
-		String.GetPrimitive(prs.Subsequent)
-	);
-
+	if (prs.Reply == Err) return prs;
+	String_t *precip = prs.Precipitate;
 
 	prs = Primitive.Char.Any(prs.Subsequent);
-	if (prs.Reply == Err) {
-		printf("parse failed.\n");
-		return;
-	}
-	printf("%s:%s\n",
-		String.GetPrimitive(prs.Precipitate),
-		String.GetPrimitive(prs.Subsequent)
-	);
-
+	if (prs.Reply == Err) return prs;
+	precip = String.Concat(precip, prs.Precipitate);
 
 	prs = Primitive.Char.Any(prs.Subsequent);
-	if (prs.Reply == Err) {
-		printf("parse failed.\n");
-		return;
-	}
-	printf("%s:%s\n",
-		String.GetPrimitive(prs.Precipitate),
-		String.GetPrimitive(prs.Subsequent)
-	);
+	if (prs.Reply == Err) return prs;
+	precip = String.Concat(precip, prs.Precipitate);
+
+	return (Parse){
+		.Reply			= Ok,
+		.Precipitate	= precip,
+		.Subsequent		= prs.Subsequent,
+	};
 }
 
 void main() {
 	String_t *s = String.New(u8"var123");
-	parse(s);
+	Parser.ParseTest(anyChar3, s);
 }
