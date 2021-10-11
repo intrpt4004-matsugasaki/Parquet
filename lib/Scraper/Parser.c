@@ -102,6 +102,22 @@ static Parse Many0(Parse (* parser)(String_t *), String_t *s) {
 }
 
 static Parse Many1(Parse (* parser)(String_t *), String_t *s) {
+	Parse prs = parser(s);
+	if (prs.Reply == Err) return Parser.makeErr(s);
+
+	String_t *precip = prs.Precipitate;
+	String_t *subseq = prs.Subsequent;
+	for (;;) {
+		prs = parser(prs.Subsequent);
+		if (prs.Reply == Err) return (Parse){
+			.Reply			= Ok,
+			.Precipitate	= precip,
+			.Subsequent		= subseq,
+		};
+
+		precip = String.Concat(precip, prs.Precipitate);
+		subseq = prs.Subsequent;
+	}
 }
 
 static void ParseTest(Parse (* parser)(String_t *), String_t *s) {
