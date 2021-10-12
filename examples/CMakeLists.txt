@@ -10,6 +10,7 @@ add_dependencies(examples
 	DeclVar
 
 	MPL
+	mplc
 )
 
 add_executable(Error other/Error.c)
@@ -44,6 +45,11 @@ target_link_libraries(DeclVar
 
 add_executable(MPL MPL.c)
 target_link_libraries(MPL
+    Scraper
+)
+
+add_executable(mplc mplc/mplc.c mplc/MPLParser.c mplc/TokenCollector.c)
+target_link_libraries(mplc
     Scraper
 )
 

@@ -1,6 +1,8 @@
-#include <Scraper.h>
+#include "MPLParser.h"
 
-Parse Parser_Comment(String_t *code) {
+static TokenCollector_t *collector;
+
+static Parse Parser_Comment(String_t *code) {
 	Parse line(String_t *code) {
 		Parse open(String_t *code) {
 			return Primitive.Char.Char('{', code);
@@ -66,15 +68,11 @@ Parse Parser_Comment(String_t *code) {
 	return Parser.Choise(line, block, code);
 }
 
-Parse Parser_Separator(String_t *code) {
-	Parse space_tab_newline(String_t *code) {
+static Parse Parser_Separator(String_t *code) {
+	Parse space_tab(String_t *code) {
 		List_t *seps = List.New();
 		seps->Add(seps, String.New(u8" "));
 		seps->Add(seps, String.New(u8"\t"));
-		seps->Add(seps, String.New(u8"\r\n"));
-		seps->Add(seps, String.New(u8"\r"));
-		seps->Add(seps, String.New(u8"\n\r"));
-		seps->Add(seps, String.New(u8"\n"));
 
 		return Primitive.String.OneOf(
 			seps,
@@ -82,18 +80,43 @@ Parse Parser_Separator(String_t *code) {
 		);
 	}
 
-	return Parser.Choise(space_tab_newline, Parser_Comment, code); 
+	Parse newline(String_t *code) {
+		List_t *nls = List.New();
+		nls->Add(nls, String.New(u8"\r\n"));
+		nls->Add(nls, String.New(u8"\r"));
+		nls->Add(nls, String.New(u8"\n\r"));
+		nls->Add(nls, String.New(u8"\n"));
+
+		Parse prs = Primitive.String.OneOf(
+			nls,
+			code
+		);
+
+/****************************************/
+		if (prs.Reply == Ok)
+			collector->NotifyNewLine(collector);
+/****************************************/
+
+		return prs;
+	}
+
+	return Parser.Choise3(
+		space_tab,
+		newline,
+		Parser_Comment,
+		code
+	); 
 }
 
-Parse Parser_Digit(String_t *code) {
+static Parse Parser_Digit(String_t *code) {
 	return Primitive.Char.Digit(code);
 }
 
-Parse Parser_Alphabet(String_t *code) {
+static Parse Parser_Alphabet(String_t *code) {
 	return Primitive.Char.Letter(code);
 }
 
-Parse Parser_Symbol(String_t *code) {
+static Parse Parser_Symbol(String_t *code) {
 	List_t *syms = List.New();
 	syms->Add(syms, String.New(u8"+"));
 	syms->Add(syms, String.New(u8"-"));
@@ -114,13 +137,20 @@ Parse Parser_Symbol(String_t *code) {
 	syms->Add(syms, String.New(u8":"));
 	syms->Add(syms, String.New(u8";"));
 
-	return Primitive.String.OneOf(
+	Parse prs = Primitive.String.OneOf(
 		syms,
 		code
 	);
+
+/****************************************/
+	if (prs.Reply == Ok)
+		collector->NotifyNewToken(collector, prs.Precipitate, Token_Symbol);
+/****************************************/
+
+	return prs;
 }
 
-Parse Parser_String(String_t *code) {
+static Parse Parser_String(String_t *code) {
 	Parse apostr(String_t *code) {
 		return Primitive.Char.Char('\'', code);
 	}
@@ -136,19 +166,33 @@ Parse Parser_String(String_t *code) {
 		return Parser.Many0(nonapostr, code);
 	}
 
-	return Parser.Bind3(
+	Parse prs = Parser.Bind3(
 		apostr,
 		content,
 		apostr,
 		code
 	);
+
+/****************************************/
+	if (prs.Reply == Ok)
+		collector->NotifyNewToken(collector, prs.Precipitate, Token_String);
+/****************************************/
+
+	return prs;
 }
 
-Parse Parser_UInt(String_t *code) {
-	return Parser.Many1(Parser_Digit, code);
+static Parse Parser_UInt(String_t *code) {
+	Parse prs = Parser.Many1(Parser_Digit, code);
+
+/****************************************/
+	if (prs.Reply == Ok)
+		collector->NotifyNewToken(collector, prs.Precipitate, Token_UInt);
+/****************************************/
+
+	return prs;
 }
 
-Parse Parser_Keyword(String_t *code) {
+static Parse Parser_Keyword(String_t *code) {
 	List_t *keywords = List.New();
 	keywords->Add(keywords, String.New(u8"program"));
 	keywords->Add(keywords, String.New(u8"var"));
@@ -177,13 +221,20 @@ Parse Parser_Keyword(String_t *code) {
 	keywords->Add(keywords, String.New(u8"false"));
 	keywords->Add(keywords, String.New(u8"break"));
 
-	return Primitive.String.OneOf(
+	Parse prs = Primitive.String.OneOf(
 		keywords,
 		code
 	);
+
+/****************************************/
+	if (prs.Reply == Ok)
+		collector->NotifyNewToken(collector, prs.Precipitate, Token_Keyword);
+/****************************************/
+
+	return prs;
 }
 
-Parse Parser_Name(String_t *code) {
+static Parse Parser_Name(String_t *code) {
 	Parse al_num(String_t *code) {
 		return Parser.Choise(
 			Parser_Alphabet,
@@ -196,29 +247,38 @@ Parse Parser_Name(String_t *code) {
 		return Parser.Many0(al_num, code);
 	}
 
-	return Parser.Bind(
+	Parse prs = Parser.Bind(
 		al_num,
 		al_num_Rep,
 		code
 	);
+
+/****************************************/
+	if (prs.Reply == Ok)
+		collector->NotifyNewToken(collector, prs.Precipitate, Token_Name);
+/****************************************/
+
+	return prs;
 }
 
-Parse Parser_Token(String_t *code) {
-	return Parser.Choise5(
-		Parser_Name,
+static Parse Parser_Token(String_t *code) {
+	Parse prs = Parser.Choise5(
+		Parser_Symbol,
 		Parser_Keyword,
 		Parser_UInt,
 		Parser_String,
-		Parser_Symbol,
+		Parser_Name,
 		code
 	);
+
+	return prs;
 }
 
-Parse Parser_Program(String_t *code) {
+static Parse Parser_Program(String_t *code) {
 	Parse tok_sep(String_t *code) {
 		return Parser.Choise(
-			Parser_Token,
 			Parser_Separator,
+			Parser_Token,
 			code
 		);
 	}
@@ -226,6 +286,12 @@ Parse Parser_Program(String_t *code) {
 	return Parser.Many0(tok_sep, code);
 }
 
-void main(const int32_t argc, uint8_t *argv[]) {
-	Parser.ParseTest(Parser_Program, String.FromFile(argv[1]));
+static TokenCollector_t *Invoke(String_t *code) {
+	collector = TokenCollector.New();
+	Parser.Invoke(Parser_Program, code);
+	return collector;
 }
+
+_MPLParser MPLParser = {
+	.Invoke = Invoke,
+};
