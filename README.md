@@ -22,7 +22,7 @@ $ make examples -j
 $ examples/DeclVar
 ```
 
-## usage
+# Usage
 ```c
 ...
 ```
