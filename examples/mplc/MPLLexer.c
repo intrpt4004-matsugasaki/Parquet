@@ -1,6 +1,7 @@
-#include "MPLParser.h"
+#include "MPLLexer.h"
 
-static TokenCollector_t *collector;
+static List_t *tokens;
+static uint32_t lineNum;
 
 static Parse Parser_Comment(String_t *code) {
 	Parse line(String_t *code) {
@@ -93,8 +94,7 @@ static Parse Parser_Separator(String_t *code) {
 		);
 
 /****************************************/
-		if (prs.Reply == Ok)
-			collector->NotifyNewLine(collector);
+		if (prs.Reply == Ok) lineNum++;
 /****************************************/
 
 		return prs;
@@ -144,7 +144,7 @@ static Parse Parser_Symbol(String_t *code) {
 
 /****************************************/
 	if (prs.Reply == Ok)
-		collector->NotifyNewToken(collector, prs.Precipitate, Token_Symbol);
+		tokens->Add(tokens, Token.New(prs.Precipitate, Token_Symbol, lineNum));
 /****************************************/
 
 	return prs;
@@ -175,7 +175,7 @@ static Parse Parser_String(String_t *code) {
 
 /****************************************/
 	if (prs.Reply == Ok)
-		collector->NotifyNewToken(collector, prs.Precipitate, Token_String);
+		tokens->Add(tokens, Token.New(prs.Precipitate, Token_String, lineNum));
 /****************************************/
 
 	return prs;
@@ -186,7 +186,7 @@ static Parse Parser_UInt(String_t *code) {
 
 /****************************************/
 	if (prs.Reply == Ok)
-		collector->NotifyNewToken(collector, prs.Precipitate, Token_UInt);
+		tokens->Add(tokens, Token.New(prs.Precipitate, Token_UInt, lineNum));
 /****************************************/
 
 	return prs;
@@ -228,7 +228,7 @@ static Parse Parser_Keyword(String_t *code) {
 
 /****************************************/
 	if (prs.Reply == Ok)
-		collector->NotifyNewToken(collector, prs.Precipitate, Token_Keyword);
+		tokens->Add(tokens, Token.New(prs.Precipitate, Token_Keyword, lineNum));
 /****************************************/
 
 	return prs;
@@ -255,7 +255,7 @@ static Parse Parser_Name(String_t *code) {
 
 /****************************************/
 	if (prs.Reply == Ok)
-		collector->NotifyNewToken(collector, prs.Precipitate, Token_Name);
+		tokens->Add(tokens, Token.New(prs.Precipitate, Token_Name, lineNum));
 /****************************************/
 
 	return prs;
@@ -286,12 +286,13 @@ static Parse Parser_Program(String_t *code) {
 	return Parser.Many0(tok_sep, code);
 }
 
-static TokenCollector_t *Invoke(String_t *code) {
-	collector = TokenCollector.New();
+static List_t *Execute(String_t *code) {
+	tokens = List.New();
+	lineNum = 1;
 	Parser.Invoke(Parser_Program, code);
-	return collector;
+	return tokens;
 }
 
-_MPLParser MPLParser = {
-	.Invoke = Invoke,
+_MPLLexer MPLLexer = {
+	.Execute = Execute,
 };

@@ -48,7 +48,7 @@ target_link_libraries(MPL
     Scraper
 )
 
-add_executable(mplc mplc/mplc.c mplc/MPLParser.c mplc/TokenCollector.c)
+add_executable(mplc mplc/mplc.c mplc/MPLLexer.c mplc/Token.c)
 target_link_libraries(mplc
     Scraper
 )

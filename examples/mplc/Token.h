@@ -10,7 +10,6 @@ typedef enum {
 	Token_Symbol,
 } TokenType_t;
 
-
 typedef struct Token_t {
 	String_t *_Entity;
 	TokenType_t _Type;
@@ -28,21 +27,3 @@ typedef struct {
 } _Token;
 
 extern _Token Token;
-
-
-typedef struct TokenCollector_t {
-	List_t *_Token;
-	uint32_t _LineNum;
-
-	void (* NotifyNewToken)(struct TokenCollector_t *, String_t *, TokenType_t);
-	void (* NotifyNewLine)(struct TokenCollector_t *);
-	void (* PrintTokens)(struct TokenCollector_t *);
-	void (* PrintTokenList)(struct TokenCollector_t *);
-} TokenCollector_t;
-
-typedef struct {
-	TokenCollector_t *(* New)();
-	void (* Delete)(TokenCollector_t *);
-} _TokenCollector;
-
-extern _TokenCollector TokenCollector;
