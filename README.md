@@ -1,13 +1,19 @@
 # Scraper
 Parser Combinator Library in C
 
-## build Scraper
+## build
 ```sh
 $ git clone https://github.com/rot-E/Scraper.git
 $ cd Scraper
 $ mkdir build && cd build
 $ cmake ..
 $ make -j
+```
+
+## install
+```sh
+$ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$HOME/.local
+$ make install -j
 ```
 
 ## build examples
