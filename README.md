@@ -21,3 +21,8 @@ $ make install -j
 $ make examples -j
 $ examples/DeclVar
 ```
+
+## usage
+```c
+...
+```
