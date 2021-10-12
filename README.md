@@ -1,7 +1,17 @@
 # Scraper
 Parser Combinator Library in C
 
-# Usage
+# Build
 ```sh
-$ mkdir build && cd build && cmake .. && make examples -j && examples/DeclVar
+$ git clone https://github.com/rot-E/Scraper.git
+$ cd Scraper
+$ mkdir build && cd build
+$ cmake ..
+$ make -j
+```
+
+# examples
+```sh
+$ make examples -j
+$ examples/DeclVar
 ```
