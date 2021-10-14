@@ -24,6 +24,4 @@ $ examples/mpltok ../examples/mpltok/sum.mpl
 ```
 
 # Usage
-See `examples/mpltok/**
-```c
-```
+See `examples/mpltok/*`
