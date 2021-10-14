@@ -2,15 +2,15 @@
 
 String_t *ident;
 
-Parse declVar(String_t *s) {
-	Parse var(String_t *s) {
+Result_t declVar(String_t *s) {
+	Result_t var(String_t *s) {
 		return Primitive.String.Match(
 			String.New(u8"var"),
 			s
 		);
 	}
 
-	Parse prs = Parser.Bind(
+	Result_t prs = Parser.Bind(
 		var,
 		Primitive.Char.Space,
 		s
@@ -18,7 +18,7 @@ Parse declVar(String_t *s) {
 	  if (prs.Reply == Err) return Parser.makeErr(s);
 	  String_t *precip = prs.Precipitate;
 
-	Parse alnums(String_t *s) {
+	Result_t alnums(String_t *s) {
 		return Parser.Many0(
 			Primitive.Char.AlphaNum,
 			s
@@ -38,7 +38,7 @@ Parse declVar(String_t *s) {
 	  if (prs.Reply == Err) return Parser.makeErr(s);
 	  precip = String.Concat(precip, prs.Precipitate);
 
-	return (Parse){
+	return (Result_t){
 		.Reply			= Ok,
 		.Precipitate	= precip,
 		.Subsequent		= prs.Subsequent,

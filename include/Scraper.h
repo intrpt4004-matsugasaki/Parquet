@@ -6,6 +6,6 @@
 #include "Scraper/String.h"
 #include "Scraper/List.h"
 
-#include "Scraper/Parse.h"
+#include "Scraper/Result.h"
 #include "Scraper/Parser.h"
 #include "Scraper/Primitive.h"

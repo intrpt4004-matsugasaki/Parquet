@@ -1,6 +1,6 @@
 #include <Scraper.h>
 
-Parse anyChar3(String_t *s) {
+Result_t anyChar3(String_t *s) {
 	return Parser.Bind3(
 		Primitive.Char.Any,
 		Primitive.Char.Any,
@@ -9,7 +9,7 @@ Parse anyChar3(String_t *s) {
 	);
 }
 
-Parse anyChar6(String_t *s) {
+Result_t anyChar6(String_t *s) {
 	return Parser.Bind(
 		anyChar3,
 		anyChar3,
@@ -17,7 +17,7 @@ Parse anyChar6(String_t *s) {
 	);
 }
 
-Parse anyChar12(String_t *s) {
+Result_t anyChar12(String_t *s) {
 	return Parser.Bind(
 		anyChar6,
 		anyChar6,

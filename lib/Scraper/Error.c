@@ -8,6 +8,7 @@ static void Panic(const uint8_t *colour, const uint8_t *message) {
 		message,
 		u8"\e[39m"
 	);
+	exit(EXIT_FAILURE);
 }
 
 _Error Error = {

@@ -10,6 +10,7 @@ add_dependencies(examples
 	DeclVar
 
 	MPL
+	mpltok
 	mplc
 )
 
@@ -48,7 +49,12 @@ target_link_libraries(MPL
     Scraper
 )
 
-add_executable(mplc mplc/mplc.c mplc/MPLLexer.c mplc/Token.c)
+add_executable(mpltok mpltok/mpltok.c mpltok/MPLLexer.c mpltok/Token.c)
+target_link_libraries(mpltok
+    Scraper
+)
+
+add_executable(mplc mplc/mplc.c mplc/MPLParser.c mplc/Token.c)
 target_link_libraries(mplc
     Scraper
 )

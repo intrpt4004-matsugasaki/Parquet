@@ -16,4 +16,4 @@ typedef struct {
 	String_t *Precipitate;
 
 	String_t *Subsequent;
-} Parse;
+} Result_t;
