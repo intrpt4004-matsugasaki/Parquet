@@ -66,15 +66,11 @@ Result_t Parser_Comment(String_t *code) {
 	return Parser.Choise(line, block, code);
 }
 
-Result_t Parser_Separator(String_t *code) {
-	Result_t space_tab_newline(String_t *code) {
+static Result_t Parser_Separator(String_t *code) {
+	Result_t space_tab(String_t *code) {
 		List_t *seps = List.New();
 		seps->Add(seps, String.New(u8" "));
 		seps->Add(seps, String.New(u8"\t"));
-		seps->Add(seps, String.New(u8"\r\n"));
-		seps->Add(seps, String.New(u8"\r"));
-		seps->Add(seps, String.New(u8"\n\r"));
-		seps->Add(seps, String.New(u8"\n"));
 
 		return Primitive.String.OneOf(
 			seps,
@@ -82,7 +78,25 @@ Result_t Parser_Separator(String_t *code) {
 		);
 	}
 
-	return Parser.Choise(space_tab_newline, Parser_Comment, code); 
+	Result_t newline(String_t *code) {
+		List_t *nls = List.New();
+		nls->Add(nls, String.New(u8"\r\n"));
+		nls->Add(nls, String.New(u8"\r"));
+		nls->Add(nls, String.New(u8"\n\r"));
+		nls->Add(nls, String.New(u8"\n"));
+
+		return Primitive.String.OneOf(
+			nls,
+			code
+		);
+	}
+
+	return Parser.Choise3(
+		space_tab,
+		newline,
+		Parser_Comment,
+		code
+	); 
 }
 
 Result_t Parser_Digit(String_t *code) {
@@ -169,10 +183,10 @@ Result_t Parser_Keyword(String_t *code) {
 	keywords->Add(keywords, String.New(u8"char"));
 	keywords->Add(keywords, String.New(u8"integer"));
 	keywords->Add(keywords, String.New(u8"boolean"));
-	keywords->Add(keywords, String.New(u8"read"));
-	keywords->Add(keywords, String.New(u8"write"));
 	keywords->Add(keywords, String.New(u8"readln"));
+	keywords->Add(keywords, String.New(u8"read"));
 	keywords->Add(keywords, String.New(u8"writeln"));
+	keywords->Add(keywords, String.New(u8"write"));
 	keywords->Add(keywords, String.New(u8"true"));
 	keywords->Add(keywords, String.New(u8"false"));
 	keywords->Add(keywords, String.New(u8"break"));
@@ -203,13 +217,13 @@ Result_t Parser_Name(String_t *code) {
 	);
 }
 
-Result_t Parser_Token(String_t *code) {
+static Result_t Parser_Token(String_t *code) {
 	return Parser.Choise5(
-		Parser_Name,
+		Parser_Symbol,
 		Parser_Keyword,
 		Parser_UInt,
 		Parser_String,
-		Parser_Symbol,
+		Parser_Name,
 		code
 	);
 }

@@ -213,10 +213,10 @@ static Result_t Parser_Keyword(String_t *code) {
 	keywords->Add(keywords, String.New(u8"char"));
 	keywords->Add(keywords, String.New(u8"integer"));
 	keywords->Add(keywords, String.New(u8"boolean"));
-	keywords->Add(keywords, String.New(u8"read"));
-	keywords->Add(keywords, String.New(u8"write"));
 	keywords->Add(keywords, String.New(u8"readln"));
+	keywords->Add(keywords, String.New(u8"read"));
 	keywords->Add(keywords, String.New(u8"writeln"));
+	keywords->Add(keywords, String.New(u8"write"));
 	keywords->Add(keywords, String.New(u8"true"));
 	keywords->Add(keywords, String.New(u8"false"));
 	keywords->Add(keywords, String.New(u8"break"));
@@ -262,7 +262,7 @@ static Result_t Parser_Name(String_t *code) {
 }
 
 static Result_t Parser_Token(String_t *code) {
-	Result_t prs = Parser.Choise5(
+	return Parser.Choise5(
 		Parser_Symbol,
 		Parser_Keyword,
 		Parser_UInt,
@@ -270,8 +270,6 @@ static Result_t Parser_Token(String_t *code) {
 		Parser_Name,
 		code
 	);
-
-	return prs;
 }
 
 static Result_t Parser_Program(String_t *code) {
