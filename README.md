@@ -19,10 +19,11 @@ $ make install -j
 ## build examples
 ```sh
 $ make examples -j
-$ examples/DeclVar
+$ examples/mpltok ../examples/mpltok/sum_err.mpl
+$ examples/mpltok ../examples/mpltok/sum.mpl
 ```
 
 # Usage
+See `examples/mpltok/**
 ```c
-...
 ```
