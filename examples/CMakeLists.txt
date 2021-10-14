@@ -12,6 +12,7 @@ add_dependencies(examples
 	MPL
 	mpltok
 	mplprs
+	#mplc
 )
 
 add_executable(Error other/Error.c)
@@ -58,6 +59,11 @@ add_executable(mplprs mplprs/mplprs.c mplprs/MPLParser.c mplprs/Token.c)
 target_link_libraries(mplprs
     Scraper
 )
+
+#add_executable(mplc mplc/mplc.c mplc/MPLParser.c mplc/Token.c)
+#target_link_libraries(mplc
+#    Scraper
+#)
 
 # debug
 set(CMAKE_C_FLAGS "-g3 -O0")
