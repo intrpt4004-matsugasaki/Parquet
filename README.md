@@ -24,4 +24,10 @@ $ examples/mpltok ../examples/mpltok/sum.mpl
 ```
 
 # Usage
+```c
+#include <Scraper.h>
+```
 See `examples/mpltok/*`
+
+# License
+&emsp;[`AGPLv3`](https://www.gnu.org/licenses/agpl-3.0.html)
