@@ -9,7 +9,6 @@ typedef struct {
 	int32_t ErrorLine;
 	String_t *Precipitate;
 	String_t *Subsequent;
-	List_t *TokenList;
 } ParseResult_t;
 
 typedef struct {

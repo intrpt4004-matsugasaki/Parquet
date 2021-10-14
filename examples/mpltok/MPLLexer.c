@@ -88,16 +88,16 @@ static Result_t Parser_Separator(String_t *code) {
 		nls->Add(nls, String.New(u8"\n\r"));
 		nls->Add(nls, String.New(u8"\n"));
 
-		Result_t prs = Primitive.String.OneOf(
+		Result_t result = Primitive.String.OneOf(
 			nls,
 			code
 		);
 
 /****************************************/
-		if (prs.Reply == Ok) lineNum++;
+		if (result.Reply == Ok) lineNum++;
 /****************************************/
 
-		return prs;
+		return result;
 	}
 
 	return Parser.Choise3(
@@ -137,17 +137,17 @@ static Result_t Parser_Symbol(String_t *code) {
 	syms->Add(syms, String.New(u8":"));
 	syms->Add(syms, String.New(u8";"));
 
-	Result_t prs = Primitive.String.OneOf(
+	Result_t result = Primitive.String.OneOf(
 		syms,
 		code
 	);
 
 /****************************************/
-	if (prs.Reply == Ok)
-		tokens->Add(tokens, Token.New(prs.Precipitate, Token_Symbol, lineNum));
+	if (result.Reply == Ok)
+		tokens->Add(tokens, Token.New(result.Precipitate, Token_Symbol, lineNum));
 /****************************************/
 
-	return prs;
+	return result;
 }
 
 static Result_t Parser_String(String_t *code) {
@@ -166,7 +166,7 @@ static Result_t Parser_String(String_t *code) {
 		return Parser.Many0(nonapostr, code);
 	}
 
-	Result_t prs = Parser.Bind3(
+	Result_t result = Parser.Bind3(
 		apostr,
 		content,
 		apostr,
@@ -174,22 +174,22 @@ static Result_t Parser_String(String_t *code) {
 	);
 
 /****************************************/
-	if (prs.Reply == Ok)
-		tokens->Add(tokens, Token.New(prs.Precipitate, Token_String, lineNum));
+	if (result.Reply == Ok)
+		tokens->Add(tokens, Token.New(result.Precipitate, Token_String, lineNum));
 /****************************************/
 
-	return prs;
+	return result;
 }
 
 static Result_t Parser_UInt(String_t *code) {
-	Result_t prs = Parser.Many1(Parser_Digit, code);
+	Result_t result = Parser.Many1(Parser_Digit, code);
 
 /****************************************/
-	if (prs.Reply == Ok)
-		tokens->Add(tokens, Token.New(prs.Precipitate, Token_UInt, lineNum));
+	if (result.Reply == Ok)
+		tokens->Add(tokens, Token.New(result.Precipitate, Token_UInt, lineNum));
 /****************************************/
 
-	return prs;
+	return result;
 }
 
 static Result_t Parser_Keyword(String_t *code) {
@@ -221,17 +221,17 @@ static Result_t Parser_Keyword(String_t *code) {
 	keywords->Add(keywords, String.New(u8"false"));
 	keywords->Add(keywords, String.New(u8"break"));
 
-	Result_t prs = Primitive.String.OneOf(
+	Result_t result = Primitive.String.OneOf(
 		keywords,
 		code
 	);
 
 /****************************************/
-	if (prs.Reply == Ok)
-		tokens->Add(tokens, Token.New(prs.Precipitate, Token_Keyword, lineNum));
+	if (result.Reply == Ok)
+		tokens->Add(tokens, Token.New(result.Precipitate, Token_Keyword, lineNum));
 /****************************************/
 
-	return prs;
+	return result;
 }
 
 static Result_t Parser_Name(String_t *code) {
@@ -247,18 +247,18 @@ static Result_t Parser_Name(String_t *code) {
 		return Parser.Many0(al_num, code);
 	}
 
-	Result_t prs = Parser.Bind(
+	Result_t result = Parser.Bind(
 		al_num,
 		al_num_Rep,
 		code
 	);
 
 /****************************************/
-	if (prs.Reply == Ok)
-		tokens->Add(tokens, Token.New(prs.Precipitate, Token_Name, lineNum));
+	if (result.Reply == Ok)
+		tokens->Add(tokens, Token.New(result.Precipitate, Token_Name, lineNum));
 /****************************************/
 
-	return prs;
+	return result;
 }
 
 static Result_t Parser_Token(String_t *code) {
@@ -288,13 +288,13 @@ static LexResult_t Execute(String_t *code) {
 	tokens = List.New();
 	lineNum = 1;
 
-	Result_t prs = Parser.Invoke(Parser_Program, code);
+	Result_t result = Parser.Invoke(Parser_Program, code);
 
 	return (LexResult_t){
-		.Succeeded		= String.IsEmpty(prs.Subsequent),
+		.Succeeded		= String.IsEmpty(result.Subsequent),
 		.ErrorLine		= lineNum,
-		.Precipitate	= prs.Precipitate,
-		.Subsequent		= prs.Subsequent,
+		.Precipitate	= result.Precipitate,
+		.Subsequent		= result.Subsequent,
 		.TokenList		= tokens,
 	};
 }

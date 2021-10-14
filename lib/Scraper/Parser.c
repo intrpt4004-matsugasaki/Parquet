@@ -25,170 +25,170 @@ static Result_t makeOkRead1(String_t *s) {
 }
 
 static Result_t Bind(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), String_t *s) {
-	Result_t prs = fst(s);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  String_t *precip = prs.Precipitate;
+	Result_t result = fst(s);
+	  if (result.Reply == Err) return Parser.makeErr(s);
+	  String_t *precip = result.Precipitate;
 
-	prs = snd(prs.Subsequent);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  precip = String.Concat(precip, prs.Precipitate);
+	result = snd(result.Subsequent);
+	  if (result.Reply == Err) return Parser.makeErr(s);
+	  precip = String.Concat(precip, result.Precipitate);
 
 	return (Result_t){
 		.Reply			= Ok,
 		.Precipitate	= precip,
-		.Subsequent		= prs.Subsequent,
+		.Subsequent		= result.Subsequent,
 	};
 }
 
 static Result_t Bind3(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), String_t *s) {
-	Result_t prs = Parser.Bind(fst, snd, s);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  String_t *precip = prs.Precipitate;
+	Result_t result = Parser.Bind(fst, snd, s);
+	  if (result.Reply == Err) return Parser.makeErr(s);
+	  String_t *precip = result.Precipitate;
 
-	prs = trd(prs.Subsequent);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  precip = String.Concat(precip, prs.Precipitate);
+	result = trd(result.Subsequent);
+	  if (result.Reply == Err) return Parser.makeErr(s);
+	  precip = String.Concat(precip, result.Precipitate);
 
 	return (Result_t){
 		.Reply			= Ok,
 		.Precipitate	= precip,
-		.Subsequent		= prs.Subsequent,
+		.Subsequent		= result.Subsequent,
 	};
 }
 
 static Result_t Bind4(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), String_t *s) {
-	Result_t prs = Parser.Bind3(fst, snd, trd, s);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  String_t *precip = prs.Precipitate;
+	Result_t result = Parser.Bind3(fst, snd, trd, s);
+	  if (result.Reply == Err) return Parser.makeErr(s);
+	  String_t *precip = result.Precipitate;
 
-	prs = fth(prs.Subsequent);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  precip = String.Concat(precip, prs.Precipitate);
+	result = fth(result.Subsequent);
+	  if (result.Reply == Err) return Parser.makeErr(s);
+	  precip = String.Concat(precip, result.Precipitate);
 
 	return (Result_t){
 		.Reply			= Ok,
 		.Precipitate	= precip,
-		.Subsequent		= prs.Subsequent,
+		.Subsequent		= result.Subsequent,
 	};
 }
 
 static Result_t Bind5(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), Result_t (* fif)(String_t *), String_t *s) {
-	Result_t prs = Parser.Bind4(fst, snd, trd, fth, s);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  String_t *precip = prs.Precipitate;
+	Result_t result = Parser.Bind4(fst, snd, trd, fth, s);
+	  if (result.Reply == Err) return Parser.makeErr(s);
+	  String_t *precip = result.Precipitate;
 
-	prs = fif(prs.Subsequent);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  precip = String.Concat(precip, prs.Precipitate);
+	result = fif(result.Subsequent);
+	  if (result.Reply == Err) return Parser.makeErr(s);
+	  precip = String.Concat(precip, result.Precipitate);
 
 	return (Result_t){
 		.Reply			= Ok,
 		.Precipitate	= precip,
-		.Subsequent		= prs.Subsequent,
+		.Subsequent		= result.Subsequent,
 	};
 }
 
 static Result_t Bind6(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), Result_t (* fif)(String_t *), Result_t (* sth)(String_t *), String_t *s) {
-	Result_t prs = Parser.Bind5(fst, snd, trd, fth, fif, s);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  String_t *precip = prs.Precipitate;
+	Result_t result = Parser.Bind5(fst, snd, trd, fth, fif, s);
+	  if (result.Reply == Err) return Parser.makeErr(s);
+	  String_t *precip = result.Precipitate;
 
-	prs = sth(prs.Subsequent);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  precip = String.Concat(precip, prs.Precipitate);
+	result = sth(result.Subsequent);
+	  if (result.Reply == Err) return Parser.makeErr(s);
+	  precip = String.Concat(precip, result.Precipitate);
 
 	return (Result_t){
 		.Reply			= Ok,
 		.Precipitate	= precip,
-		.Subsequent		= prs.Subsequent,
+		.Subsequent		= result.Subsequent,
 	};
 }
 
 static Result_t Choise(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), String_t *s) {
-	Result_t prs = fst(s);
-	if (prs.Reply == Ok) return prs;
+	Result_t result = fst(s);
+	if (result.Reply == Ok) return result;
 
-	prs = snd(s);
-	if (prs.Reply == Ok) return prs;
+	result = snd(s);
+	if (result.Reply == Ok) return result;
 
 	return Parser.makeErr(s);
 }
 
 static Result_t Choise3(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), String_t *s) {
-	Result_t prs = Choise(fst, snd, s);
-	if (prs.Reply == Ok) return prs;
+	Result_t result = Choise(fst, snd, s);
+	if (result.Reply == Ok) return result;
 
-	prs = trd(s);
-	if (prs.Reply == Ok) return prs;
+	result = trd(s);
+	if (result.Reply == Ok) return result;
 
 	return Parser.makeErr(s);
 }
 
 static Result_t Choise4(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), String_t *s) {
-	Result_t prs = Choise3(fst, snd, trd, s);
-	if (prs.Reply == Ok) return prs;
+	Result_t result = Choise3(fst, snd, trd, s);
+	if (result.Reply == Ok) return result;
 
-	prs = fth(s);
-	if (prs.Reply == Ok) return prs;
+	result = fth(s);
+	if (result.Reply == Ok) return result;
 
 	return Parser.makeErr(s);
 }
 
 static Result_t Choise5(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), Result_t (* fif)(String_t *), String_t *s) {
-	Result_t prs = Choise4(fst, snd, trd, fth, s);
-	if (prs.Reply == Ok) return prs;
+	Result_t result = Choise4(fst, snd, trd, fth, s);
+	if (result.Reply == Ok) return result;
 
-	prs = fif(s);
-	if (prs.Reply == Ok) return prs;
+	result = fif(s);
+	if (result.Reply == Ok) return result;
 
 	return Parser.makeErr(s);
 }
 
 static Result_t Choise6(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), Result_t (* fif)(String_t *), Result_t (* sth)(String_t *), String_t *s) {
-	Result_t prs = Choise5(fst, snd, trd, fth, fif, s);
-	if (prs.Reply == Ok) return prs;
+	Result_t result = Choise5(fst, snd, trd, fth, fif, s);
+	if (result.Reply == Ok) return result;
 
-	prs = sth(s);
-	if (prs.Reply == Ok) return prs;
+	result = sth(s);
+	if (result.Reply == Ok) return result;
 
 	return Parser.makeErr(s);
 }
 
 static Result_t Many0(Result_t (* parser)(String_t *), String_t *s) {
-	Result_t prs = parser(s);
-	if (prs.Reply == Err) return Parser.makeOk(s);
+	Result_t result = parser(s);
+	if (result.Reply == Err) return Parser.makeOk(s);
 
-	String_t *precip = prs.Precipitate;
-	String_t *subseq = prs.Subsequent;
+	String_t *precip = result.Precipitate;
+	String_t *subseq = result.Subsequent;
 	for (;;) {
-		prs = parser(prs.Subsequent);
-		if (prs.Reply == Err) return (Result_t){
+		result = parser(result.Subsequent);
+		if (result.Reply == Err) return (Result_t){
 			.Reply			= Ok,
 			.Precipitate	= precip,
 			.Subsequent		= subseq,
 		};
 
-		precip = String.Concat(precip, prs.Precipitate);
-		subseq = prs.Subsequent;
+		precip = String.Concat(precip, result.Precipitate);
+		subseq = result.Subsequent;
 	}
 }
 
 static Result_t Many1(Result_t (* parser)(String_t *), String_t *s) {
-	Result_t prs = parser(s);
-	if (prs.Reply == Err) return Parser.makeErr(s);
+	Result_t result = parser(s);
+	if (result.Reply == Err) return Parser.makeErr(s);
 
-	String_t *precip = prs.Precipitate;
-	String_t *subseq = prs.Subsequent;
+	String_t *precip = result.Precipitate;
+	String_t *subseq = result.Subsequent;
 	for (;;) {
-		prs = parser(prs.Subsequent);
-		if (prs.Reply == Err) return (Result_t){
+		result = parser(result.Subsequent);
+		if (result.Reply == Err) return (Result_t){
 			.Reply			= Ok,
 			.Precipitate	= precip,
 			.Subsequent		= subseq,
 		};
 
-		precip = String.Concat(precip, prs.Precipitate);
-		subseq = prs.Subsequent;
+		precip = String.Concat(precip, result.Precipitate);
+		subseq = result.Subsequent;
 	}
 }
 
@@ -197,19 +197,19 @@ static Result_t Invoke(Result_t (* parser)(String_t *), String_t *s) {
 }
 
 static void ParseTest(Result_t (* parser)(String_t *), String_t *s) {
-	Result_t prs = parser(s);
-	if (prs.Reply == Err) {
+	Result_t result = parser(s);
+	if (result.Reply == Err) {
 		printf("Parser.ParseTest: parse failed.\n");
 		return;
 	}
 
-	if (!prs.Subsequent->IsEmpty(prs.Subsequent)) {
+	if (!result.Subsequent->IsEmpty(result.Subsequent)) {
 		printf("Parser.ParseTest: parse incorrect.\n");
-		printf("\"%s\" [%s]\n", String.GetPrimitive(prs.Precipitate), String.GetPrimitive(prs.Subsequent));
+		printf("\"%s\" [%s]\n", String.GetPrimitive(result.Precipitate), String.GetPrimitive(result.Subsequent));
 		return;
 	}
 
-	printf("\"%s\"\n", String.GetPrimitive(prs.Precipitate));
+	printf("\"%s\"\n", String.GetPrimitive(result.Precipitate));
 }
 
 _Parser Parser = {

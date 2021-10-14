@@ -43,19 +43,7 @@ static Result_t LF(String_t *s) {
 static Result_t CRLF(String_t *s) {
 	if (s->GetLength(s) < 2) return Parser.makeErr(s);
 
-	Result_t prs = Primitive.Char.Char('\r', s);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  String_t *precip = prs.Precipitate;
-
-	prs = Primitive.Char.LF(prs.Subsequent);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  precip = String.Concat(precip, prs.Precipitate);
-
-	return (Result_t){
-		.Reply			= Ok,
-		.Precipitate	= precip,
-		.Subsequent		= prs.Subsequent,
-	};
+	return Primitive.String.Match(String.New(u8"\r\n"), s);
 }
 
 static Result_t EndOfLine(String_t *s) {

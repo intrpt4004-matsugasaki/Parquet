@@ -10,13 +10,13 @@ Result_t declVar(String_t *s) {
 		);
 	}
 
-	Result_t prs = Parser.Bind(
+	Result_t result = Parser.Bind(
 		var,
 		Primitive.Char.Space,
 		s
 	);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  String_t *precip = prs.Precipitate;
+	  if (result.Reply == Err) return Parser.makeErr(s);
+	  String_t *precip = result.Precipitate;
 
 	Result_t alnums(String_t *s) {
 		return Parser.Many0(
@@ -25,23 +25,23 @@ Result_t declVar(String_t *s) {
 		);
 	}
 
-	prs = Parser.Bind(
+	result = Parser.Bind(
 		Primitive.Char.Lower,
 		alnums,
-		prs.Subsequent
+		result.Subsequent
 	);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  precip = String.Concat(precip, prs.Precipitate);
-  ident = prs.Precipitate;
+	  if (result.Reply == Err) return Parser.makeErr(s);
+	  precip = String.Concat(precip, result.Precipitate);
+  ident = result.Precipitate;
 
-	prs = Primitive.Char.Char(';', prs.Subsequent);
-	  if (prs.Reply == Err) return Parser.makeErr(s);
-	  precip = String.Concat(precip, prs.Precipitate);
+	result = Primitive.Char.Char(';', result.Subsequent);
+	  if (result.Reply == Err) return Parser.makeErr(s);
+	  precip = String.Concat(precip, result.Precipitate);
 
 	return (Result_t){
 		.Reply			= Ok,
 		.Precipitate	= precip,
-		.Subsequent		= prs.Subsequent,
+		.Subsequent		= result.Subsequent,
 	};
 }
 
