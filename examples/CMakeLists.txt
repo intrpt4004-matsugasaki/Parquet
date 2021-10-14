@@ -11,7 +11,7 @@ add_dependencies(examples
 
 	MPL
 	mpltok
-	mplc
+	mplprs
 )
 
 add_executable(Error other/Error.c)
@@ -54,8 +54,8 @@ target_link_libraries(mpltok
     Scraper
 )
 
-add_executable(mplc mplc/mplc.c mplc/MPLParser.c mplc/Token.c)
-target_link_libraries(mplc
+add_executable(mplprs mplprs/mplprs.c mplprs/MPLParser.c mplprs/Token.c)
+target_link_libraries(mplprs
     Scraper
 )
 
