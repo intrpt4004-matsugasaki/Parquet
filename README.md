@@ -27,7 +27,7 @@ $ examples/mpltok ../examples/mpltok/sum.mpl
 ```c
 #include <Scraper.h>
 ```
-See `examples/mpltok/*`
+See [`examples/mpltok/*`](https://github.com/rot-E/Scraper/tree/main/examples/mpltok)
 
 # License
 &emsp;[`AGPLv3`](https://www.gnu.org/licenses/agpl-3.0.html)
