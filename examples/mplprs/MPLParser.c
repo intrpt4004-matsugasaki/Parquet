@@ -272,7 +272,7 @@ static Result_t Parser_Token(String_t *code) {
 	);
 }
 
-static Result_t Parser_Program(String_t *code) {
+static Result_t Parser_Program_(String_t *code) {
 	Result_t tok_sep(String_t *code) {
 		return Parser.Choise(
 			Parser_Separator,
@@ -284,22 +284,28 @@ static Result_t Parser_Program(String_t *code) {
 	return Parser.Many0(tok_sep, code);
 }
 
-static Result_t Parser_Program2(String_t *code) {
+static Result_t Parser_Program(String_t *code) {
 	Result_t program(String_t *code) {
 		return Primitive.String.Match(String.New(u8"program"), code);
 	}
 
-	Result_t end(String_t *code) {
-		return Primitive.String.Match(String.New(u8"end"), code);
+	Result_t nenddotrep(String_t *code) {
+		Result_t nenddot(String_t *code) {
+			return Primitive.String.UnMatch(String.New(u8"end."), code);
+		}
+
+		return Parser.Many0(nenddot, code);
 	}
 
-	Result_t dot(String_t *code) {
-		return Primitive.String.Match(String.New(u8"dot"), code);
+	Result_t enddot(String_t *code) {
+		return Primitive.String.Match(String.New(u8"end."), code);
 	}
 
 	return Parser.Bind3(
-		Primitive.String.Match(String.New(u8"end"), );
-		Primitive.String.Match(String.New(u8"."), );
+		program,
+		nenddotrep,
+		enddot,
+		code
 	);
 }
 
@@ -309,7 +315,7 @@ static ParseResult_t Execute(String_t *code) {
 	Result_t result = Parser.Invoke(Parser_Program, code);
 
 	return (ParseResult_t){
-		.Succeeded		= String.IsEmpty(result.Subsequent),
+		.Succeeded		= result.Reply == Ok,
 		.ErrorLine		= lineNum,
 		.Precipitate	= result.Precipitate,
 		.Subsequent		= result.Subsequent,
