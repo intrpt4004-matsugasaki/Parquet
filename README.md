@@ -2,6 +2,9 @@
 Parser Combinator Library in C
 
 ## build
+requires: **`git` `cmake` `make` `gcc`**
+<br><br>
+
 ```sh
 $ git clone https://github.com/rot-E/Scraper.git
 $ cd Scraper
