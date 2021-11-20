@@ -168,17 +168,27 @@ static Result_t Many1(Result_t (* parser)(String_t *), String_t *s) {
 	}
 }
 
+static Result_t Possibly(Result_t (* parser)(String_t *), String_t *s) {
+	Result_t result = parser(s);
+	return (result.Reply == Succeeded) ?
+		result : Basis.Ok(s);
+}
+
 _Combinator Combinator = {
 	.Bind			= Bind,
 	.Bind3			= Bind3,
 	.Bind4			= Bind4,
 	.Bind5			= Bind5,
 	.Bind6			= Bind6,
+
 	.Choise			= Choise,
 	.Choise3		= Choise3,
 	.Choise4		= Choise4,
 	.Choise5		= Choise5,
 	.Choise6		= Choise6,
+
 	.Many0			= Many0,
 	.Many1			= Many1,
+
+	.Possibly		= Possibly,
 };

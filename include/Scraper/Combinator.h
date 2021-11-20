@@ -78,6 +78,8 @@ typedef struct {
 
 	Result_t (* Many0)(Result_t (* parser)(String_t *), String_t *);
 	Result_t (* Many1)(Result_t (* parser)(String_t *), String_t *);
+
+	Result_t (* Possibly)(Result_t (* parser)(String_t *), String_t *);
 } _Combinator;
 
 extern _Combinator Combinator;
