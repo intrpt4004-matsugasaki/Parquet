@@ -9,11 +9,10 @@ typedef struct {
 	} Consumed;*/
 
 	enum {
-		Ok,
-		Err,
+		Succeeded,
+		Failed,
 	} Reply;
 
 	String_t *Precipitate;
-
 	String_t *Subsequent;
 } Result_t;

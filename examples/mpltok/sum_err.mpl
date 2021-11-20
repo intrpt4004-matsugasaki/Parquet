@@ -1,4 +1,4 @@
-program sum:
+program sum;
 var n : integer;
 begin
 	readln(n);

@@ -15,8 +15,10 @@ target_sources(Scraper
 	String.c
     List.c
 
+    Basis.c
+	Combinator.c
 	Parser.c
-	Primitive.c
+    Invoker.c
 )
 
 target_include_directories(Scraper

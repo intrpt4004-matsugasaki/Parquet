@@ -7,5 +7,7 @@
 #include "Scraper/List.h"
 
 #include "Scraper/Result.h"
+#include "Scraper/Basis.h"
+#include "Scraper/Combinator.h"
 #include "Scraper/Parser.h"
-#include "Scraper/Primitive.h"
+#include "Scraper/Invoker.h"

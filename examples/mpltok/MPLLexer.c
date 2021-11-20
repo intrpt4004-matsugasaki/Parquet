@@ -6,25 +6,25 @@ static uint32_t lineNum;
 static Result_t Parser_Comment(String_t *code) {
 	Result_t line(String_t *code) {
 		Result_t open(String_t *code) {
-			return Primitive.Char.Char('{', code);
+			return Parser.Char.Char('{', code);
 		}
 
 		Result_t nonClose(String_t *code) {
-			return Primitive.Char.NoneOf(
+			return Parser.Char.NoneOf(
 				String.New(u8"}"),
 				code
 			);
 		}
 
 		Result_t content(String_t *code) {
-			return Parser.Many0(nonClose, code);
+			return Combinator.Many0(nonClose, code);
 		}
 
 		Result_t close(String_t *code) {
-			return Primitive.Char.Char('}', code);
+			return Parser.Char.Char('}', code);
 		}
 
-		return Parser.Bind3(
+		return Combinator.Bind3(
 			open,
 			content,
 			close,
@@ -34,31 +34,31 @@ static Result_t Parser_Comment(String_t *code) {
 
 	Result_t block(String_t *code) {
 		Result_t open(String_t *code) {
-			return Primitive.String.Match(
+			return Parser.String.Match(
 				String.New(u8"/*"),
 				code
 			);
 		}
 
 		Result_t nonClose(String_t *code) {
-			return Primitive.String.UnMatch(
+			return Parser.String.UnMatch(
 				String.New(u8"*/"),
 				code
 			);
 		}
 
 		Result_t content(String_t *code) {
-			return Parser.Many0(nonClose, code);
+			return Combinator.Many0(nonClose, code);
 		}
 
 		Result_t close(String_t *code) {
-			return Primitive.String.Match(
+			return Parser.String.Match(
 				String.New(u8"*/"),
 				code
 			);
 		}
 
-		return Parser.Bind3(
+		return Combinator.Bind3(
 			open,
 			content,
 			close,
@@ -66,7 +66,7 @@ static Result_t Parser_Comment(String_t *code) {
 		);
 	}
 
-	return Parser.Choise(line, block, code);
+	return Combinator.Choise(line, block, code);
 }
 
 static Result_t Parser_Separator(String_t *code) {
@@ -75,7 +75,7 @@ static Result_t Parser_Separator(String_t *code) {
 		seps->Add(seps, String.New(u8" "));
 		seps->Add(seps, String.New(u8"\t"));
 
-		return Primitive.String.OneOf(
+		return Parser.String.OneOf(
 			seps,
 			code
 		);
@@ -88,19 +88,19 @@ static Result_t Parser_Separator(String_t *code) {
 		nls->Add(nls, String.New(u8"\n\r"));
 		nls->Add(nls, String.New(u8"\n"));
 
-		Result_t result = Primitive.String.OneOf(
+		Result_t result = Parser.String.OneOf(
 			nls,
 			code
 		);
 
 /****************************************/
-		if (result.Reply == Ok) lineNum++;
+		if (result.Reply == Succeeded) lineNum++;
 /****************************************/
 
 		return result;
 	}
 
-	return Parser.Choise3(
+	return Combinator.Choise3(
 		space_tab,
 		newline,
 		Parser_Comment,
@@ -109,11 +109,11 @@ static Result_t Parser_Separator(String_t *code) {
 }
 
 static Result_t Parser_Digit(String_t *code) {
-	return Primitive.Char.Digit(code);
+	return Parser.Char.Digit(code);
 }
 
 static Result_t Parser_Alphabet(String_t *code) {
-	return Primitive.Char.Letter(code);
+	return Parser.Char.Letter(code);
 }
 
 static Result_t Parser_Symbol(String_t *code) {
@@ -137,13 +137,13 @@ static Result_t Parser_Symbol(String_t *code) {
 	syms->Add(syms, String.New(u8":"));
 	syms->Add(syms, String.New(u8";"));
 
-	Result_t result = Primitive.String.OneOf(
+	Result_t result = Parser.String.OneOf(
 		syms,
 		code
 	);
 
 /****************************************/
-	if (result.Reply == Ok)
+	if (result.Reply == Succeeded)
 		tokens->Add(tokens, Token.New(result.Precipitate, Token_Symbol, lineNum));
 /****************************************/
 
@@ -152,21 +152,21 @@ static Result_t Parser_Symbol(String_t *code) {
 
 static Result_t Parser_String(String_t *code) {
 	Result_t apostr(String_t *code) {
-		return Primitive.Char.Char('\'', code);
+		return Parser.Char.Char('\'', code);
 	}
 
 	Result_t nonapostr(String_t *code) {
-		return Primitive.Char.NoneOf(
+		return Parser.Char.NoneOf(
 			String.New(u8"'"),
 			code
 		);
 	}
 
 	Result_t content(String_t *code) {
-		return Parser.Many0(nonapostr, code);
+		return Combinator.Many0(nonapostr, code);
 	}
 
-	Result_t result = Parser.Bind3(
+	Result_t result = Combinator.Bind3(
 		apostr,
 		content,
 		apostr,
@@ -174,7 +174,7 @@ static Result_t Parser_String(String_t *code) {
 	);
 
 /****************************************/
-	if (result.Reply == Ok)
+	if (result.Reply == Succeeded)
 		tokens->Add(tokens, Token.New(result.Precipitate, Token_String, lineNum));
 /****************************************/
 
@@ -182,10 +182,10 @@ static Result_t Parser_String(String_t *code) {
 }
 
 static Result_t Parser_UInt(String_t *code) {
-	Result_t result = Parser.Many1(Parser_Digit, code);
+	Result_t result = Combinator.Many1(Parser_Digit, code);
 
 /****************************************/
-	if (result.Reply == Ok)
+	if (result.Reply == Succeeded)
 		tokens->Add(tokens, Token.New(result.Precipitate, Token_UInt, lineNum));
 /****************************************/
 
@@ -221,13 +221,13 @@ static Result_t Parser_Keyword(String_t *code) {
 	keywords->Add(keywords, String.New(u8"false"));
 	keywords->Add(keywords, String.New(u8"break"));
 
-	Result_t result = Primitive.String.OneOf(
+	Result_t result = Parser.String.OneOf(
 		keywords,
 		code
 	);
 
 /****************************************/
-	if (result.Reply == Ok)
+	if (result.Reply == Succeeded)
 		tokens->Add(tokens, Token.New(result.Precipitate, Token_Keyword, lineNum));
 /****************************************/
 
@@ -236,7 +236,7 @@ static Result_t Parser_Keyword(String_t *code) {
 
 static Result_t Parser_Name(String_t *code) {
 	Result_t al_num(String_t *code) {
-		return Parser.Choise(
+		return Combinator.Choise(
 			Parser_Alphabet,
 			Parser_Digit,
 			code
@@ -244,17 +244,17 @@ static Result_t Parser_Name(String_t *code) {
 	}
 
 	Result_t al_num_Rep(String_t *code) {
-		return Parser.Many0(al_num, code);
+		return Combinator.Many0(al_num, code);
 	}
 
-	Result_t result = Parser.Bind(
+	Result_t result = Combinator.Bind(
 		al_num,
 		al_num_Rep,
 		code
 	);
 
 /****************************************/
-	if (result.Reply == Ok)
+	if (result.Reply == Succeeded)
 		tokens->Add(tokens, Token.New(result.Precipitate, Token_Name, lineNum));
 /****************************************/
 
@@ -262,7 +262,7 @@ static Result_t Parser_Name(String_t *code) {
 }
 
 static Result_t Parser_Token(String_t *code) {
-	return Parser.Choise5(
+	return Combinator.Choise5(
 		Parser_Symbol,
 		Parser_Keyword,
 		Parser_UInt,
@@ -274,21 +274,21 @@ static Result_t Parser_Token(String_t *code) {
 
 static Result_t Parser_Program(String_t *code) {
 	Result_t tok_sep(String_t *code) {
-		return Parser.Choise(
+		return Combinator.Choise(
 			Parser_Separator,
 			Parser_Token,
 			code
 		);
 	}
 
-	return Parser.Many0(tok_sep, code);
+	return Combinator.Many0(tok_sep, code);
 }
 
 static LexResult_t Execute(String_t *code) {
 	tokens = List.New();
 	lineNum = 1;
 
-	Result_t result = Parser.Invoke(Parser_Program, code);
+	Result_t result = Invoker.Parse(Parser_Program, code);
 
 	return (LexResult_t){
 		.Succeeded		= String.IsEmpty(result.Subsequent),

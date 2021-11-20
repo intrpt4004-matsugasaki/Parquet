@@ -1,235 +1,216 @@
 #include "Scraper/Parser.h"
 
-static Result_t makeErr(String_t *s) {
-	return (Result_t){
-		.Reply			= Err,
-		.Precipitate	= String.New(u8""),
-		.Subsequent		= s,
-	};
-}
+static Result_t OneOf(String_t *list, String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
 
-static Result_t makeOk(String_t *s) {
-	return (Result_t){
-		.Reply 			= Ok,
-		.Precipitate	= String.New(u8""),
-		.Subsequent		= s,
-	};
-}
-
-static Result_t makeOkRead1(String_t *s) {
-	return (Result_t){
-		.Reply			= Ok,
-		.Precipitate	= s->Substring(s, 0, 2),
-		.Subsequent		= s->Substring(s, 1, s->GetLength(s) + 1),
-	};
-}
-
-static Result_t Bind(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), String_t *s) {
-	Result_t result = fst(s);
-	  if (result.Reply == Err) return Parser.makeErr(s);
-	  String_t *precip = result.Precipitate;
-
-	result = snd(result.Subsequent);
-	  if (result.Reply == Err) return Parser.makeErr(s);
-	  precip = String.Concat(precip, result.Precipitate);
-
-	return (Result_t){
-		.Reply			= Ok,
-		.Precipitate	= precip,
-		.Subsequent		= result.Subsequent,
-	};
-}
-
-static Result_t Bind3(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), String_t *s) {
-	Result_t result = Parser.Bind(fst, snd, s);
-	  if (result.Reply == Err) return Parser.makeErr(s);
-	  String_t *precip = result.Precipitate;
-
-	result = trd(result.Subsequent);
-	  if (result.Reply == Err) return Parser.makeErr(s);
-	  precip = String.Concat(precip, result.Precipitate);
-
-	return (Result_t){
-		.Reply			= Ok,
-		.Precipitate	= precip,
-		.Subsequent		= result.Subsequent,
-	};
-}
-
-static Result_t Bind4(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), String_t *s) {
-	Result_t result = Parser.Bind3(fst, snd, trd, s);
-	  if (result.Reply == Err) return Parser.makeErr(s);
-	  String_t *precip = result.Precipitate;
-
-	result = fth(result.Subsequent);
-	  if (result.Reply == Err) return Parser.makeErr(s);
-	  precip = String.Concat(precip, result.Precipitate);
-
-	return (Result_t){
-		.Reply			= Ok,
-		.Precipitate	= precip,
-		.Subsequent		= result.Subsequent,
-	};
-}
-
-static Result_t Bind5(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), Result_t (* fif)(String_t *), String_t *s) {
-	Result_t result = Parser.Bind4(fst, snd, trd, fth, s);
-	  if (result.Reply == Err) return Parser.makeErr(s);
-	  String_t *precip = result.Precipitate;
-
-	result = fif(result.Subsequent);
-	  if (result.Reply == Err) return Parser.makeErr(s);
-	  precip = String.Concat(precip, result.Precipitate);
-
-	return (Result_t){
-		.Reply			= Ok,
-		.Precipitate	= precip,
-		.Subsequent		= result.Subsequent,
-	};
-}
-
-static Result_t Bind6(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), Result_t (* fif)(String_t *), Result_t (* sth)(String_t *), String_t *s) {
-	Result_t result = Parser.Bind5(fst, snd, trd, fth, fif, s);
-	  if (result.Reply == Err) return Parser.makeErr(s);
-	  String_t *precip = result.Precipitate;
-
-	result = sth(result.Subsequent);
-	  if (result.Reply == Err) return Parser.makeErr(s);
-	  precip = String.Concat(precip, result.Precipitate);
-
-	return (Result_t){
-		.Reply			= Ok,
-		.Precipitate	= precip,
-		.Subsequent		= result.Subsequent,
-	};
-}
-
-static Result_t Choise(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), String_t *s) {
-	Result_t result = fst(s);
-	if (result.Reply == Ok) return result;
-
-	result = snd(s);
-	if (result.Reply == Ok) return result;
-
-	return Parser.makeErr(s);
-}
-
-static Result_t Choise3(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), String_t *s) {
-	Result_t result = Choise(fst, snd, s);
-	if (result.Reply == Ok) return result;
-
-	result = trd(s);
-	if (result.Reply == Ok) return result;
-
-	return Parser.makeErr(s);
-}
-
-static Result_t Choise4(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), String_t *s) {
-	Result_t result = Choise3(fst, snd, trd, s);
-	if (result.Reply == Ok) return result;
-
-	result = fth(s);
-	if (result.Reply == Ok) return result;
-
-	return Parser.makeErr(s);
-}
-
-static Result_t Choise5(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), Result_t (* fif)(String_t *), String_t *s) {
-	Result_t result = Choise4(fst, snd, trd, fth, s);
-	if (result.Reply == Ok) return result;
-
-	result = fif(s);
-	if (result.Reply == Ok) return result;
-
-	return Parser.makeErr(s);
-}
-
-static Result_t Choise6(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), Result_t (* fif)(String_t *), Result_t (* sth)(String_t *), String_t *s) {
-	Result_t result = Choise5(fst, snd, trd, fth, fif, s);
-	if (result.Reply == Ok) return result;
-
-	result = sth(s);
-	if (result.Reply == Ok) return result;
-
-	return Parser.makeErr(s);
-}
-
-static Result_t Many0(Result_t (* parser)(String_t *), String_t *s) {
-	Result_t result = parser(s);
-	if (result.Reply == Err) return Parser.makeOk(s);
-
-	String_t *precip = result.Precipitate;
-	String_t *subseq = result.Subsequent;
-	for (;;) {
-		result = parser(result.Subsequent);
-		if (result.Reply == Err) return (Result_t){
-			.Reply			= Ok,
-			.Precipitate	= precip,
-			.Subsequent		= subseq,
-		};
-
-		precip = String.Concat(precip, result.Precipitate);
-		subseq = result.Subsequent;
-	}
-}
-
-static Result_t Many1(Result_t (* parser)(String_t *), String_t *s) {
-	Result_t result = parser(s);
-	if (result.Reply == Err) return Parser.makeErr(s);
-
-	String_t *precip = result.Precipitate;
-	String_t *subseq = result.Subsequent;
-	for (;;) {
-		result = parser(result.Subsequent);
-		if (result.Reply == Err) return (Result_t){
-			.Reply			= Ok,
-			.Precipitate	= precip,
-			.Subsequent		= subseq,
-		};
-
-		precip = String.Concat(precip, result.Precipitate);
-		subseq = result.Subsequent;
-	}
-}
-
-static Result_t Invoke(Result_t (* parser)(String_t *), String_t *s) {
-	return parser(s);
-}
-
-static void ParseTest(Result_t (* parser)(String_t *), String_t *s) {
-	Result_t result = parser(s);
-	if (result.Reply == Err) {
-		printf("Parser.ParseTest: parse failed.\n");
-		return;
+	for (uint32_t i = 0; i < list->GetLength(list); i++) {
+		if (list->GetCharAt(list, i) == s->GetHeadChar(s)) {
+			return Basis.OkRead1(s);
+		}
 	}
 
-	if (!result.Subsequent->IsEmpty(result.Subsequent)) {
-		printf("Parser.ParseTest: parse incorrect.\n");
-		printf("\"%s\" [%s]\n", String.GetPrimitive(result.Precipitate), String.GetPrimitive(result.Subsequent));
-		return;
+	return Basis.Err(s);
+}
+
+static Result_t NoneOf(String_t *list, String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	for (uint32_t i = 0; i < list->GetLength(list); i++) {
+		if (list->GetCharAt(list, i) == s->GetHeadChar(s)) {
+			return Basis.Err(s);
+		}
 	}
 
-	printf("\"%s\"\n", String.GetPrimitive(result.Precipitate));
+	return Basis.OkRead1(s);
+}
+
+static Result_t Space(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	return Parser.Char.Char(' ', s);
+}
+
+static Result_t Spaces0(String_t *s) {
+	return Combinator.Many0(Parser.Char.Space, s);
+}
+
+static Result_t Spaces1(String_t *s) {
+	return Combinator.Many0(Parser.Char.Space, s);
+}
+
+static Result_t LF(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	return Parser.Char.Char('\n', s);
+}
+
+static Result_t CRLF(String_t *s) {
+	if (s->GetLength(s) < 2) return Basis.Err(s);
+
+	return Parser.String.Match(String.New(u8"\r\n"), s);
+}
+
+static Result_t EndOfLine(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	return Combinator.Choise(LF, CRLF, s);
+}
+
+static Result_t Tab(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	return Parser.Char.Char('\t', s);
+}
+
+static Result_t Upper(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (!isupper(s->GetHeadChar(s))) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
+static Result_t Lower(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (!islower(s->GetHeadChar(s))) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
+static Result_t AlphaNum(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (!isalnum(s->GetHeadChar(s))) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
+static Result_t Letter(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (!isalpha(s->GetHeadChar(s))) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
+static Result_t Digit(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (!isdigit(s->GetHeadChar(s))) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
+static Result_t HexDigit(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (!isxdigit(s->GetHeadChar(s))) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
+static bool isodigit(uint8_t c) {
+	return isdigit(c)
+		|| c == 'a'
+		|| c == 'b'
+		|| c == 'c'
+		|| c == 'd'
+		|| c == 'e'
+		|| c == 'f';
+}
+
+static Result_t OctDigit(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (!isodigit(s->GetHeadChar(s))) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
+static Result_t Char(uint8_t c, String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (!s->StartsWithChar(s, c)) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
+static Result_t Any(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
+static Result_t Satisfy(bool (* judge)(uint8_t c), String_t *s) {	
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (!judge(s->GetHeadChar(s))) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
+static Result_t Match(String_t *pat, String_t *s) {	
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (!s->StartsWith(s, pat)) return Basis.Err(s);
+
+	return (Result_t){
+		.Reply			= Succeeded,
+		.Precipitate	= pat->Copy(pat),
+		.Subsequent		= s->Substring(s, pat->GetLength(pat), s->GetLength(s) + 1),
+	};
+}
+
+static Result_t UnMatch(String_t *pat, String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (s->StartsWith(s, pat)) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
+static Result_t String_OneOf(List_t *list, String_t *s) {
+	for (uint32_t i = 0; i < list->GetLength(list); i++)
+		if (s->StartsWith(s, list->Get(list, i)))
+			return (Result_t){
+				.Reply			= Succeeded,
+				.Precipitate	= String.Copy(list->Get(list, i)),
+				.Subsequent		= String.Substring(s,
+					String.GetLength(list->Get(list, i)),
+					String.GetLength(s) + 1
+				),
+			};
+
+	return Basis.Err(s);
 }
 
 _Parser Parser = {
-	.makeErr		= makeErr,
-	.makeOk			= makeOk,
-	.makeOkRead1	= makeOkRead1,
+	.Char = {
+		.OneOf		= OneOf,
+		.NoneOf		= NoneOf,
+		.Space		= Space,
+		.Spaces0	= Spaces0,
+		.Spaces1	= Spaces1,
+		.LF			= LF,
+		.CRLF		= CRLF,
+		.EndOfLine	= EndOfLine,
+		.Tab		= Tab,
+		.Upper		= Upper,
+		.Lower		= Lower,
+		.AlphaNum	= AlphaNum,
+		.Letter		= Letter,
+		.Digit		= Digit,
+		.HexDigit	= HexDigit,
+		.OctDigit	= OctDigit,
+		.Char		= Char,
+		.Any		= Any,
+		.Satisfy	= Satisfy,
+	},
 
-	.Bind			= Bind,
-	.Bind3			= Bind3,
-	.Bind4			= Bind4,
-	.Bind5			= Bind5,
-	.Bind6			= Bind6,
-	.Choise			= Choise,
-	.Choise3		= Choise3,
-	.Choise4		= Choise4,
-	.Choise5		= Choise5,
-	.Choise6		= Choise6,
-	.Many0			= Many0,
-	.Many1			= Many1,
-
-	.Invoke			= Invoke,
-	.ParseTest		= ParseTest,
+	.String = {
+		.Match		= Match,
+		.UnMatch	= UnMatch,
+		.OneOf		= String_OneOf,
+	},
 };
