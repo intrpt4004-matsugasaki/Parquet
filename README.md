@@ -1,5 +1,6 @@
 # Parquet
 Compiler Creation Support Library in C
+- Basic Types (String, List)
 - Parser Combinator
 - AST
 - Assembly code Generation
