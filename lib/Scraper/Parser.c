@@ -136,6 +136,14 @@ static Result_t Char(uint8_t c, String_t *s) {
 	return Basis.OkRead1(s);
 }
 
+static Result_t NonChar(uint8_t c, String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (s->StartsWithChar(s, c)) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
 static Result_t Any(String_t *s) {
 	if (s->IsEmpty(s)) return Basis.Err(s);
 
@@ -204,6 +212,7 @@ _Parser Parser = {
 		.HexDigit	= HexDigit,
 		.OctDigit	= OctDigit,
 		.Char		= Char,
+		.NonChar	= NonChar,
 		.Any		= Any,
 		.Satisfy	= Satisfy,
 	},

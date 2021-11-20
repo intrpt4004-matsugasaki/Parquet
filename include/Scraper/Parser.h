@@ -27,6 +27,7 @@ typedef struct {
 	Result_t (* HexDigit)(String_t *);
 	Result_t (* OctDigit)(String_t *);
 	Result_t (* Char)(uint8_t c, String_t *);
+	Result_t (* NonChar)(uint8_t c, String_t *);
 	Result_t (* Any)(String_t *);
 	Result_t (* Satisfy)(bool (* judge)(uint8_t c), String_t *);
 } _Char;
