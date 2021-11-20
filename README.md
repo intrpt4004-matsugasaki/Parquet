@@ -7,7 +7,7 @@ Compiler Creation Support Library in C
 - Executable binary Preparation
 
 ## build
-requires: **`git` `cmake` `make` `gcc` 'as' 'ld'**
+requires: **`git` `cmake` `make` `gcc` `as` `ld`**
 <br><br>
 
 ```sh
