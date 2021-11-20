@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Scraper.h>
+#include <Parquet.h>
 
 #include "Token.h"
 
@@ -9,10 +9,11 @@ typedef struct {
 	int32_t ErrorLine;
 	String_t *Precipitate;
 	String_t *Subsequent;
-} ParseResult_t;
+	List_t *TokenList;
+} LexResult_t;
 
 typedef struct {
-	ParseResult_t (* Execute)(String_t *code);
-} _MPLParser;
+	LexResult_t (* Execute)(String_t *code);
+} _MPLLexer;
 
-extern _MPLParser MPLParser;
+extern _MPLLexer MPLLexer;

@@ -2,68 +2,60 @@ add_custom_target(examples)
 add_dependencies(examples
 	Error
 	Memory
-
 	String
 	List
 
 	AnyChar3-6-12
 	DeclVar
-
 	MPL
 	mpltok
 	mplprs
-	#mplc
 )
 
-add_executable(Error other/Error.c)
+add_executable(Error Base/Error.c)
 target_link_libraries(Error
-    Scraper
+    Parquet
 )
 
-add_executable(Memory other/Memory.c)
+add_executable(Memory Base/Memory.c)
 target_link_libraries(Memory
-    Scraper
+    Parquet
 )
 
-add_executable(String other/String.c)
+add_executable(String Base/String.c)
 target_link_libraries(String
-    Scraper
+    Parquet
 )
 
-add_executable(List other/List.c)
+add_executable(List Base/List.c)
 target_link_libraries(List
-    Scraper
+    Parquet
 )
 
-add_executable(AnyChar3-6-12 AnyChar3-6-12.c)
+add_executable(AnyChar3-6-12 ParserCombinator/AnyChar3-6-12.c)
 target_link_libraries(AnyChar3-6-12
-    Scraper
+    Parquet
 )
 
-add_executable(DeclVar DeclVar.c)
+add_executable(DeclVar ParserCombinator/DeclVar.c)
 target_link_libraries(DeclVar
-    Scraper
+    Parquet
 )
 
-add_executable(MPL MPL.c)
+add_executable(MPL ParserCombinator/MPL.c)
 target_link_libraries(MPL
-    Scraper
+    Parquet
 )
 
-add_executable(mpltok mpltok/mpltok.c mpltok/MPLLexer.c mpltok/Token.c)
+add_executable(mpltok ParserCombinator/mpltok/mpltok.c ParserCombinator/mpltok/MPLLexer.c ParserCombinator/mpltok/Token.c)
 target_link_libraries(mpltok
-    Scraper
+    Parquet
 )
 
-add_executable(mplprs mplprs/mplprs.c mplprs/MPLParser.c mplprs/Token.c)
+add_executable(mplprs ParserCombinator/mplprs/mplprs.c ParserCombinator/mplprs/MPLParser.c ParserCombinator/mplprs/Token.c)
 target_link_libraries(mplprs
-    Scraper
+    Parquet
 )
-
-#add_executable(mplc mplc/mplc.c mplc/MPLParser.c mplc/Token.c)
-#target_link_libraries(mplc
-#    Scraper
-#)
 
 # debug
 set(CMAKE_C_FLAGS "-g3 -O0")
