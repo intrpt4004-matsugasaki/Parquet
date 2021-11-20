@@ -371,6 +371,29 @@ static Result_t Choise6(Result_t (* fst)(String_t *), Result_t (* snd)(String_t 
 	return _fix(Choise6_body, s);
 }
 
+
+static Result_t Choise10(
+	Result_t (* p1)(String_t *), Result_t (* p2)(String_t *),
+	Result_t (* p3)(String_t *), Result_t (* p4)(String_t *),
+	Result_t (* p5)(String_t *), Result_t (* p6)(String_t *),
+	Result_t (* p7)(String_t *), Result_t (* p8)(String_t *),
+	Result_t (* p9)(String_t *), Result_t (* p10)(String_t *), String_t *s) {
+	Result_t Choise6_body(String_t *code) {
+		return Choise6(p1, p2, p3, p4, p5, p6, s);
+	}
+
+	Result_t Choise4_body(String_t *code) {
+		return Choise4(p7, p8, p9, p10, s);
+	}
+
+	return Choise(
+		Choise6_body,
+		Choise4_body,
+
+		code
+	);
+}
+
 static Result_t Many0(Result_t (* parser)(String_t *), String_t *s) {
 	Result_t Many0_body(String_t *) {
 		return Combinator.Many0(parser, code);
@@ -387,8 +410,125 @@ static Result_t Many1(Result_t (* parser)(String_t *), String_t *s) {
 	return _fix(Many1_body, s);
 }
 
+Parser_Var
+
+static Result_t Parser_LeftPart(String_t *code) {
+	return Parser_Var(code);
+}
+
+Parser_SimpleExpr
+Parser_Expr
+
+static Result_t Parser_Expr(String_t *code) {
+	Result_t arrayIndexX(String_t *code) {
+		Result_t arrayIndex(String_t *code) {
+			Result_t open(String_t *code) {
+				return Parser.Char.Char('[', code);
+			}
+
+			Result_t close(String_t *code) {
+				return Parser.Char.Char(']', code);
+			}
+
+			return Bind3(
+				open, Parser_Expr, close,
+
+				code
+			);
+		}
+
+		return Combinator.Possibly(arrayIndex, code);
+	}
+
+	return Bind(
+		Parser_SimpleExpr, arrayIndexX,
+
+		code
+	);
+}
+
+static Result_t Parser_AssignStmt(String_t *code) {
+	Result_t assign(String_t *code) {
+		return Parser.String.Match(u8":=", code);
+	}
+
+	return Bind3(
+		Parser_LeftPart, assign, Parser_Expr,
+
+		code
+	);
+}
+
+Parser_CondStmt
+Parser_IterStmt
+
+static Result_t Parser_ExitStmt(String_t *code) {
+	return Parser.String.Match(u8"break", code);
+}
+
+Parser_CallStmt
+
+static Result_t Parser_RetStmt(String_t *code) {
+	return Parser.String.Match(u8"return", code);
+}
+
+Parser_InputStmt
+Parser_OutputStmt
+
+//static Result_t Parser_Stmt(String_t *code);
+static Result_t Parser_CompoundStmt(String_t *code) {
+	static Result_t Parser_Stmt(String_t *code);// 可能?
+
+	Result_t begin(String_t *code) {
+		return Parser.String.Match(String.New(u8"begin"), code);
+	}
+
+	Result_t adtnStmts(String_t *code) {
+		Result_t semicolon(String_t *code) {
+			return Parser.Char.Char(';', code);
+		}
+
+		Result_t adtnStmt(String_t *code) {
+			return Bind(
+				semicolon, Parser_Stmt,
+
+				code
+			);
+		}
+
+		return Many0(adtnStmt, code);
+	}
+
+	Result_t end(String_t *code) {
+		return Parser.String.Match(String.New(u8"end"), code);
+	}
+
+	return Bind4(
+		begin, Parser_Stmt, adtnStmts, end,
+		
+		code
+	);
+}
+
 static Result_t Parser_EmptyStmt(String_t *code) {
 	return Basis.Ok(code);
+}
+
+static Result_t Parser_Stmt(String_t *code) {
+	return Choise10(
+		Parser_AssignStmt,
+		Parser_CondStmt,
+		Parser_IterStmt,
+		Parser_ExitStmt,
+		Parser_CallStmt,
+		Parser_RetStmt,
+		Parser_InputStmt,
+		Parser_OutputStmt,
+		Parser_CompoundStmt,
+		Parser_EmptyStmt,
+
+		code
+	);
 }
 
 static Result_t Parser_VarName(String_t *code) {
@@ -453,10 +593,6 @@ static Result_t Parser_Type(String_t *code) {
 	);
 }
 
-static Result_t Parser_Stmt(String_t *code) {
-
-}
-
 static Result_t Parser_VarDecl(String_t *code) {
 	Result_t var(String_t *code) {
 		return Parser.String.Match(String.New(u8"var"), code);
@@ -490,15 +626,54 @@ static Result_t Parser_VarDecl(String_t *code) {
 	);
 }
 
+static Result_t Parser_ProcName(String_t *code) {
+	return Parser_Name(code);
+}
+
+static Result_t Parser_FormalParam(String_t *code) {
+	Result_t open(String_t *code) {
+		return Parser.Char.Char('(', code);
+	}
+
+	Result_t colon(String_t *code) {
+		return Parser.Char.Char(':', code);
+	}
+
+	Result_t adtnParams(String_t *code) {
+		Result_t semicolon(String_t *code) {
+			return Parser.Char.Char(';', code);
+		}
+
+		Result_t adtnParam(String_t *code) {
+			return Bind4(
+				semicolon, Parser_VarNames, colon, Parser_Type,
+
+				code
+			);
+		}
+
+		return Many0(adtnParam, code);
+	}
+
+	Result_t close(String_t *code) {
+		return Parser.Char.Char(')', code);
+	}
+
+	return Bind6(
+		open, Parser_VarNames, colon, Parser_Type,
+		adtnParams, close,
+
+		code
+	);
+}
+
 static Result_t Parser_SubProgDecl(String_t *code) {
 	Result_t procedure(String_t *code) {
 		return Parser.String.Match(String.New(u8"procedure"), code);
 	}
 
 	Result_t Parser_FormalParamX(String_t *code) {
-		Result_t result = Parser_FormalParam(code);
-		return (result.Reply == Failed) ?
-			Basis.Ok(code) : result;
+		return Combinator.Possibly(Parser_FormalParam, code);
 	}
 
 	Result_t semicolon(String_t *code) {
@@ -506,9 +681,7 @@ static Result_t Parser_SubProgDecl(String_t *code) {
 	}
 
 	Result_t Parser_VarDeclX(String_t *code) {
-		Result_t result = Parser_VarDecl(code);
-		return (result.Reply == Failed) ?
-			Basis.Ok(code) : result;
+		return Combinator.Possibly(Parser_VarDecl, code);
 	}
 
 	return Bind7(
@@ -517,38 +690,6 @@ static Result_t Parser_SubProgDecl(String_t *code) {
 			Parser_CompoundStmt,
 		semicolon
 
-		code
-	);
-}
-
-static Result_t Parser_CompoundStmt(String_t *code) {
-	Result_t begin(String_t *code) {
-		return Parser.String.Match(String.New(u8"begin"), code);
-	}
-
-	Result_t adtnStmts(String_t *code) {
-		Result_t semicolon(String_t *code) {
-			return Parser.Char.Char(';', code);
-		}
-
-		Result_t adtnStmt(String_t *code) {
-			return Bind(
-				semicolon, Parser_Stmt,
-
-				code
-			);
-		}
-
-		return Many0(adtnStmt, code);
-	}
-
-	Result_t end(String_t *code) {
-		return Parser.String.Match(String.New(u8"end"), code);
-	}
-
-	return Bind4(
-		begin, Parser_Stmt, adtnStmts, end,
-		
 		code
 	);
 }
