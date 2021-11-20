@@ -27,6 +27,9 @@ typedef struct String_t {
 	bool (* StartsWith)(struct String_t *, struct String_t *prefix);
 	bool (* StartsWithChar)(struct String_t *, const uint8_t ch);
 
+	int32_t (* FirstIndexOf)(struct String_t *, const uint8_t ch);
+	int32_t (* LastIndexOf)(struct String_t *, const uint8_t ch);
+
 	void (* Delete)(struct String_t *);
 } String_t;
 
@@ -51,6 +54,9 @@ typedef struct {
 	bool (* Equals)(String_t *, String_t *anString);
 	bool (* StartsWith)(String_t *, String_t *prefix);
 	bool (* StartsWithChar)(String_t *, const uint8_t ch);
+
+	int32_t (* FirstIndexOf)(String_t *, const uint8_t ch);
+	int32_t (* LastIndexOf)(String_t *, const uint8_t ch);
 } _String;
 
 extern _String String;

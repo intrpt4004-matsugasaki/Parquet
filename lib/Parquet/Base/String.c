@@ -34,7 +34,7 @@ static String_t *Substring(String_t *str, const uint32_t beginIndex, const uint3
 	if (beginIndex == lastIndex) return String.New(u8"");
 
 	uint8_t *s = (uint8_t *)(
-		calloc(1 + lastIndex - beginIndex, sizeof(uint8_t))
+		Memory.CountedAllocate(1 + lastIndex - beginIndex, sizeof(uint8_t))
 	);
 	strncpy(s, str->_String + beginIndex, lastIndex - beginIndex);
 	s[lastIndex - beginIndex - 1] = String.NUL;
@@ -85,6 +85,21 @@ static bool StartsWithChar(String_t *str, const uint8_t ch) {
 	return String.GetHeadChar(str) == ch;
 }
 
+
+static int32_t FirstIndexOf(String_t *str, const uint8_t ch) {
+	for (int32_t i = 0; i < String.GetLength(str); i++)
+		if (String.GetCharAt(str, i) == ch) return i;
+
+	Error.Panic(u8"\e[32m", u8"String#FirstIndexOf");
+}
+
+static int32_t LastIndexOf(String_t *str, const uint8_t ch) {
+	for (int32_t i = String.GetLength(str); 0 <= i; i--)
+		if (String.GetCharAt(str, i) == ch) return i;
+
+	Error.Panic(u8"\e[32m", u8"String#LastIndexOf");
+}
+
 static void Delete(String_t *str) {
 	Memory.Free(str->_String);
 	Memory.Free(str);
@@ -111,6 +126,8 @@ static String_t *New(const uint8_t *string) {
 	str->Equals					= Equals;
 	str->StartsWith				= StartsWith;
 	str->StartsWithChar			= StartsWithChar;
+	str->FirstIndexOf			= FirstIndexOf;
+	str->LastIndexOf			= LastIndexOf;
 	str->Delete					= Delete;
 
 	return str;
@@ -156,4 +173,6 @@ _String String = {
 	.Equals						= Equals,
 	.StartsWith					= StartsWith,
 	.StartsWithChar				= StartsWithChar,
+	.FirstIndexOf				= FirstIndexOf,
+	.LastIndexOf				= LastIndexOf,
 };

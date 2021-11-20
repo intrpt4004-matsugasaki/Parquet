@@ -10,6 +10,8 @@ add_dependencies(examples
 	MPL
 	mpltok
 	mplprs
+
+	CreateExecutable
 )
 
 add_executable(Error Base/Error.c)
@@ -54,6 +56,11 @@ target_link_libraries(mpltok
 
 add_executable(mplprs ParserCombinator/mplprs/mplprs.c ParserCombinator/mplprs/MPLParser.c ParserCombinator/mplprs/Token.c)
 target_link_libraries(mplprs
+    Parquet
+)
+
+add_executable(CreateExecutable ExecutableBinaryPreparer/CreateExecutable.c)
+target_link_libraries(CreateExecutable
     Parquet
 )
 

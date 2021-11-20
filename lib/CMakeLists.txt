@@ -18,6 +18,8 @@ target_sources(Parquet
 	Parquet/ParserCombinator/Combinator.c
 	Parquet/ParserCombinator/Parser.c
     Parquet/ParserCombinator/Invoker.c
+
+    Parquet/ExecutableBinaryPreparer.c
 )
 
 target_include_directories(Parquet
