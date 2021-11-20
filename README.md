@@ -1,7 +1,7 @@
 # Parquet
 Compiler Creation Support Library in C
-- [Basic Types (String, List)](https://github.com/rot-E/Parquet/tree/main/include/Parquet/Base.h) [*.c](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/Base.h): [*.h](https://github.com/rot-E/Parquet/tree/main/include/Parquet/Base/) [*.c](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/Base/)
-- [Parser Combinator](https://github.com/rot-E/Parquet/tree/main/include/Parquet/ParserCombinator.h): [*.h](https://github.com/rot-E/Parquet/tree/main/include/Parquet/ParserCombinator/) [*.c](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/ParserCombinator/)
+- Basic Types (String, List) : ( [header](https://github.com/rot-E/Parquet/tree/main/include/Parquet/Base/) [source](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/Base/) )
+- Parser Combinator : ( [header](https://github.com/rot-E/Parquet/tree/main/include/Parquet/ParserCombinator/) [source](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/ParserCombinator/) )
 - AST
 - Assembly code Generation
 - Executable binary Preparation
