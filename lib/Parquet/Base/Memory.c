@@ -1,4 +1,4 @@
-#include "Scraper/Memory.h"
+#include "Parquet/Base/Memory.h"
 
 static any *_Inspect(any *ptr) {
 	if (ptr == NULL) Error.Panic(u8"\e[36m", u8"Memory._Inspect: malloc failed");

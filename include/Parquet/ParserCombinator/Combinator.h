@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Scraper/String.h"
-
-#include "Scraper/Result.h"
-#include "Scraper/Basis.h"
+#include "Parquet/Base/String.h"
+#include "Parquet/ParserCombinator/Result.h"
+#include "Parquet/ParserCombinator/Basis.h"
 
 typedef struct {
 	Result_t (* Bind)(

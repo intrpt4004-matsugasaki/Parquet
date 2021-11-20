@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <sys/mman.h>
 
-#include "Scraper/Error.h"
+#include "Parquet/Base/Error.h"
 
 #define any void
 

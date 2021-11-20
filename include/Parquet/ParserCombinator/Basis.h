@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Scraper/String.h"
-
-#include "Scraper/Result.h"
+#include "Parquet/Base/String.h"
+#include "Parquet/ParserCombinator/Result.h"
 
 typedef struct {
 	Result_t (* Err)(String_t *);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Scraper/String.h"
+#include "Parquet/Base/String.h"
 
 typedef struct {
 	/*enum {

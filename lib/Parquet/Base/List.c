@@ -1,7 +1,6 @@
-#include "Scraper/List.h"
+#include "Parquet/Base/List.h"
 
 static void Add(List_t *l, any *item) {
-	// 領域不足→確保
 	if (List.GetLength(l) + 1 >= l->_Size) {
 		l->_Size += List._ALLOCATION_BLOCK_SIZE;
 		l->_Item = Memory.ReAllocate(
@@ -10,7 +9,6 @@ static void Add(List_t *l, any *item) {
 		);
 	}
 
-	// 格納
 	l->_Item[List.GetLength(l)] = item;
 	l->_Length++;
 }

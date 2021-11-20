@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "Scraper/Error.h"
-#include "Scraper/Memory.h"
+#include "Parquet/Base/Error.h"
+#include "Parquet/Base/Memory.h"
 
 typedef struct List_t {
 	uint32_t _Size;

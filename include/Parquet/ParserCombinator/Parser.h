@@ -2,12 +2,11 @@
 
 #include <ctype.h>
 
-#include "Scraper/String.h"
-#include "Scraper/List.h"
-
-#include "Scraper/Result.h"
-#include "Scraper/Basis.h"
-#include "Scraper/Combinator.h"
+#include "Parquet/Base/String.h"
+#include "Parquet/Base/List.h"
+#include "Parquet/ParserCombinator/Result.h"
+#include "Parquet/ParserCombinator/Basis.h"
+#include "Parquet/ParserCombinator/Combinator.h"
 
 typedef struct {
 	Result_t (* OneOf)(String_t *list, String_t *);

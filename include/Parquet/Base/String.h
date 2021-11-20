@@ -6,8 +6,8 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "Scraper/Error.h"
-#include "Scraper/Memory.h"
+#include "Parquet/Base/Error.h"
+#include "Parquet/Base/Memory.h"
 
 typedef struct String_t {
 	int32_t _Size;

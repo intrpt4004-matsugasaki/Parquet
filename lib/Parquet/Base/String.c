@@ -1,4 +1,4 @@
-#include "Scraper/String.h"
+#include "Parquet/Base/String.h"
 
 static uint8_t *GetPrimitive(String_t *str) {
 	return strdup(str->_String);
