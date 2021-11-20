@@ -2,7 +2,7 @@
 Parser Combinator Library in C
 
 ## build
-Dependencies: **`git` `cmake` `make` `gcc`**
+requires: **`git` `cmake` `make` `gcc`**
 <br><br>
 
 ```sh
