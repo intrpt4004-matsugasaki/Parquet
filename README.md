@@ -27,14 +27,14 @@ $ make install -j
 ## build examples
 ```sh
 $ make examples -j
-$ examples/mpltok ../examples/mpltok/sum_err.mpl
-$ examples/mpltok ../examples/mpltok/sum.mpl
+$ examples/mpltok ../examples/ParserCombinator/mpltok/sum_err.mpl
+$ examples/mpltok ../examples/ParserCombinator/mpltok/sum.mpl
 ```
 
 # Usage
-Tokenise: [`examples/mpltok/*`](https://github.com/rot-E/Parquet/tree/main/examples/mpltok)
+Tokenise: [`examples/ParserCombinator/mpltok/*`](https://github.com/rot-E/Parquet/tree/main/examples/ParserCombinator/mpltok)
 
-Parse: [`examples/mplprs/*`](https://github.com/rot-E/Parquet/tree/main/examples/mplprs)
+Parse: [`examples/ParserCombinator/mplprs/*`](https://github.com/rot-E/Parquet/tree/main/examples/ParserCombinator/mplprs)
 
 # License
 &emsp;[`AGPLv3`](https://www.gnu.org/licenses/agpl-3.0.html)
