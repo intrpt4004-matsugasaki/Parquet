@@ -566,6 +566,10 @@ static Result_t Parser_InputStmt(String_t *code) {
 	// TODO
 }
 
+static Result_t Parser_OutputFmt(String_t *code) {
+	// TODO
+}
+
 static Result_t Parser_OutputStmt(String_t *code) {
 	// TODO
 }

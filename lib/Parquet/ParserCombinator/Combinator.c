@@ -1,11 +1,11 @@
 #include "Parquet/ParserCombinator/Combinator.h"
 
-static Result_t Bind(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), String_t *s) {
-	Result_t result = fst(s);
+static Result_t Bind(Result_t (* parser1)(String_t *), Result_t (* parser2)(String_t *), String_t *s) {
+	Result_t result = parser1(s);
 	  if (result.Reply == Failed) return Basis.Err(s);
 	  String_t *precip = result.Precipitate;
 
-	result = snd(result.Subsequent);
+	result = parser2(result.Subsequent);
 	  if (result.Reply == Failed) return Basis.Err(s);
 	  precip = String.Concat(precip, result.Precipitate);
 
@@ -16,12 +16,12 @@ static Result_t Bind(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *),
 	};
 }
 
-static Result_t Bind3(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), String_t *s) {
-	Result_t result = Combinator.Bind(fst, snd, s);
+static Result_t Bind3(Result_t (* parser1)(String_t *), Result_t (* parser2)(String_t *), Result_t (* parser3)(String_t *), String_t *s) {
+	Result_t result = Combinator.Bind(parser1, parser2, s);
 	  if (result.Reply == Failed) return Basis.Err(s);
 	  String_t *precip = result.Precipitate;
 
-	result = trd(result.Subsequent);
+	result = parser3(result.Subsequent);
 	  if (result.Reply == Failed) return Basis.Err(s);
 	  precip = String.Concat(precip, result.Precipitate);
 
@@ -32,12 +32,12 @@ static Result_t Bind3(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *)
 	};
 }
 
-static Result_t Bind4(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), String_t *s) {
-	Result_t result = Combinator.Bind3(fst, snd, trd, s);
+static Result_t Bind4(Result_t (* parser1)(String_t *), Result_t (* parser2)(String_t *), Result_t (* parser3)(String_t *), Result_t (* parser4)(String_t *), String_t *s) {
+	Result_t result = Combinator.Bind3(parser1, parser2, parser3, s);
 	  if (result.Reply == Failed) return Basis.Err(s);
 	  String_t *precip = result.Precipitate;
 
-	result = fth(result.Subsequent);
+	result = parser4(result.Subsequent);
 	  if (result.Reply == Failed) return Basis.Err(s);
 	  precip = String.Concat(precip, result.Precipitate);
 
@@ -48,12 +48,12 @@ static Result_t Bind4(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *)
 	};
 }
 
-static Result_t Bind5(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), Result_t (* fif)(String_t *), String_t *s) {
-	Result_t result = Combinator.Bind4(fst, snd, trd, fth, s);
+static Result_t Bind5(Result_t (* parser1)(String_t *), Result_t (* parser2)(String_t *), Result_t (* parser3)(String_t *), Result_t (* parser4)(String_t *), Result_t (* parser5)(String_t *), String_t *s) {
+	Result_t result = Combinator.Bind4(parser1, parser2, parser3, parser4, s);
 	  if (result.Reply == Failed) return Basis.Err(s);
 	  String_t *precip = result.Precipitate;
 
-	result = fif(result.Subsequent);
+	result = parser5(result.Subsequent);
 	  if (result.Reply == Failed) return Basis.Err(s);
 	  precip = String.Concat(precip, result.Precipitate);
 
@@ -64,12 +64,12 @@ static Result_t Bind5(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *)
 	};
 }
 
-static Result_t Bind6(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), Result_t (* fif)(String_t *), Result_t (* sth)(String_t *), String_t *s) {
-	Result_t result = Combinator.Bind5(fst, snd, trd, fth, fif, s);
+static Result_t Bind6(Result_t (* parser1)(String_t *), Result_t (* parser2)(String_t *), Result_t (* parser3)(String_t *), Result_t (* parser4)(String_t *), Result_t (* parser5)(String_t *), Result_t (* parser6)(String_t *), String_t *s) {
+	Result_t result = Combinator.Bind5(parser1, parser2, parser3, parser4, parser5, s);
 	  if (result.Reply == Failed) return Basis.Err(s);
 	  String_t *precip = result.Precipitate;
 
-	result = sth(result.Subsequent);
+	result = parser6(result.Subsequent);
 	  if (result.Reply == Failed) return Basis.Err(s);
 	  precip = String.Concat(precip, result.Precipitate);
 
@@ -80,51 +80,51 @@ static Result_t Bind6(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *)
 	};
 }
 
-static Result_t Choise(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), String_t *s) {
-	Result_t result = fst(s);
+static Result_t Choise(Result_t (* parser1)(String_t *), Result_t (* parser2)(String_t *), String_t *s) {
+	Result_t result = parser1(s);
 	if (result.Reply == Succeeded) return result;
 
-	result = snd(s);
+	result = parser2(s);
 	if (result.Reply == Succeeded) return result;
 
 	return Basis.Err(s);
 }
 
-static Result_t Choise3(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), String_t *s) {
-	Result_t result = Choise(fst, snd, s);
+static Result_t Choise3(Result_t (* parser1)(String_t *), Result_t (* parser2)(String_t *), Result_t (* parser3)(String_t *), String_t *s) {
+	Result_t result = Choise(parser1, parser2, s);
 	if (result.Reply == Succeeded) return result;
 
-	result = trd(s);
-	if (result.Reply == Succeeded) return result;
-
-	return Basis.Err(s);
-}
-
-static Result_t Choise4(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), String_t *s) {
-	Result_t result = Choise3(fst, snd, trd, s);
-	if (result.Reply == Succeeded) return result;
-
-	result = fth(s);
+	result = parser3(s);
 	if (result.Reply == Succeeded) return result;
 
 	return Basis.Err(s);
 }
 
-static Result_t Choise5(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), Result_t (* fif)(String_t *), String_t *s) {
-	Result_t result = Choise4(fst, snd, trd, fth, s);
+static Result_t Choise4(Result_t (* parser1)(String_t *), Result_t (* parser2)(String_t *), Result_t (* parser3)(String_t *), Result_t (* parser4)(String_t *), String_t *s) {
+	Result_t result = Choise3(parser1, parser2, parser3, s);
 	if (result.Reply == Succeeded) return result;
 
-	result = fif(s);
+	result = parser4(s);
 	if (result.Reply == Succeeded) return result;
 
 	return Basis.Err(s);
 }
 
-static Result_t Choise6(Result_t (* fst)(String_t *), Result_t (* snd)(String_t *), Result_t (* trd)(String_t *), Result_t (* fth)(String_t *), Result_t (* fif)(String_t *), Result_t (* sth)(String_t *), String_t *s) {
-	Result_t result = Choise5(fst, snd, trd, fth, fif, s);
+static Result_t Choise5(Result_t (* parser1)(String_t *), Result_t (* parser2)(String_t *), Result_t (* parser3)(String_t *), Result_t (* parser4)(String_t *), Result_t (* parser5)(String_t *), String_t *s) {
+	Result_t result = Choise4(parser1, parser2, parser3, parser4, s);
 	if (result.Reply == Succeeded) return result;
 
-	result = sth(s);
+	result = parser5(s);
+	if (result.Reply == Succeeded) return result;
+
+	return Basis.Err(s);
+}
+
+static Result_t Choise6(Result_t (* parser1)(String_t *), Result_t (* parser2)(String_t *), Result_t (* parser3)(String_t *), Result_t (* parser4)(String_t *), Result_t (* parser5)(String_t *), Result_t (* parser6)(String_t *), String_t *s) {
+	Result_t result = Choise5(parser1, parser2, parser3, parser4, parser5, s);
+	if (result.Reply == Succeeded) return result;
+
+	result = parser6(s);
 	if (result.Reply == Succeeded) return result;
 
 	return Basis.Err(s);
