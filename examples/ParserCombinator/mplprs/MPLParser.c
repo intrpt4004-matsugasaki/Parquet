@@ -5,7 +5,7 @@ static uint32_t lineNum;
 
 static Result_t Parser_String(String_t *code) {
 	Result_t apostrophe(String_t *code) {
-		return Parser.Char.Char('\'', code);
+		return Parser.Char.Match('\'', code);
 	}
 
 	Result_t content(String_t *code) {
@@ -67,19 +67,19 @@ static Result_t Parser_Name(String_t *code) {
 static Result_t Parser_Comment(String_t *code) {
 	Result_t line(String_t *code) {
 		Result_t open(String_t *code) {
-			return Parser.Char.Char('{', code);
+			return Parser.Char.Match('{', code);
 		}
 
 		Result_t content(String_t *code) {
 			Result_t nonClose(String_t *code) {
-				return Parser.Char.NonChar('}', code);
+				return Parser.Char.UnMatch('}', code);
 			}
 
 			return Combinator.Many0(nonClose, code);
 		}
 
 		Result_t close(String_t *code) {
-			return Parser.Char.Char('}', code);
+			return Parser.Char.Match('}', code);
 		}
 
 		return Combinator.Bind3(
@@ -414,16 +414,42 @@ static Result_t Parser_VarName(String_t *code) {
 	return Parser_Name(code);
 }
 
+static Result_t Parser_AddOpr(String_t *code) {
+	Result_t plus(String_t *code) {
+		return Parser.Char.Match('+', code);
+	}
+
+	Result_t minus(String_t *code) {
+		return Parser.Char.Match('-', code);
+	}
+
+	Result_t or(String_t *code) {
+		return Parser.String.Match(String.New(u8"or"), code);
+	}
+
+	return Choise3(
+		plus,
+		minus,
+		or,
+
+		code
+	);
+}
+
+static Result_t Parser_Term(String_t *code) {
+	// TODO
+}
+
 static Result_t Parser_Expr(String_t *code);
 static Result_t Parser_Var(String_t *code) {
 	Result_t arrayIndexX(String_t *code) {
 		Result_t arrayIndex(String_t *code) {
 			Result_t open(String_t *code) {
-				return Parser.Char.Char('[', code);
+				return Parser.Char.Match('[', code);
 			}
 
 			Result_t close(String_t *code) {
-				return Parser.Char.Char(']', code);
+				return Parser.Char.Match(']', code);
 			}
 
 			return Bind3(
@@ -448,7 +474,44 @@ static Result_t Parser_LeftPart(String_t *code) {
 }
 
 static Result_t Parser_SimpleExpr(String_t *code) {
-	// TODO
+	Result_t plus_or_minus(String_t *code) {
+		Result_t plus(String_t *code) {
+			return Parser.Char.Match('+', code);
+		}
+
+		Result_t minus(String_t *code) {
+			return Parser.Char.Match('-', code);
+		}
+
+		return Choise(
+			plus,
+			minus,
+
+			code
+		);
+	}
+
+	Result_t plus_or_minusX(String_t *code) {
+		return Combinator.Possibly(plus_or_minus, code);
+	}
+
+	Result_t adtnAdds0(String_t *code) {
+		Result_t adtnAdd(String_t *code) {
+			return Bind(
+				Parser_AddOpr, Parser_Term,
+
+				code
+			);
+		}
+
+		return Many0(adtnAdd, code);
+	} 
+
+	return Bind3(
+		plus_or_minusX, Parser_Term, adtnAdds0,
+
+		code
+	);
 }
 
 static Result_t Parser_Expr(String_t *code) {
@@ -472,7 +535,19 @@ static Result_t Parser_CondStmt(String_t *code) {
 }
 
 static Result_t Parser_IterStmt(String_t *code) {
-	// TODO
+	Result_t while_kwd(String_t *code) {
+		return Parser.String.Match(String.New(u8"while"), code);
+	}
+
+	Result_t do_kwd(String_t *code) {
+		return Parser.String.Match(String.New(u8"do"), code);
+	}
+
+	return Bind4(
+		while_kwd, Parser_Expr, do_kwd, Parser_Stmt,
+
+		code
+	);
 }
 
 static Result_t Parser_ExitStmt(String_t *code) {
@@ -503,7 +578,7 @@ static Result_t Parser_CompoundStmt(String_t *code) {
 
 	Result_t adtnStmts(String_t *code) {
 		Result_t semicolon(String_t *code) {
-			return Parser.Char.Char(';', code);
+			return Parser.Char.Match(';', code);
 		}
 
 		Result_t adtnStmt(String_t *code) {
@@ -552,7 +627,7 @@ static Result_t Parser_Stmt(String_t *code) {
 static Result_t Parser_VarNames(String_t *code) {
 	Result_t adtnVarNames(String_t *code) {
 		Result_t comma(String_t *code) {
-			return Parser.Char.Char(',', code);
+			return Parser.Char.Match(',', code);
 		}
 
 		return Bind(
@@ -580,11 +655,11 @@ static Result_t Parser_ArrType(String_t *code) {
 	}
 
 	Result_t open(String_t *code) {
-		return Parser.Char.Char('[', code);
+		return Parser.Char.Match('[', code);
 	}
 
 	Result_t close(String_t *code) {
-		return Parser.Char.Char(']', code);
+		return Parser.Char.Match(']', code);
 	}
 
 	Result_t of(String_t *code) {
@@ -614,11 +689,11 @@ static Result_t Parser_VarDecl(String_t *code) {
 
 	Result_t VarDecl(String_t *code) {
 		Result_t colon(String_t *code) {
-			return Parser.Char.Char(':', code);
+			return Parser.Char.Match(':', code);
 		}
 
 		Result_t semicolon(String_t *code) {
-			return Parser.Char.Char(';', code);
+			return Parser.Char.Match(';', code);
 		}
 
 		return Bind4(
@@ -646,16 +721,16 @@ static Result_t Parser_ProcName(String_t *code) {
 
 static Result_t Parser_FormalParam(String_t *code) {
 	Result_t open(String_t *code) {
-		return Parser.Char.Char('(', code);
+		return Parser.Char.Match('(', code);
 	}
 
 	Result_t colon(String_t *code) {
-		return Parser.Char.Char(':', code);
+		return Parser.Char.Match(':', code);
 	}
 
 	Result_t adtnParams(String_t *code) {
 		Result_t semicolon(String_t *code) {
-			return Parser.Char.Char(';', code);
+			return Parser.Char.Match(';', code);
 		}
 
 		Result_t adtnParam(String_t *code) {
@@ -670,7 +745,7 @@ static Result_t Parser_FormalParam(String_t *code) {
 	}
 
 	Result_t close(String_t *code) {
-		return Parser.Char.Char(')', code);
+		return Parser.Char.Match(')', code);
 	}
 
 	return Bind6(
@@ -691,7 +766,7 @@ static Result_t Parser_SubProgDecl(String_t *code) {
 	}
 
 	Result_t semicolon(String_t *code) {
-		return Parser.Char.Char(';', code);
+		return Parser.Char.Match(';', code);
 	}
 
 	Result_t Parser_VarDeclX(String_t *code) {
@@ -737,14 +812,14 @@ static Result_t Parser_Program(String_t *code) {
 
 	Result_t name(String_t *code) {
 		Result_t nonsemic(String_t *code) {
-			return Parser.Char.NonChar(';', code);
+			return Parser.Char.UnMatch(';', code);
 		}
 
 		return Many1(nonsemic, code);
 	}
 
 	Result_t semicolon(String_t *code) {
-		return Parser.Char.Char(';', code);
+		return Parser.Char.Match(';', code);
 	}
 
 	Result_t end(String_t *code) {
@@ -752,7 +827,7 @@ static Result_t Parser_Program(String_t *code) {
 	}
 
 	Result_t dot(String_t *code) {
-		return Parser.Char.Char('.', code);
+		return Parser.Char.Match('.', code);
 	}
 
 	return Bind7(

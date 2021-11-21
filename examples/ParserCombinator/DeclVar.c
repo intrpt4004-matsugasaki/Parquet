@@ -34,7 +34,7 @@ Result_t declVar(String_t *s) {
 	}
 
 	Result_t semic(String_t *s) {
-		return Parser.Char.Char(';', s);
+		return Parser.Char.Match(';', s);
 	}
 
 	Result_t result = Invoker.Parse(var_space, s);

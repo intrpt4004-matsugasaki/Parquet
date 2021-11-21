@@ -6,7 +6,7 @@ static uint32_t lineNum;
 static Result_t Parser_Comment(String_t *code) {
 	Result_t line(String_t *code) {
 		Result_t open(String_t *code) {
-			return Parser.Char.Char('{', code);
+			return Parser.Char.Match('{', code);
 		}
 
 		Result_t nonClose(String_t *code) {
@@ -21,7 +21,7 @@ static Result_t Parser_Comment(String_t *code) {
 		}
 
 		Result_t close(String_t *code) {
-			return Parser.Char.Char('}', code);
+			return Parser.Char.Match('}', code);
 		}
 
 		return Combinator.Bind3(
@@ -152,7 +152,7 @@ static Result_t Parser_Symbol(String_t *code) {
 
 static Result_t Parser_String(String_t *code) {
 	Result_t apostr(String_t *code) {
-		return Parser.Char.Char('\'', code);
+		return Parser.Char.Match('\'', code);
 	}
 
 	Result_t nonapostr(String_t *code) {

@@ -1,5 +1,21 @@
 #include "Parquet/ParserCombinator/Parser.h"
 
+static Result_t Match(uint8_t c, String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (!s->StartsWithChar(s, c)) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
+static Result_t UnMatch(uint8_t c, String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	if (s->StartsWithChar(s, c)) return Basis.Err(s);
+
+	return Basis.OkRead1(s);
+}
+
 static Result_t OneOf(String_t *list, String_t *s) {
 	if (s->IsEmpty(s)) return Basis.Err(s);
 
@@ -22,44 +38,6 @@ static Result_t NoneOf(String_t *list, String_t *s) {
 	}
 
 	return Basis.OkRead1(s);
-}
-
-static Result_t Space(String_t *s) {
-	if (s->IsEmpty(s)) return Basis.Err(s);
-
-	return Parser.Char.Char(' ', s);
-}
-
-static Result_t Spaces0(String_t *s) {
-	return Combinator.Many0(Parser.Char.Space, s);
-}
-
-static Result_t Spaces1(String_t *s) {
-	return Combinator.Many0(Parser.Char.Space, s);
-}
-
-static Result_t LF(String_t *s) {
-	if (s->IsEmpty(s)) return Basis.Err(s);
-
-	return Parser.Char.Char('\n', s);
-}
-
-static Result_t CRLF(String_t *s) {
-	if (s->GetLength(s) < 2) return Basis.Err(s);
-
-	return Parser.String.Match(String.New(u8"\r\n"), s);
-}
-
-static Result_t EndOfLine(String_t *s) {
-	if (s->IsEmpty(s)) return Basis.Err(s);
-
-	return Combinator.Choise(LF, CRLF, s);
-}
-
-static Result_t Tab(String_t *s) {
-	if (s->IsEmpty(s)) return Basis.Err(s);
-
-	return Parser.Char.Char('\t', s);
 }
 
 static Result_t Upper(String_t *s) {
@@ -128,22 +106,6 @@ static Result_t OctDigit(String_t *s) {
 	return Basis.OkRead1(s);
 }
 
-static Result_t Char(uint8_t c, String_t *s) {
-	if (s->IsEmpty(s)) return Basis.Err(s);
-
-	if (!s->StartsWithChar(s, c)) return Basis.Err(s);
-
-	return Basis.OkRead1(s);
-}
-
-static Result_t NonChar(uint8_t c, String_t *s) {
-	if (s->IsEmpty(s)) return Basis.Err(s);
-
-	if (s->StartsWithChar(s, c)) return Basis.Err(s);
-
-	return Basis.OkRead1(s);
-}
-
 static Result_t Any(String_t *s) {
 	if (s->IsEmpty(s)) return Basis.Err(s);
 
@@ -158,7 +120,45 @@ static Result_t Satisfy(bool (* judge)(uint8_t c), String_t *s) {
 	return Basis.OkRead1(s);
 }
 
-static Result_t Match(String_t *pat, String_t *s) {	
+static Result_t Space(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	return Parser.Char.Match(' ', s);
+}
+
+static Result_t Spaces0(String_t *s) {
+	return Combinator.Many0(Parser.Char.Space, s);
+}
+
+static Result_t Spaces1(String_t *s) {
+	return Combinator.Many0(Parser.Char.Space, s);
+}
+
+static Result_t LF(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	return Parser.Char.Match('\n', s);
+}
+
+static Result_t CRLF(String_t *s) {
+	if (s->GetLength(s) < 2) return Basis.Err(s);
+
+	return Parser.String.Match(String.New(u8"\r\n"), s);
+}
+
+static Result_t EndOfLine(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	return Combinator.Choise(LF, CRLF, s);
+}
+
+static Result_t Tab(String_t *s) {
+	if (s->IsEmpty(s)) return Basis.Err(s);
+
+	return Parser.Char.Match('\t', s);
+}
+
+static Result_t String_Match(String_t *pat, String_t *s) {	
 	if (s->IsEmpty(s)) return Basis.Err(s);
 
 	if (!s->StartsWith(s, pat)) return Basis.Err(s);
@@ -170,7 +170,7 @@ static Result_t Match(String_t *pat, String_t *s) {
 	};
 }
 
-static Result_t UnMatch(String_t *pat, String_t *s) {
+static Result_t String_UnMatch(String_t *pat, String_t *s) {
 	if (s->IsEmpty(s)) return Basis.Err(s);
 
 	if (s->StartsWith(s, pat)) return Basis.Err(s);
@@ -195,15 +195,11 @@ static Result_t String_OneOf(List_t *list, String_t *s) {
 
 _Parser Parser = {
 	.Char = {
+		.Match		= Match,
+		.UnMatch	= UnMatch,
 		.OneOf		= OneOf,
 		.NoneOf		= NoneOf,
-		.Space		= Space,
-		.Spaces0	= Spaces0,
-		.Spaces1	= Spaces1,
-		.LF			= LF,
-		.CRLF		= CRLF,
-		.EndOfLine	= EndOfLine,
-		.Tab		= Tab,
+
 		.Upper		= Upper,
 		.Lower		= Lower,
 		.AlphaNum	= AlphaNum,
@@ -211,15 +207,21 @@ _Parser Parser = {
 		.Digit		= Digit,
 		.HexDigit	= HexDigit,
 		.OctDigit	= OctDigit,
-		.Char		= Char,
-		.NonChar	= NonChar,
 		.Any		= Any,
 		.Satisfy	= Satisfy,
+
+		.Space		= Space,
+		.Spaces0	= Spaces0,
+		.Spaces1	= Spaces1,
+		.LF			= LF,
+		.CRLF		= CRLF,
+		.EndOfLine	= EndOfLine,
+		.Tab		= Tab,
 	},
 
 	.String = {
-		.Match		= Match,
-		.UnMatch	= UnMatch,
-		.OneOf		= String_OneOf,
+		.Match			= String_Match,
+		.UnMatch		= String_UnMatch,
+		.OneOf			= String_OneOf,
 	},
 };
