@@ -2,8 +2,6 @@
 
 #include <Parquet.h>
 
-#include "Token.h"
-
 typedef struct {
 	bool Succeeded;
 	int32_t ErrorLine;
