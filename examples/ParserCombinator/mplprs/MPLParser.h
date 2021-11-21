@@ -4,9 +4,11 @@
 
 typedef struct {
 	bool Succeeded;
-	int32_t ErrorLine;
 	String_t *Precipitate;
 	String_t *Subsequent;
+
+	int32_t ErrorLine;
+	String_t *ErrorMessage;
 } ParseResult_t;
 
 typedef struct {

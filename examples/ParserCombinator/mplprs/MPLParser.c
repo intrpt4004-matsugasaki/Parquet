@@ -371,7 +371,6 @@ static Result_t Choise6(Result_t (* fst)(String_t *), Result_t (* snd)(String_t 
 	return _fix(Choise6_body, s);
 }
 
-
 static Result_t Choise10(
 	Result_t (* p1)(String_t *), Result_t (* p2)(String_t *),
 	Result_t (* p3)(String_t *), Result_t (* p4)(String_t *),
@@ -411,7 +410,12 @@ static Result_t Many1(Result_t (* parser)(String_t *), String_t *s) {
 }
 
 static Result_t Parser_VarName(String_t *code) {
-	return Parser_Name(code);
+	Result_t r = Parser_Name(code);
+
+	if (r.Reply == Succeeded)
+		printf(u8" %s{var}", String.GetPrimitive(r.Precipitate));
+
+	return r;
 }
 
 static Result_t Parser_ProcName(String_t *code) {
@@ -424,7 +428,12 @@ static Result_t Parser_StdType(String_t *code) {
 	types->Add(types, String.New(u8"boolean"));
 	types->Add(types, String.New(u8"char"));
 
-	return Parser.String.OneOf(types, code);
+	Result_t r = Parser.String.OneOf(types, code);
+
+	if (r.Reply == Succeeded)
+		printf(u8" %s", String.GetPrimitive(r.Precipitate));
+
+	return r;
 }
 
 static Result_t Parser_AddOpr(String_t *code) {
@@ -464,8 +473,35 @@ static Result_t Parser_Const(String_t *code) {
 	);
 }
 
-static Result_t Parser_Var(String_t *code);
 static Result_t Parser_Expr(String_t *code);
+static Result_t Parser_Var(String_t *code) {
+	Result_t arrayIndexX(String_t *code) {
+		Result_t arrayIndex(String_t *code) {
+			Result_t open(String_t *code) {
+				return Parser.Char.Match('[', code);
+			}
+
+			Result_t close(String_t *code) {
+				return Parser.Char.Match(']', code);
+			}
+
+			return Bind3(
+				open, Parser_Expr, close,
+
+				code
+			);
+		}
+
+		return Combinator.Possibly(arrayIndex, code);
+	}
+
+	return Bind(
+		Parser_VarName, arrayIndexX,
+
+		code
+	);
+}
+
 static Result_t Parser_Factor(String_t *code) {
 	Result_t exprZ(String_t *code) {
 		Result_t open(String_t *code) {
@@ -537,34 +573,6 @@ static Result_t Parser_Term(String_t *code) {
 
 	return Bind(
 		Parser_Factor, adtnTerms0,
-
-		code
-	);
-}
-
-static Result_t Parser_Var(String_t *code) {
-	Result_t arrayIndexX(String_t *code) {
-		Result_t arrayIndex(String_t *code) {
-			Result_t open(String_t *code) {
-				return Parser.Char.Match('[', code);
-			}
-
-			Result_t close(String_t *code) {
-				return Parser.Char.Match(']', code);
-			}
-
-			return Bind3(
-				open, Parser_Expr, close,
-
-				code
-			);
-		}
-
-		return Combinator.Possibly(arrayIndex, code);
-	}
-
-	return Bind(
-		Parser_VarName, arrayIndexX,
 
 		code
 	);
@@ -965,7 +973,12 @@ static Result_t Parser_Stmt(String_t *code) {
 static Result_t Parser_VarNames(String_t *code) {
 	Result_t adtnVarNames(String_t *code) {
 		Result_t comma(String_t *code) {
-			return Parser.Char.Match(',', code);
+			Result_t r = Parser.Char.Match(',', code);
+
+			if (r.Reply == Succeeded)
+				printf(u8",");
+
+			return r;
 		}
 
 		return Bind(
@@ -1013,16 +1026,31 @@ static Result_t Parser_Type(String_t *code) {
 
 static Result_t Parser_VarDecl(String_t *code) {
 	Result_t var(String_t *code) {
-		return Parser.String.Match(String.New(u8"var"), code);
+		Result_t r = Parser.String.Match(String.New(u8"var"), code);
+
+		if (r.Reply == Succeeded)
+			printf(u8"\tvar");
+
+		return r;
 	}
 
 	Result_t VarDecl(String_t *code) {
 		Result_t colon(String_t *code) {
-			return Parser.Char.Match(':', code);
+			Result_t r = Parser.Char.Match(':', code);
+
+			if (r.Reply == Succeeded)
+				printf(u8" :");
+
+			return r;
 		}
 
 		Result_t semicolon(String_t *code) {
-			return Parser.Char.Match(';', code);
+			Result_t r = Parser.Char.Match(';', code);
+
+			if (r.Reply == Succeeded)
+				printf(u8";\n");
+
+			return r;
 		}
 
 		return Bind4(
@@ -1132,27 +1160,48 @@ static Result_t Parser_Block(String_t *code) {
 
 static Result_t Parser_Program(String_t *code) {
 	Result_t program(String_t *code) {
-		Parser.String.Match(String.New(u8"program"), code);
+		Result_t r = Parser.String.Match(String.New(u8"program"), code);
+
+		if (r.Reply == Succeeded)
+			printf(u8"program");
+
+		return r;
 	}
 
 	Result_t name(String_t *code) {
-		Result_t nonsemic(String_t *code) {
-			return Parser.Char.UnMatch(';', code);
-		}
+		Result_t r = Many1(Parser_Name, code);
 
-		return Many1(nonsemic, code);
+		if (r.Reply == Succeeded)
+			printf(u8" %s", String.GetPrimitive(r.Precipitate));
+
+		return r;
 	}
 
 	Result_t semicolon(String_t *code) {
-		return Parser.Char.Match(';', code);
+		Result_t r = Parser.Char.Match(';', code);
+
+		if (r.Reply == Succeeded)
+			printf(u8";\n");
+
+		return r;
 	}
 
 	Result_t end(String_t *code) {
-		return Parser.String.Match(String.New(u8"end"), code);
+		Result_t r = Parser.String.Match(String.New(u8"end"), code);
+
+		if (r.Reply == Succeeded)
+			printf(u8"end");
+
+		return r;
 	}
 
 	Result_t dot(String_t *code) {
-		return Parser.Char.Match('.', code);
+		Result_t r = Parser.Char.Match('.', code);
+	
+		if (r.Reply == Succeeded)
+			printf(u8".");
+
+		return r;
 	}
 
 	return Bind7(
@@ -1171,9 +1220,11 @@ static ParseResult_t Execute(String_t *code) {
 
 	return (ParseResult_t){
 		.Succeeded		= result.Reply == Succeeded,
-		.ErrorLine		= lineNum,
 		.Precipitate	= result.Precipitate,
 		.Subsequent		= result.Subsequent,
+
+		.ErrorLine		= lineNum,
+		.ErrorMessage	= String.New("error_msg")
 	};
 }
 
