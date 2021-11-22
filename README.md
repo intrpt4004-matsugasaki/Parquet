@@ -3,7 +3,7 @@ Compiler Creation Support Library in C
 - Basic Types (String, List) : ( [header](https://github.com/rot-E/Parquet/tree/main/include/Parquet/Base/) [source](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/Base/) [examples](https://github.com/rot-E/Parquet/tree/main/examples/Base/) )
 - Parser Combinator : ( [header](https://github.com/rot-E/Parquet/tree/main/include/Parquet/ParserCombinator/) [source](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/ParserCombinator/)  [examples](https://github.com/rot-E/Parquet/tree/main/examples/ParserCombinator/) )
 - AST
-- Assembly Code Generation
+- Assembly Code Generation (x64 Linux GNU Assembler, COMET-II CASL-II)
 - Executable Preparation : ( [header](https://github.com/rot-E/Parquet/tree/main/include/Parquet/ExecutablePreparer.h) [source](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/ExecutablePreparer.c)  [examples](https://github.com/rot-E/Parquet/tree/main/examples/ExecutablePreparer/) )
 
 ## build
