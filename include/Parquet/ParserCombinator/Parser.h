@@ -45,24 +45,25 @@ typedef struct {
  * Answer_t Parser(String_t *s, Processor_t p) {
  *     Answer_t a = {a combinated parser}(s, p);
  *
- *     p->{var} = {value};
- *     p->{function}({args});
+ *     p->var = {value};
+ *     p->function({args});
+ *     T var = p->function({args});
  *     ...
  *
  *     return a;
  * }
  *
  * typedef struct {
- *     {type} {var};
- *     void (* {function})({args});
+ *     T var;
+ *     T (* function)({args});
  * } Runner;
  *
- * void {function}({args}) {
+ * T function({args}) {
  *     ...	 
  * }
  * 
  * Runner *r = Memory.Allocate(sizeof(Runner));
- * r->{function} = {function};
+ * r->function = function;
  * Parser(String.New(u8"{text to parse}"), r);
  *
  *
