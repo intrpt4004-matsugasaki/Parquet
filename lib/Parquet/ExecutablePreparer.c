@@ -1,6 +1,6 @@
-#include "Parquet/ExecutableBinaryPreparer.h"
+#include "Parquet/ExecutablePreparer.h"
 
-static void Deploy(String_t *AsmFilePath, String_t *ObjFilePath, String_t *ExecFilePath) {
+static void DeployAll(String_t *AsmFilePath, String_t *ObjFilePath, String_t *ExecFilePath) {
 	/* Assemble */
 	String_t *cmd = String.Concat(String.New(u8"as -o "), ObjFilePath);
 	cmd = String.Concat(cmd, String.New(u8" "));
@@ -9,7 +9,7 @@ static void Deploy(String_t *AsmFilePath, String_t *ObjFilePath, String_t *ExecF
 	int32_t statusCode = system(String.GetPrimitive(cmd));
 
 	if (!WIFEXITED(statusCode))
-		Error.Panic(u8"\e[91m", u8"ExecutableBinaryPreparer#Deploy/as");
+		Error.Panic(u8"\e[91m", u8"ExecutablePreparer#Deploy/as");
 
 
 	/* Link */
@@ -20,12 +20,12 @@ static void Deploy(String_t *AsmFilePath, String_t *ObjFilePath, String_t *ExecF
 	statusCode = system(String.GetPrimitive(cmd));
 
 	if (!WIFEXITED(statusCode))
-		Error.Panic(u8"\e[91m", u8"ExecutableBinaryPreparer#Deploy/ld");
+		Error.Panic(u8"\e[91m", u8"ExecutablePreparer#Deploy/ld");
 }
 
-static void DeployExecutable(String_t *AsmFilePath, String_t *ExecFilePath) {
+static void Deploy(String_t *AsmFilePath, String_t *ExecFilePath) {
 	String_t *obj = String.Concat(ExecFilePath, String.New(u8".o"));
-	ExecutableBinaryPreparer.Deploy(AsmFilePath, obj, ExecFilePath);
+	ExecutablePreparer.DeployAll(AsmFilePath, obj, ExecFilePath);
 
 	/* Remove .o */
 	int32_t statusCode = system(String.GetPrimitive(
@@ -33,10 +33,10 @@ static void DeployExecutable(String_t *AsmFilePath, String_t *ExecFilePath) {
 	));
 
 	if (!WIFEXITED(statusCode))
-		Error.Panic(u8"\e[91m", u8"ExecutableBinaryPreparer#DeployExecutable/rm");
+		Error.Panic(u8"\e[91m", u8"ExecutablePreparer#DeployExecutable/rm");
 }
 
-_ExecutableBinaryPreparer ExecutableBinaryPreparer = {
-	.Deploy				= Deploy,
-	.DeployExecutable	= DeployExecutable,
+_ExecutablePreparer ExecutablePreparer = {
+	.DeployAll	= DeployAll,
+	.Deploy		= Deploy,
 };
