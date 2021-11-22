@@ -241,5 +241,5 @@ Answer_t Parser_Program(String_t *s, Processor_t p) {
 }
 
 void main(const int32_t argc, uint8_t *argv[]) {
-	Invoker.ParseTest(Parser_Program, String.FromFile(argv[1]), NULL);
+	Invoker.ParseTest(Parser_Program, String.FromFile(argv[1]));
 }

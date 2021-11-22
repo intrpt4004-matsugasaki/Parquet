@@ -950,7 +950,7 @@ static Answer_t Parser_CompoundStmt(String_t *s, Processor_t p) {
 }
 
 static Answer_t Parser_EmptyStmt(String_t *s, Processor_t p) {
-	return Basis.Ok(s);
+	return Basis.Ok(s, p);
 }
 
 static Answer_t Parser_Stmt(String_t *s, Processor_t p) {
@@ -1216,7 +1216,7 @@ static Answer_t Parser_Program(String_t *s, Processor_t p) {
 static ParseResult_t Execute(String_t *s) {
 	lineNum = 1;
 
-	Answer_t result = Invoker.Parse(Parser_Program, s, NULL);
+	Answer_t result = Invoker.Parse(Parser_Program, s);
 
 	return (ParseResult_t){
 		.Succeeded		= result.Reply == Reply.Ok,

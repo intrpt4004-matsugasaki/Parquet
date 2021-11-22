@@ -288,7 +288,7 @@ static LexResult_t Execute(String_t *s) {
 	tokens = List.New();
 	lineNum = 1;
 
-	Answer_t result = Invoker.Parse(Parser_Program, s, NULL);
+	Answer_t result = Invoker.Parse(Parser_Program, s);
 
 	return (LexResult_t){
 		.Succeeded		= String.IsEmpty(result.Subsequent),
