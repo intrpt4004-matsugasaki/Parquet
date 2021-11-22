@@ -29,8 +29,8 @@ typedef struct {
  * [1] Parser definition:
  *  A parser is a function
  *   - which takes
- *		~ a string 's' of String_t type type to parse
- *		~ a processor 'p' of Processor_t (= void *; generic pointer) type to do arbitrary processing
+ *    ~ a string 's' of String_t type to parse
+ *    ~ a processor 'p' of Processor_t (= void *; generic pointer) type to do arbitrary processing
  *     as arguments.
  *   - which returns a value of Answer_t type as parsing result.
  *
