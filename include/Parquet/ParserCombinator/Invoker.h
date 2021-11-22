@@ -1,12 +1,20 @@
 #pragma once
 
 #include "Parquet/Base/String.h"
-#include "Parquet/ParserCombinator/Result.h"
+#include "Parquet/ParserCombinator/Parser.h"
 
 typedef struct {
-	Result_t (* Parse)(Result_t (* parser)(String_t *), String_t *);
-	void (* Invoke)(Result_t (* parser)(String_t *), String_t *);
-	void (* ParseTest)(Result_t (* parser)(String_t *), String_t *);
+	Answer_t (* Parse)(
+		Answer_t (* parser)(String_t *, Processor_t),
+		String_t *, Processor_t);
+
+	void (* Invoke)(
+		Answer_t (* parser)(String_t *, Processor_t),
+		String_t *, Processor_t);
+
+	void (* ParseTest)(
+		Answer_t (* parser)(String_t *, Processor_t),
+		String_t *, Processor_t);
 } _Invoker;
 
 extern _Invoker Invoker;

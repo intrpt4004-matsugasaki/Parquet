@@ -14,9 +14,10 @@ target_sources(Parquet
     Parquet/Base/String.c
     Parquet/Base/List.c
 
+    Parquet/ParserCombinator/Parser.c
     Parquet/ParserCombinator/Basis.c
 	Parquet/ParserCombinator/Combinator.c
-	Parquet/ParserCombinator/Parser.c
+	Parquet/ParserCombinator/Parsers.c
     Parquet/ParserCombinator/Invoker.c
 
     Parquet/ExecutableBinaryPreparer.c

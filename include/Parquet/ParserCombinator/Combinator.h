@@ -1,84 +1,91 @@
 #pragma once
 
 #include "Parquet/Base/String.h"
-#include "Parquet/ParserCombinator/Result.h"
+#include "Parquet/ParserCombinator/Parser.h"
 #include "Parquet/ParserCombinator/Basis.h"
 
 typedef struct {
-	Result_t (* Bind)(
-		Result_t (* parser1)(String_t *),
-		Result_t (* parser2)(String_t *),
-		String_t *);
+	Answer_t (* Bind)(
+		Answer_t (* parser1)(String_t *, Processor_t),
+		Answer_t (* parser2)(String_t *, Processor_t),
+		String_t *, Processor_t);
 
-	Result_t (* Bind3)(
-		Result_t (* parser1)(String_t *),
-		Result_t (* parser2)(String_t *),
-		Result_t (* parser3)(String_t *),
-		String_t *);
+	Answer_t (* Bind3)(
+		Answer_t (* parser1)(String_t *, Processor_t),
+		Answer_t (* parser2)(String_t *, Processor_t),
+		Answer_t (* parser3)(String_t *, Processor_t),
+		String_t *, Processor_t);
 
-	Result_t (* Bind4)(
-		Result_t (* parser1)(String_t *),
-		Result_t (* parser2)(String_t *),
-		Result_t (* parser3)(String_t *),
-		Result_t (* parser4)(String_t *),
-		String_t *);
+	Answer_t (* Bind4)(
+		Answer_t (* parser1)(String_t *, Processor_t),
+		Answer_t (* parser2)(String_t *, Processor_t),
+		Answer_t (* parser3)(String_t *, Processor_t),
+		Answer_t (* parser4)(String_t *, Processor_t),
+		String_t *, Processor_t);
 
-	Result_t (* Bind5)(
-		Result_t (* parser1)(String_t *),
-		Result_t (* parser2)(String_t *),
-		Result_t (* parser3)(String_t *),
-		Result_t (* parser4)(String_t *),
-		Result_t (* parser5)(String_t *),
-		String_t *);
+	Answer_t (* Bind5)(
+		Answer_t (* parser1)(String_t *, Processor_t),
+		Answer_t (* parser2)(String_t *, Processor_t),
+		Answer_t (* parser3)(String_t *, Processor_t),
+		Answer_t (* parser4)(String_t *, Processor_t),
+		Answer_t (* parser5)(String_t *, Processor_t),
+		String_t *, Processor_t);
 
-	Result_t (* Bind6)(
-		Result_t (* parser1)(String_t *),
-		Result_t (* parser2)(String_t *),
-		Result_t (* parser3)(String_t *),
-		Result_t (* parser4)(String_t *),
-		Result_t (* parser5)(String_t *),
-		Result_t (* parser6)(String_t *),
-		String_t *);
+	Answer_t (* Bind6)(
+		Answer_t (* parser1)(String_t *, Processor_t),
+		Answer_t (* parser2)(String_t *, Processor_t),
+		Answer_t (* parser3)(String_t *, Processor_t),
+		Answer_t (* parser4)(String_t *, Processor_t),
+		Answer_t (* parser5)(String_t *, Processor_t),
+		Answer_t (* parser6)(String_t *, Processor_t),
+		String_t *, Processor_t);
 
-	Result_t (* Choise)(
-		Result_t (* parser1)(String_t *),
-		Result_t (* parser2)(String_t *),
-		String_t *);
+	Answer_t (* Choise)(
+		Answer_t (* parser1)(String_t *, Processor_t),
+		Answer_t (* parser2)(String_t *, Processor_t),
+		String_t *, Processor_t);
 
-	Result_t (* Choise3)(
-		Result_t (* parser1)(String_t *),
-		Result_t (* parser2)(String_t *),
-		Result_t (* parser3)(String_t *),
-		String_t *);
+	Answer_t (* Choise3)(
+		Answer_t (* parser1)(String_t *, Processor_t),
+		Answer_t (* parser2)(String_t *, Processor_t),
+		Answer_t (* parser3)(String_t *, Processor_t),
+		String_t *, Processor_t);
 
-	Result_t (* Choise4)(
-		Result_t (* parser1)(String_t *),
-		Result_t (* parser2)(String_t *),
-		Result_t (* parser3)(String_t *),
-		Result_t (* parser4)(String_t *),
-		String_t *);
+	Answer_t (* Choise4)(
+		Answer_t (* parser1)(String_t *, Processor_t),
+		Answer_t (* parser2)(String_t *, Processor_t),
+		Answer_t (* parser3)(String_t *, Processor_t),
+		Answer_t (* parser4)(String_t *, Processor_t),
+		String_t *, Processor_t);
 
-	Result_t (* Choise5)(
-		Result_t (* parser1)(String_t *),
-		Result_t (* parser2)(String_t *),
-		Result_t (* parser3)(String_t *),
-		Result_t (* parser4)(String_t *),
-		Result_t (* parser5)(String_t *),
-		String_t *);
+	Answer_t (* Choise5)(
+		Answer_t (* parser1)(String_t *, Processor_t),
+		Answer_t (* parser2)(String_t *, Processor_t),
+		Answer_t (* parser3)(String_t *, Processor_t),
+		Answer_t (* parser4)(String_t *, Processor_t),
+		Answer_t (* parser5)(String_t *, Processor_t),
+		String_t *, Processor_t);
 
-	Result_t (* Choise6)(
-		Result_t (* parser1)(String_t *),
-		Result_t (* parser2)(String_t *),
-		Result_t (* parser3)(String_t *),
-		Result_t (* parser4)(String_t *),
-		Result_t (* parser5)(String_t *),
-		Result_t (* parser6)(String_t *),
-		String_t *);
+	Answer_t (* Choise6)(
+		Answer_t (* parser1)(String_t *, Processor_t),
+		Answer_t (* parser2)(String_t *, Processor_t),
+		Answer_t (* parser3)(String_t *, Processor_t),
+		Answer_t (* parser4)(String_t *, Processor_t),
+		Answer_t (* parser5)(String_t *, Processor_t),
+		Answer_t (* parser6)(String_t *, Processor_t),
+		String_t *, Processor_t);
 
-	Result_t (* Many0)(Result_t (* parser)(String_t *), String_t *);
-	Result_t (* Many1)(Result_t (* parser)(String_t *), String_t *);
+	Answer_t (* Many0)(
+		Answer_t (* parser)(String_t *, Processor_t),
+		String_t *, Processor_t);
 
-	Result_t (* Possibly)(Result_t (* parser)(String_t *), String_t *);
+	Answer_t (* Many1)(
+		Answer_t (* parser)(String_t *, Processor_t),
+		String_t *, Processor_t);
+
+	Answer_t (* Possibly)(
+		Answer_t (* parser)(String_t *, Processor_t),
+		String_t *, Processor_t);
 } _Combinator;
 
 extern _Combinator Combinator;

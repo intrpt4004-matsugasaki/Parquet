@@ -1,57 +1,57 @@
 #include <Parquet.h>
 
-Result_t Parser_Comment(String_t *code) {
-	Result_t line(String_t *code) {
-		Result_t open(String_t *code) {
-			return Parser.Char.Match('{', code);
+Answer_t Parser_Comment(String_t *s, Processor_t p) {
+	Answer_t line(String_t *s, Processor_t p) {
+		Answer_t open(String_t *s, Processor_t p) {
+			return Parsers.Char.Match('{', s, p);
 		}
 
-		Result_t nonClose(String_t *code) {
-			return Parser.Char.NoneOf(
+		Answer_t nonClose(String_t *s, Processor_t p) {
+			return Parsers.Char.NoneOf(
 				String.New(u8"}"),
-				code
+				s, p
 			);
 		}
 
-		Result_t content(String_t *code) {
-			return Combinator.Many0(nonClose, code);
+		Answer_t content(String_t *s, Processor_t p) {
+			return Combinator.Many0(nonClose, s, p);
 		}
 
-		Result_t close(String_t *code) {
-			return Parser.Char.Match('}', code);
+		Answer_t close(String_t *s, Processor_t p) {
+			return Parsers.Char.Match('}', s, p);
 		}
 
 		return Combinator.Bind3(
 			open,
 			content,
 			close,
-			code
+			s, p
 		);
 	}
 
-	Result_t block(String_t *code) {
-		Result_t open(String_t *code) {
-			return Parser.String.Match(
+	Answer_t block(String_t *s, Processor_t p) {
+		Answer_t open(String_t *s, Processor_t p) {
+			return Parsers.String.Match(
 				String.New(u8"/*"),
-				code
+				s, p
 			);
 		}
 
-		Result_t nonClose(String_t *code) {
-			return Parser.String.UnMatch(
+		Answer_t nonClose(String_t *s, Processor_t p) {
+			return Parsers.String.UnMatch(
 				String.New(u8"*/"),
-				code
+				s, p
 			);
 		}
 
-		Result_t content(String_t *code) {
-			return Combinator.Many0(nonClose, code);
+		Answer_t content(String_t *s, Processor_t p) {
+			return Combinator.Many0(nonClose, s, p);
 		}
 
-		Result_t close(String_t *code) {
-			return Parser.String.Match(
+		Answer_t close(String_t *s, Processor_t p) {
+			return Parsers.String.Match(
 				String.New(u8"*/"),
-				code
+				s, p
 			);
 		}
 
@@ -59,35 +59,35 @@ Result_t Parser_Comment(String_t *code) {
 			open,
 			content,
 			close,
-			code
+			s, p
 		);
 	}
 
-	return Combinator.Choise(line, block, code);
+	return Combinator.Choise(line, block, s, p);
 }
 
-static Result_t Parser_Separator(String_t *code) {
-	Result_t space_tab(String_t *code) {
+static Answer_t Parser_Separator(String_t *s, Processor_t p) {
+	Answer_t space_tab(String_t *s, Processor_t p) {
 		List_t *seps = List.New();
 		seps->Add(seps, String.New(u8" "));
 		seps->Add(seps, String.New(u8"\t"));
 
-		return Parser.String.OneOf(
+		return Parsers.String.OneOf(
 			seps,
-			code
+			s, p
 		);
 	}
 
-	Result_t newline(String_t *code) {
+	Answer_t newline(String_t *s, Processor_t p) {
 		List_t *nls = List.New();
 		nls->Add(nls, String.New(u8"\r\n"));
 		nls->Add(nls, String.New(u8"\r"));
 		nls->Add(nls, String.New(u8"\n\r"));
 		nls->Add(nls, String.New(u8"\n"));
 
-		return Parser.String.OneOf(
+		return Parsers.String.OneOf(
 			nls,
-			code
+			s, p
 		);
 	}
 
@@ -95,19 +95,19 @@ static Result_t Parser_Separator(String_t *code) {
 		space_tab,
 		newline,
 		Parser_Comment,
-		code
+		s, p
 	); 
 }
 
-Result_t Parser_Digit(String_t *code) {
-	return Parser.Char.Digit(code);
+Answer_t Parser_Digit(String_t *s, Processor_t p) {
+	return Parsers.Char.Digit(s, p);
 }
 
-Result_t Parser_Alphabet(String_t *code) {
-	return Parser.Char.Letter(code);
+Answer_t Parser_Alphabet(String_t *s, Processor_t p) {
+	return Parsers.Char.Letter(s, p);
 }
 
-Result_t Parser_Symbol(String_t *code) {
+Answer_t Parser_Symbol(String_t *s, Processor_t p) {
 	List_t *syms = List.New();
 	syms->Add(syms, String.New(u8"+"));
 	syms->Add(syms, String.New(u8"-"));
@@ -128,41 +128,41 @@ Result_t Parser_Symbol(String_t *code) {
 	syms->Add(syms, String.New(u8":"));
 	syms->Add(syms, String.New(u8";"));
 
-	return Parser.String.OneOf(
+	return Parsers.String.OneOf(
 		syms,
-		code
+		s, p
 	);
 }
 
-Result_t Parser_String(String_t *code) {
-	Result_t apostr(String_t *code) {
-		return Parser.Char.Match('\'', code);
+Answer_t Parser_String(String_t *s, Processor_t p) {
+	Answer_t apostr(String_t *s, Processor_t p) {
+		return Parsers.Char.Match('\'', s, p);
 	}
 
-	Result_t nonapostr(String_t *code) {
-		return Parser.Char.NoneOf(
+	Answer_t nonapostr(String_t *s, Processor_t p) {
+		return Parsers.Char.NoneOf(
 			String.New(u8"'"),
-			code
+			s, p
 		);
 	}
 
-	Result_t content(String_t *code) {
-		return Combinator.Many0(nonapostr, code);
+	Answer_t content(String_t *s, Processor_t p) {
+		return Combinator.Many0(nonapostr, s, p);
 	}
 
 	return Combinator.Bind3(
 		apostr,
 		content,
 		apostr,
-		code
+		s, p
 	);
 }
 
-Result_t Parser_UInt(String_t *code) {
-	return Combinator.Many1(Parser_Digit, code);
+Answer_t Parser_UInt(String_t *s, Processor_t p) {
+	return Combinator.Many1(Parser_Digit, s, p);
 }
 
-Result_t Parser_Keyword(String_t *code) {
+Answer_t Parser_Keyword(String_t *s, Processor_t p) {
 	List_t *keywords = List.New();
 	keywords->Add(keywords, String.New(u8"program"));
 	keywords->Add(keywords, String.New(u8"var"));
@@ -191,55 +191,55 @@ Result_t Parser_Keyword(String_t *code) {
 	keywords->Add(keywords, String.New(u8"false"));
 	keywords->Add(keywords, String.New(u8"break"));
 
-	return Parser.String.OneOf(
+	return Parsers.String.OneOf(
 		keywords,
-		code
+		s, p
 	);
 }
 
-Result_t Parser_Name(String_t *code) {
-	Result_t al_num(String_t *code) {
+Answer_t Parser_Name(String_t *s, Processor_t p) {
+	Answer_t al_num(String_t *s, Processor_t p) {
 		return Combinator.Choise(
 			Parser_Alphabet,
 			Parser_Digit,
-			code
+			s, p
 		);
 	}
 
-	Result_t al_num_Rep(String_t *code) {
-		return Combinator.Many0(al_num, code);
+	Answer_t al_num_Rep(String_t *s, Processor_t p) {
+		return Combinator.Many0(al_num, s, p);
 	}
 
 	return Combinator.Bind(
 		al_num,
 		al_num_Rep,
-		code
+		s, p
 	);
 }
 
-static Result_t Parser_Token(String_t *code) {
+static Answer_t Parser_Token(String_t *s, Processor_t p) {
 	return Combinator.Choise5(
 		Parser_Symbol,
 		Parser_Keyword,
 		Parser_UInt,
 		Parser_String,
 		Parser_Name,
-		code
+		s, p
 	);
 }
 
-Result_t Parser_Program(String_t *code) {
-	Result_t tok_sep(String_t *code) {
+Answer_t Parser_Program(String_t *s, Processor_t p) {
+	Answer_t tok_sep(String_t *s, Processor_t p) {
 		return Combinator.Choise(
 			Parser_Token,
 			Parser_Separator,
-			code
+			s, p
 		);
 	}
 
-	return Combinator.Many0(tok_sep, code);
+	return Combinator.Many0(tok_sep, s, p);
 }
 
 void main(const int32_t argc, uint8_t *argv[]) {
-	Invoker.ParseTest(Parser_Program, String.FromFile(argv[1]));
+	Invoker.ParseTest(Parser_Program, String.FromFile(argv[1]), NULL);
 }

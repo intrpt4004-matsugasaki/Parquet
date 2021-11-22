@@ -1,47 +1,63 @@
 #pragma once
 
-#include <ctype.h>
-
 #include "Parquet/Base/String.h"
-#include "Parquet/Base/List.h"
-#include "Parquet/ParserCombinator/Result.h"
-#include "Parquet/ParserCombinator/Basis.h"
-#include "Parquet/ParserCombinator/Combinator.h"
+
+typedef void *Processor_t;
+
+typedef enum {
+	Reply_Ok, Reply_Err
+} __Reply;
+
+typedef int32_t Tag;
+typedef struct {
+	Tag Ok;
+	Tag Err;
+} _Reply;
+
+extern _Reply Reply;
 
 typedef struct {
-	Result_t (* Match)(uint8_t c, String_t *);
-	Result_t (* UnMatch)(uint8_t c, String_t *);
-	Result_t (* OneOf)(String_t *list, String_t *);
-	Result_t (* NoneOf)(String_t *list, String_t *);
+	__Reply Reply;
+	String_t *Precipitate;
+	String_t *Subsequent;
+} Answer_t;
 
-	Result_t (* Upper)(String_t *);
-	Result_t (* Lower)(String_t *);
-	Result_t (* AlphaNum)(String_t *);
-	Result_t (* Letter)(String_t *);
-	Result_t (* Digit)(String_t *);
-	Result_t (* HexDigit)(String_t *);
-	Result_t (* OctDigit)(String_t *);
-	Result_t (* Any)(String_t *);
-	Result_t (* Satisfy)(bool (* judge)(uint8_t c), String_t *);
-
-	Result_t (* Space)(String_t *);
-	Result_t (* Spaces0)(String_t *);
-	Result_t (* Spaces1)(String_t *);
-	Result_t (* LF)(String_t *);
-	Result_t (* CRLF)(String_t *);
-	Result_t (* EndOfLine)(String_t *);
-	Result_t (* Tab)(String_t *);
-} _Char;
-
-typedef struct {
-	Result_t (* Match)(String_t *pat, String_t *s);
-	Result_t (* UnMatch)(String_t *pat, String_t *s);
-	Result_t (* OneOf)(List_t *list, String_t *);
-} _String_;
-
-typedef struct {
-	_Char Char;
-	_String_ String;
-} _Parser;
-
-extern _Parser Parser;
+/*
+ * [1] Parser definition:
+ *  A parser is a function
+ *   - which takes
+ 		~ a string 's' of String_t type type to parse
+		~ a processor 'p' of Processor_t (= void *; generic pointer) type to do arbitrary processing
+	   as arguments.
+ *   - which returns a value of Answer_t type as parsing result.
+ *
+ * Answer_t Parser(String_t *s, Processor_t p) {
+ *     return {a combinated parser}(s, p);
+ * }
+ *
+ *
+ * [2] If you need to do some processing like {AST building, logging, ...} along with the parse:
+ *
+ * Answer_t Parser(String_t *s, Processor_t p) {
+ *     Answer_t a = {a combinated parser}(s, p);
+ *
+ *     p->{var} = {value};
+ *     p->{function}({args});
+ *     ...
+ *
+ *     return a;
+ * }
+ *
+ * typedef struct {
+ *     {type} {var};
+ *     void (* {function})({args});
+ * } Runner;
+ *
+ * void {function}({args}) {
+ *     ...	 
+ * }
+ * 
+ * Runner *r = Memory.Allocate(sizeof(Runner));
+ * r->{function} = {function};
+ * Parser(String.New(u8"{text to parse}"), r);
+ */

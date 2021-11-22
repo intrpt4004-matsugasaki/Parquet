@@ -2,55 +2,55 @@
 
 String_t *ident;
 
-Result_t declVar(String_t *s) {
-	Result_t var_space(String_t *s) {
-		Result_t var(String_t *s) {
-			return Parser.String.Match(
+Answer_t declVar(String_t *s, Processor_t p) {
+	Answer_t var_space(String_t *s, Processor_t p) {
+		Answer_t var(String_t *s, Processor_t p) {
+			return Parsers.String.Match(
 				String.New(u8"var"),
-				s
+				s, p
 			);
 		}
 
 		return Combinator.Bind(
 			var,
-			Parser.Char.Space,
-			s
+			Parsers.Char.Space,
+			s, p
 		);
 	}
 
-	Result_t varname(String_t *s) {
-		Result_t alnums0(String_t *s) {
+	Answer_t varname(String_t *s, Processor_t p) {
+		Answer_t alnums0(String_t *s, Processor_t p) {
 			return Combinator.Many0(
-				Parser.Char.AlphaNum,
-				s
+				Parsers.Char.AlphaNum,
+				s, p
 			);
 		}
 
 		return Combinator.Bind(
-			Parser.Char.Lower,
+			Parsers.Char.Lower,
 			alnums0,
-			s
+			s, p
 		);
 	}
 
-	Result_t semic(String_t *s) {
-		return Parser.Char.Match(';', s);
+	Answer_t semic(String_t *s, Processor_t p) {
+		return Parsers.Char.Match(';', s, p);
 	}
 
-	Result_t result = Invoker.Parse(var_space, s);
-	if (result.Reply == Failed) return Basis.Err(s);
+	Answer_t result = Invoker.Parse(var_space, s, p);
+	if (result.Reply == Reply.Err) return Basis.Err(s);
 	String_t *precip = result.Precipitate;
 
-	result = Invoker.Parse(varname, result.Subsequent);
-	if (result.Reply == Failed) return Basis.Err(s);
+	result = Invoker.Parse(varname, result.Subsequent, p);
+	if (result.Reply == Reply.Err) return Basis.Err(s);
 	precip = String.Concat(precip, result.Precipitate);
 	ident = result.Precipitate;
 
-	result = Invoker.Parse(semic, result.Subsequent);
-	if (result.Reply == Failed) return Basis.Err(s);
+	result = Invoker.Parse(semic, result.Subsequent, p);
+	if (result.Reply == Reply.Err) return Basis.Err(s);
 
-	return (Result_t){
-		.Reply			= Succeeded,
+	return (Answer_t){
+		.Reply			= Reply.Ok,
 		.Precipitate	= String.Concat(precip, result.Precipitate),
 		.Subsequent		= result.Subsequent,
 	};
@@ -60,18 +60,18 @@ void main() {
 	String_t *s = String.New(u8"var mIkO352;");
 
 	/* 簡易テスタ */
-	Invoker.ParseTest(declVar, s); // Ok
+	Invoker.ParseTest(declVar, s, NULL); // Ok
 	printf(u8"varname: %s\n", String.GetPrimitive(ident));
 
 	/* 解析動作のみ */
-	Invoker.Invoke(declVar, String.New(u8"var parser3;")); // Ok
+	Invoker.Invoke(declVar, String.New(u8"var parser3;"), NULL); // Ok
 	printf(u8"varname: %s\n", String.GetPrimitive(ident));
 
-	Invoker.ParseTest(declVar, String.New(u8"var Parser;")); // error
-	Invoker.ParseTest(declVar, String.New(u8"var 9arser;")); // error
-	Invoker.ParseTest(declVar, String.New(u8"var parser ;")); // error
-	Invoker.ParseTest(declVar, String.New(u8"var  parser ;")); // error
-	Invoker.ParseTest(declVar, String.New(u8" var parser ;")); // error
-	Invoker.ParseTest(declVar, String.New(u8"vaa parser ;")); // error
-	Invoker.ParseTest(declVar, String.New(u8"var parser; ")); // incorrect
+	Invoker.ParseTest(declVar, String.New(u8"var Parser;"), NULL); // error
+	Invoker.ParseTest(declVar, String.New(u8"var 9arser;"), NULL); // error
+	Invoker.ParseTest(declVar, String.New(u8"var parser ;"), NULL); // error
+	Invoker.ParseTest(declVar, String.New(u8"var  parser ;"), NULL); // error
+	Invoker.ParseTest(declVar, String.New(u8" var parser ;"), NULL); // error
+	Invoker.ParseTest(declVar, String.New(u8"vaa parser ;"), NULL); // error
+	Invoker.ParseTest(declVar, String.New(u8"var parser; "), NULL); // incorrect
 }

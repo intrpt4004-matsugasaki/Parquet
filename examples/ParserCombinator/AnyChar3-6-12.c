@@ -1,33 +1,33 @@
 #include <Parquet.h>
 
-Result_t anyChar3(String_t *s) {
+Answer_t anyChar3(String_t *s, Processor_t p) {
 	return Combinator.Bind3(
-		Parser.Char.Any,
-		Parser.Char.Any,
-		Parser.Char.Any,
-		s
+		Parsers.Char.Any,
+		Parsers.Char.Any,
+		Parsers.Char.Any,
+		s, p
 	);
 }
 
-Result_t anyChar6(String_t *s) {
+Answer_t anyChar6(String_t *s, Processor_t p) {
 	return Combinator.Bind(
 		anyChar3,
 		anyChar3,
-		s
+		s, p
 	);
 }
 
-Result_t anyChar12(String_t *s) {
+Answer_t anyChar12(String_t *s, Processor_t p) {
 	return Combinator.Bind(
 		anyChar6,
 		anyChar6,
-		s
+		s, p
 	);
 }
 
 void main() {
 	String_t *s = String.New(u8"var123");
-	Invoker.ParseTest(anyChar3, s);
-	Invoker.ParseTest(anyChar6, s);
-	Invoker.ParseTest(anyChar12, s); // error
+	Invoker.ParseTest(anyChar3, s, NULL);
+	Invoker.ParseTest(anyChar6, s, NULL);
+	Invoker.ParseTest(anyChar12, s, NULL); // error
 }
