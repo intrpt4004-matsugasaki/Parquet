@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Parquet/Base/String.h"
+#include "Parquet/Base/Tag.h"
 
 typedef void *Processor_t;
 
@@ -8,7 +9,6 @@ typedef enum {
 	Reply_Ok, Reply_Err
 } __Reply;
 
-typedef int32_t Tag;
 typedef struct {
 	Tag Ok;
 	Tag Err;
