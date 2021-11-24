@@ -1,6 +1,6 @@
 #include "MPLLexer.h"
 
-String_t *Token_GetTypeString(Token_t *t) {
+String_t *Token_TypeString(Token_t *t) {
 	switch (t->GetType(t)) {
 		case Token_Name:		return String.New(u8"Name");
 		case Token_Keyword:		return String.New(u8"Keyword");
