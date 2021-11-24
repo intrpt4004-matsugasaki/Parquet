@@ -20,6 +20,9 @@ target_sources(Parquet
 	Parquet/ParserCombinator/Parsers.c
     Parquet/ParserCombinator/Invoker.c
 
+    Parquet/ParserCombinator/Processors/TokenCollector/Token.c
+    Parquet/ParserCombinator/Processors/TokenCollector/TokenCollector.c
+
     Parquet/ExecutablePreparer.c
 )
 

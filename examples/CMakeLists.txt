@@ -49,7 +49,7 @@ target_link_libraries(MPL
     Parquet
 )
 
-add_executable(mpltok ParserCombinator/mpltok/mpltok.c ParserCombinator/mpltok/MPLLexer.c ParserCombinator/mpltok/Token.c)
+add_executable(mpltok ParserCombinator/mpltok/mpltok.c ParserCombinator/mpltok/MPLLexer.c)
 target_link_libraries(mpltok
     Parquet
 )

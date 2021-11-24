@@ -5,8 +5,7 @@
 #include <sys/mman.h>
 
 #include "Parquet/Base/Error.h"
-
-#define any void
+#include "Parquet/Base/Any.h"
 
 typedef struct {
 	any *(* Allocate)(const size_t size);

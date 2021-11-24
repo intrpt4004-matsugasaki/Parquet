@@ -1,17 +1,19 @@
 #pragma once
 
-#include "Parquet/Base/String.h"
+#include "Parquet/Base/Any.h"
 #include "Parquet/Base/Tag.h"
+#include "Parquet/Base/String.h"
 
-typedef void *Processor_t;
+typedef any *Processor_t;
+//typedef any Processor_t;
 
 typedef enum {
 	Reply_Ok, Reply_Err
 } __Reply;
 
 typedef struct {
-	Tag Ok;
-	Tag Err;
+	tag Ok;
+	tag Err;
 } _Reply;
 
 extern _Reply Reply;

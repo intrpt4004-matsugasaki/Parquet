@@ -1,3 +1,5 @@
 #pragma once
 
-typedef int32_t Tag;
+#include <stdint.h>
+
+typedef int32_t tag;
