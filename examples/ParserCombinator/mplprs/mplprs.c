@@ -1,14 +1,35 @@
 #include <Parquet.h>
 
+#include "MPLLexer.h"
 #include "MPLParser.h"
 
 void main(const int32_t argc, uint8_t *argv[]) {
-	MPLParser.Execute(String.FromFile(argv[1]));
+	/* check args */
+	if (argc != 2) {
+		printf("Usage:  $ ./mplprs [FILE]\n\n");
+		exit(EXIT_FAILURE);
+	}
 
-/*
+	/* tokenise */
+	Answer_t r = Invoker.Invoke(MPLLexer.Parser_Program, String.FromFile(argv[1]), TokenCollector.New());
+	TokenCollector_t *collector = (TokenCollector_t *)(r.Processor);
+
+	if (r.Reply == Reply.Err) {
+		printf("\e[91m[error]\e[0m tokenise failed at line %d.\n", collector->GetLine(collector));
+		printf("\e[4m                                                                      \e[0m\n");
+		printf("\e[2m%s\e[0m", String.GetPrimitive(r.Precipitate));
+		printf("\e[1m\e[3m\e[4m\e[6m%c\e[0m\n", String.GetCharAt(r.Subsequent, 0));
+		exit(EXIT_FAILURE);
+	}
+
+	/* parse */
+	List_t *tokens = TokenCollector.Get(collector);
+	// ListAnswer_t a = ListInvoker.Invoke(Parser_Program, tokens, NULL);
+
+	// old...
 	ParseResult_t res = MPLParser.Execute(String.FromFile(argv[1]));
 
-	if (!res.Succeeded) {
+	/*if (!res.Succeeded) {
 		printf("\e[91m[error]\e[0m parse failed at line %d.\n\n", res.ErrorLine);
 		printf("\e[2m%s\e[0m", String.GetPrimitive(res.Precipitate));
 		//printf("\e[1m\e[3m\e[4m\e[6m%c\e[0m\n", String.GetCharAt(res.Subsequent, 0));
@@ -18,6 +39,5 @@ void main(const int32_t argc, uint8_t *argv[]) {
 	}
 
 	printf("\e[2m%s\e[0m", String.GetPrimitive(res.Precipitate));
-	printf("\e[1m\e[3m\e[4m\e[6m%c\e[0m\n", String.GetCharAt(res.Subsequent, 0));
-*/
+	printf("\e[1m\e[3m\e[4m\e[6m%c\e[0m\n", String.GetCharAt(res.Subsequent, 0));*/
 }

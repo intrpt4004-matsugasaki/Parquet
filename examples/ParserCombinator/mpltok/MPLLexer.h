@@ -10,7 +10,7 @@ typedef enum {
 	Token_Symbol,
 } Token_Type;
 
-String_t *Token_TypeString(Token_t *t);
+String_t *TokenTypeString(Token_t *t);
 
 Answer_t Parser_Comment(String_t *s, Processor_t *p);
 Answer_t Parser_Separator(String_t *s, Processor_t *p);

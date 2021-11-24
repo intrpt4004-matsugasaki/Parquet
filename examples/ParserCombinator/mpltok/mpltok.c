@@ -25,7 +25,7 @@ void main(const int32_t argc, uint8_t *argv[]) {
 
 		printf("(%s)[%s %d] ",
 			String.GetPrimitive(tkn->GetEntity(tkn)),
-			String.GetPrimitive(Token_TypeString(tkn)),
+			String.GetPrimitive(TokenTypeString(tkn)),
 			tkn->GetLine(tkn)
 		);
 	}
