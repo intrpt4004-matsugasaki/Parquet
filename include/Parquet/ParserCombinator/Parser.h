@@ -4,8 +4,7 @@
 #include "Parquet/Base/Tag.h"
 #include "Parquet/Base/String.h"
 
-typedef any *Processor_t;
-//typedef any Processor_t;
+typedef any Processor_t;
 
 typedef enum {
 	Reply_Ok, Reply_Err
@@ -24,7 +23,7 @@ typedef struct {
 	String_t *Precipitate;
 	String_t *Subsequent;
 
-	Processor_t Processor;
+	Processor_t *Processor;
 } Answer_t;
 
 /**
@@ -32,11 +31,11 @@ typedef struct {
  *  A parser is a function
  *   - which takes
  *    ~ a string 's' of String_t type to parse
- *    ~ a processor 'p' of Processor_t (= void *; generic pointer) type to do arbitrary processing
+ *    ~ a processor 'p' of Processor_t *(= any * = void *; generic pointer) type to do arbitrary processing
  *     as arguments.
  *   - which returns a value of Answer_t type as parsing result.
  *
- * Answer_t Parser(String_t *s, Processor_t p) {
+ * Answer_t Parser(String_t *s, Processor_t *p) {
  *     return {a combinated parser}(s, p);
  * }
  *
@@ -44,7 +43,7 @@ typedef struct {
  *
  * [2] If you need to do some processing like {AST building, logging, ...} along with the parse:
  *
- * Answer_t Parser(String_t *s, Processor_t p) {
+ * Answer_t Parser(String_t *s, Processor_t *p) {
  *     Answer_t a = {a combinated parser}(s, p);
  *
  *     p->var = {value};
@@ -66,7 +65,7 @@ typedef struct {
  * 
  * Runner *r = Memory.Allocate(sizeof(Runner));
  * r->function = function;
- * Parser(String.New(u8"{text to parse}"), r);
+ * Answer_t a = Parser(String.New(u8"{text to parse}"), r);
  *
  *
  *

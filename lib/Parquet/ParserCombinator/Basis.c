@@ -1,6 +1,6 @@
 #include "Parquet/ParserCombinator/Basis.h"
 
-static Answer_t Err(String_t *s, Processor_t p) {
+static Answer_t Err(String_t *s, Processor_t *p) {
 	return (Answer_t){
 		.Reply			= Reply.Err,
 		.Precipitate	= String.New(u8""),
@@ -9,7 +9,7 @@ static Answer_t Err(String_t *s, Processor_t p) {
 	};
 }
 
-static Answer_t Ok(String_t *s, Processor_t p) {
+static Answer_t Ok(String_t *s, Processor_t *p) {
 	return (Answer_t){
 		.Reply 			= Reply.Ok,
 		.Precipitate	= String.New(u8""),
@@ -18,7 +18,7 @@ static Answer_t Ok(String_t *s, Processor_t p) {
 	};
 }
 
-static Answer_t OkRead1(String_t *s, Processor_t p) {
+static Answer_t OkRead1(String_t *s, Processor_t *p) {
 	return (Answer_t){
 		.Reply			= Reply.Ok,
 		.Precipitate	= s->Substring(s, 0, 2),

@@ -11,24 +11,24 @@ String_t *Token_TypeString(Token_t *t) {
 	}
 }
 
-Answer_t Parser_Comment(String_t *s, Processor_t p) {
-	Answer_t line(String_t *s, Processor_t p) {
-		Answer_t open(String_t *s, Processor_t p) {
+Answer_t Parser_Comment(String_t *s, Processor_t *p) {
+	Answer_t line(String_t *s, Processor_t *p) {
+		Answer_t open(String_t *s, Processor_t *p) {
 			return Parsers.Char.Match('{', s, p);
 		}
 
-		Answer_t nonClose(String_t *s, Processor_t p) {
+		Answer_t nonClose(String_t *s, Processor_t *p) {
 			return Parsers.Char.NoneOf(
 				String.New(u8"}"),
 				s, p
 			);
 		}
 
-		Answer_t content(String_t *s, Processor_t p) {
+		Answer_t content(String_t *s, Processor_t *p) {
 			return Combinator.Many0(nonClose, s, p);
 		}
 
-		Answer_t close(String_t *s, Processor_t p) {
+		Answer_t close(String_t *s, Processor_t *p) {
 			return Parsers.Char.Match('}', s, p);
 		}
 
@@ -40,26 +40,26 @@ Answer_t Parser_Comment(String_t *s, Processor_t p) {
 		);
 	}
 
-	Answer_t block(String_t *s, Processor_t p) {
-		Answer_t open(String_t *s, Processor_t p) {
+	Answer_t block(String_t *s, Processor_t *p) {
+		Answer_t open(String_t *s, Processor_t *p) {
 			return Parsers.String.Match(
 				String.New(u8"/*"),
 				s, p
 			);
 		}
 
-		Answer_t nonClose(String_t *s, Processor_t p) {
+		Answer_t nonClose(String_t *s, Processor_t *p) {
 			return Parsers.String.UnMatch(
 				String.New(u8"*/"),
 				s, p
 			);
 		}
 
-		Answer_t content(String_t *s, Processor_t p) {
+		Answer_t content(String_t *s, Processor_t *p) {
 			return Combinator.Many0(nonClose, s, p);
 		}
 
-		Answer_t close(String_t *s, Processor_t p) {
+		Answer_t close(String_t *s, Processor_t *p) {
 			return Parsers.String.Match(
 				String.New(u8"*/"),
 				s, p
@@ -77,8 +77,8 @@ Answer_t Parser_Comment(String_t *s, Processor_t p) {
 	return Combinator.Choise(line, block, s, p);
 }
 
-Answer_t Parser_Separator(String_t *s, Processor_t p) {
-	Answer_t space_tab(String_t *s, Processor_t p) {
+Answer_t Parser_Separator(String_t *s, Processor_t *p) {
+	Answer_t space_tab(String_t *s, Processor_t *p) {
 		List_t *seps = List.New();
 		seps->Add(seps, String.New(u8" "));
 		seps->Add(seps, String.New(u8"\t"));
@@ -89,7 +89,7 @@ Answer_t Parser_Separator(String_t *s, Processor_t p) {
 		);
 	}
 
-	Answer_t newline(String_t *s, Processor_t p) {
+	Answer_t newline(String_t *s, Processor_t *p) {
 		List_t *nls = List.New();
 		nls->Add(nls, String.New(u8"\r\n"));
 		nls->Add(nls, String.New(u8"\r"));
@@ -116,15 +116,15 @@ Answer_t Parser_Separator(String_t *s, Processor_t p) {
 	); 
 }
 
-Answer_t Parser_Digit(String_t *s, Processor_t p) {
+Answer_t Parser_Digit(String_t *s, Processor_t *p) {
 	return Parsers.Char.Digit(s, p);
 }
 
-Answer_t Parser_Alphabet(String_t *s, Processor_t p) {
+Answer_t Parser_Alphabet(String_t *s, Processor_t *p) {
 	return Parsers.Char.Letter(s, p);
 }
 
-Answer_t Parser_Symbol(String_t *s, Processor_t p) {
+Answer_t Parser_Symbol(String_t *s, Processor_t *p) {
 	List_t *syms = List.New();
 	syms->Add(syms, String.New(u8"+"));
 	syms->Add(syms, String.New(u8"-"));
@@ -158,19 +158,19 @@ Answer_t Parser_Symbol(String_t *s, Processor_t p) {
 	return result;
 }
 
-Answer_t Parser_String(String_t *s, Processor_t p) {
-	Answer_t apostr(String_t *s, Processor_t p) {
+Answer_t Parser_String(String_t *s, Processor_t *p) {
+	Answer_t apostr(String_t *s, Processor_t *p) {
 		return Parsers.Char.Match('\'', s, p);
 	}
 
-	Answer_t nonapostr(String_t *s, Processor_t p) {
+	Answer_t nonapostr(String_t *s, Processor_t *p) {
 		return Parsers.Char.NoneOf(
 			String.New(u8"'"),
 			s, p
 		);
 	}
 
-	Answer_t content(String_t *s, Processor_t p) {
+	Answer_t content(String_t *s, Processor_t *p) {
 		return Combinator.Many0(nonapostr, s, p);
 	}
 
@@ -189,7 +189,7 @@ Answer_t Parser_String(String_t *s, Processor_t p) {
 	return result;
 }
 
-Answer_t Parser_UInt(String_t *s, Processor_t p) {
+Answer_t Parser_UInt(String_t *s, Processor_t *p) {
 	Answer_t result = Combinator.Many1(Parser_Digit, s, p);
 
 /****************************************/
@@ -200,7 +200,7 @@ Answer_t Parser_UInt(String_t *s, Processor_t p) {
 	return result;
 }
 
-Answer_t Parser_Keyword(String_t *s, Processor_t p) {
+Answer_t Parser_Keyword(String_t *s, Processor_t *p) {
 	List_t *keywords = List.New();
 	keywords->Add(keywords, String.New(u8"program"));
 	keywords->Add(keywords, String.New(u8"var"));
@@ -242,8 +242,8 @@ Answer_t Parser_Keyword(String_t *s, Processor_t p) {
 	return result;
 }
 
-Answer_t Parser_Name(String_t *s, Processor_t p) {
-	Answer_t al_num(String_t *s, Processor_t p) {
+Answer_t Parser_Name(String_t *s, Processor_t *p) {
+	Answer_t al_num(String_t *s, Processor_t *p) {
 		return Combinator.Choise(
 			Parser_Alphabet,
 			Parser_Digit,
@@ -251,7 +251,7 @@ Answer_t Parser_Name(String_t *s, Processor_t p) {
 		);
 	}
 
-	Answer_t al_num_Rep(String_t *s, Processor_t p) {
+	Answer_t al_num_Rep(String_t *s, Processor_t *p) {
 		return Combinator.Many0(al_num, s, p);
 	}
 
@@ -269,7 +269,7 @@ Answer_t Parser_Name(String_t *s, Processor_t p) {
 	return result;
 }
 
-Answer_t Parser_Token(String_t *s, Processor_t p) {
+Answer_t Parser_Token(String_t *s, Processor_t *p) {
 	return Combinator.Choise5(
 		Parser_Symbol,
 		Parser_Keyword,
@@ -280,8 +280,8 @@ Answer_t Parser_Token(String_t *s, Processor_t p) {
 	);
 }
 
-Answer_t Parser_Program(String_t *s, Processor_t p) {
-	Answer_t tok_sep(String_t *s, Processor_t p) {
+Answer_t Parser_Program(String_t *s, Processor_t *p) {
+	Answer_t tok_sep(String_t *s, Processor_t *p) {
 		return Combinator.Choise(
 			Parser_Separator,
 			Parser_Token,

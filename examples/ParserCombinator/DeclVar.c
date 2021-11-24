@@ -2,9 +2,9 @@
 
 String_t *ident;
 
-Answer_t declVar(String_t *s, Processor_t p) {
-	Answer_t var_space(String_t *s, Processor_t p) {
-		Answer_t var(String_t *s, Processor_t p) {
+Answer_t declVar(String_t *s, Processor_t *p) {
+	Answer_t var_space(String_t *s, Processor_t *p) {
+		Answer_t var(String_t *s, Processor_t *p) {
 			return Parsers.String.Match(
 				String.New(u8"var"),
 				s, p
@@ -18,8 +18,8 @@ Answer_t declVar(String_t *s, Processor_t p) {
 		);
 	}
 
-	Answer_t varname(String_t *s, Processor_t p) {
-		Answer_t alnums0(String_t *s, Processor_t p) {
+	Answer_t varname(String_t *s, Processor_t *p) {
+		Answer_t alnums0(String_t *s, Processor_t *p) {
 			return Combinator.Many0(
 				Parsers.Char.AlphaNum,
 				s, p
@@ -33,7 +33,7 @@ Answer_t declVar(String_t *s, Processor_t p) {
 		);
 	}
 
-	Answer_t semic(String_t *s, Processor_t p) {
+	Answer_t semic(String_t *s, Processor_t *p) {
 		return Parsers.Char.Match(';', s, p);
 	}
 
