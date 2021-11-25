@@ -5,9 +5,10 @@ Compiler Creation Support Library in C
 - AST
 - Assembly Code Generation (x64 Linux GNU Assembler, COMET-II CASL-II)
 - Executable Preparation : ( [header](https://github.com/rot-E/Parquet/tree/main/include/Parquet/ExecutablePreparer.h) [source](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/ExecutablePreparer.c)  [examples](https://github.com/rot-E/Parquet/tree/main/examples/ExecutablePreparer/) )
+  - requires: **`as` `ld`**
 
 ## build
-requires: **`git` `cmake` `make` `gcc` `as` `ld`**
+requires: **`git` `cmake` `make` `gcc`**
 <br><br>
 
 ```sh
