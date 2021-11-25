@@ -33,6 +33,10 @@ static any *Get(Seq_t *seq, const uint32_t idx) {
 	return seq->_Item[idx];
 }
 
+static any *GetLast(Seq_t *seq) {
+	return seq->_Item[seq->_Length - 1];
+}
+
 static Seq_t *GetHeadSeq(Seq_t *seq) {
 	if (Seq.GetLength(seq) == 0) {
 		Error.Panic(u8"\e[35m", u8"Seq.GetHeadSeq");
@@ -81,6 +85,7 @@ static Seq_t *New(String_t *(* stringiser)(any *item)) {
 	seq->AddAll					= AddAll;
 	seq->GetLength				= GetLength;
 	seq->Get					= Get;
+	seq->GetLast				= GetLast;
 	seq->GetHeadSeq				= GetHeadSeq;
 	seq->GetTailSeq				= GetTailSeq;
 	seq->Duplicate				= Duplicate;
@@ -108,6 +113,8 @@ _Seq Seq = {
 
 	.GetLength					= GetLength,
 	.Get						= Get,
+
+	.GetLast					= GetLast,
 
 	.GetHeadSeq					= GetHeadSeq,
 	.GetTailSeq					= GetTailSeq,

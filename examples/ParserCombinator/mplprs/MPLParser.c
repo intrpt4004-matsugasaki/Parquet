@@ -770,7 +770,7 @@ static SeqAnswer_t SeqParser_Program(Seq_t *seq, Processor_t *p) {
 		/****************************************/
 		if (r.Reply == Reply.Ok)
 			printf(u8" %s", String.GetPrimitive(
-				(seq->GetStringiser(seq))(r.Precipitate)
+				(seq->GetStringiser(seq))(Seq.GetLast(seq))
 			));
 		/****************************************/
 
@@ -823,7 +823,7 @@ static SeqAnswer_t SeqParser_Program(Seq_t *seq, Processor_t *p) {
 		program, name, semicolon,
 		/*Parser_Block,*/
 		end, dot,
-		s, p
+		seq, p
 	);
 }
 
