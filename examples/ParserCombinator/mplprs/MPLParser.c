@@ -1,7 +1,7 @@
 #include "MPLParser.h"
 /*
-static Answer_t Parser_VarName(String_t *s, Processor_t *p) {
-	Answer_t r = Parser_Name(s, p);
+static SeqAnswer_t Parser_VarName(String_t *s, Processor_t *p) {
+	SeqAnswer_t r = Parser_Name(s, p);
 
 	if (r.Reply == Reply.Ok)
 		printf(u8" %s{var}", String.GetPrimitive(r.Precipitate));
@@ -9,17 +9,17 @@ static Answer_t Parser_VarName(String_t *s, Processor_t *p) {
 	return r;
 }
 
-static Answer_t Parser_ProcName(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_ProcName(String_t *s, Processor_t *p) {
 	return Parser_Name(s, p);
 }
 
-static Answer_t Parser_StdType(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_StdType(String_t *s, Processor_t *p) {
 	Seq_t *types = Seq.New();
 	types->Add(types, String.New(u8"integer"));
 	types->Add(types, String.New(u8"boolean"));
 	types->Add(types, String.New(u8"char"));
 
-	Answer_t r = Parsers.String.OneOf(types, s, p);
+	SeqAnswer_t r = Parsers.String.OneOf(types, s, p);
 
 	if (r.Reply == Reply.Ok)
 		printf(u8" %s", String.GetPrimitive(r.Precipitate));
@@ -27,7 +27,7 @@ static Answer_t Parser_StdType(String_t *s, Processor_t *p) {
 	return r;
 }
 
-static Answer_t Parser_AddOpr(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_AddOpr(String_t *s, Processor_t *p) {
 	Seq_t *adds = Seq.New();
 	adds->Add(adds, String.New(u8"or"));
 	adds->Add(adds, String.New(u8"+"));
@@ -36,7 +36,7 @@ static Answer_t Parser_AddOpr(String_t *s, Processor_t *p) {
 	return Parsers.String.OneOf(adds, s, p);
 }
 
-static Answer_t Parser_MulOpr(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_MulOpr(String_t *s, Processor_t *p) {
 	Seq_t *muls = Seq.New();
 	muls->Add(muls, String.New(u8"and"));
 	muls->Add(muls, String.New(u8"div"));
@@ -45,12 +45,12 @@ static Answer_t Parser_MulOpr(String_t *s, Processor_t *p) {
 	return Parsers.String.OneOf(muls, s, p);
 }
 
-static Answer_t Parser_Const(String_t *s, Processor_t *p) {
-	Answer_t false_kwd(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_Const(String_t *s, Processor_t *p) {
+	SeqAnswer_t false_kwd(String_t *s, Processor_t *p) {
 		return Parsers.String.Match(String.New(u8"false"), s, p);
 	}
 
-	Answer_t true_kwd(String_t *s, Processor_t *p) {
+	SeqAnswer_t true_kwd(String_t *s, Processor_t *p) {
 		return Parsers.String.Match(String.New(u8"true"), s, p);
 	}
 
@@ -64,15 +64,15 @@ static Answer_t Parser_Const(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_Expr(String_t *s, Processor_t *p);
-static Answer_t Parser_Var(String_t *s, Processor_t *p) {
-	Answer_t arrayIndexX(String_t *s, Processor_t *p) {
-		Answer_t arrayIndex(String_t *s, Processor_t *p) {
-			Answer_t open(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_Expr(String_t *s, Processor_t *p);
+static SeqAnswer_t Parser_Var(String_t *s, Processor_t *p) {
+	SeqAnswer_t arrayIndexX(String_t *s, Processor_t *p) {
+		SeqAnswer_t arrayIndex(String_t *s, Processor_t *p) {
+			SeqAnswer_t open(String_t *s, Processor_t *p) {
 				return Parsers.Char.Match('[', s, p);
 			}
 
-			Answer_t close(String_t *s, Processor_t *p) {
+			SeqAnswer_t close(String_t *s, Processor_t *p) {
 				return Parsers.Char.Match(']', s, p);
 			}
 
@@ -93,13 +93,13 @@ static Answer_t Parser_Var(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_Factor(String_t *s, Processor_t *p) {
-	Answer_t exprZ(String_t *s, Processor_t *p) {
-		Answer_t open(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_Factor(String_t *s, Processor_t *p) {
+	SeqAnswer_t exprZ(String_t *s, Processor_t *p) {
+		SeqAnswer_t open(String_t *s, Processor_t *p) {
 			return Parsers.Char.Match('(', s, p);
 		}
 
-		Answer_t close(String_t *s, Processor_t *p) {
+		SeqAnswer_t close(String_t *s, Processor_t *p) {
 			return Parsers.Char.Match(')', s, p);
 		}
 
@@ -110,8 +110,8 @@ static Answer_t Parser_Factor(String_t *s, Processor_t *p) {
 		);
 	}
 
-	Answer_t invFactor(String_t *s, Processor_t *p) {
-		Answer_t not(String_t *s, Processor_t *p) {
+	SeqAnswer_t invFactor(String_t *s, Processor_t *p) {
+		SeqAnswer_t not(String_t *s, Processor_t *p) {
 			return Parsers.String.Match(String.New(u8"not"), s, p);
 		}
 
@@ -122,12 +122,12 @@ static Answer_t Parser_Factor(String_t *s, Processor_t *p) {
 		);
 	}
 
-	Answer_t stdTexprZ(String_t *s, Processor_t *p) {
-		Answer_t open(String_t *s, Processor_t *p) {
+	SeqAnswer_t stdTexprZ(String_t *s, Processor_t *p) {
+		SeqAnswer_t open(String_t *s, Processor_t *p) {
 			return Parsers.Char.Match('(', s, p);
 		}
 
-		Answer_t close(String_t *s, Processor_t *p) {
+		SeqAnswer_t close(String_t *s, Processor_t *p) {
 			return Parsers.Char.Match(')', s, p);
 		}
 
@@ -149,9 +149,9 @@ static Answer_t Parser_Factor(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_Term(String_t *s, Processor_t *p) {
-	Answer_t adtnTerms0(String_t *s, Processor_t *p) {
-		Answer_t adtnTerm(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_Term(String_t *s, Processor_t *p) {
+	SeqAnswer_t adtnTerms0(String_t *s, Processor_t *p) {
+		SeqAnswer_t adtnTerm(String_t *s, Processor_t *p) {
 			return Bind(
 				Parser_MulOpr, Parser_Factor,
 
@@ -169,17 +169,17 @@ static Answer_t Parser_Term(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_LeftPart(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_LeftPart(String_t *s, Processor_t *p) {
 	return Parser_Var(s, p);
 }
 
-static Answer_t Parser_SimpleExpr(String_t *s, Processor_t *p) {
-	Answer_t plus_or_minus(String_t *s, Processor_t *p) {
-		Answer_t plus(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_SimpleExpr(String_t *s, Processor_t *p) {
+	SeqAnswer_t plus_or_minus(String_t *s, Processor_t *p) {
+		SeqAnswer_t plus(String_t *s, Processor_t *p) {
 			return Parsers.Char.Match('+', s, p);
 		}
 
-		Answer_t minus(String_t *s, Processor_t *p) {
+		SeqAnswer_t minus(String_t *s, Processor_t *p) {
 			return Parsers.Char.Match('-', s, p);
 		}
 
@@ -191,12 +191,12 @@ static Answer_t Parser_SimpleExpr(String_t *s, Processor_t *p) {
 		);
 	}
 
-	Answer_t plus_or_minusX(String_t *s, Processor_t *p) {
+	SeqAnswer_t plus_or_minusX(String_t *s, Processor_t *p) {
 		return Combinator.Possibly(plus_or_minus, s, p);
 	}
 
-	Answer_t adtnAdds0(String_t *s, Processor_t *p) {
-		Answer_t adtnAdd(String_t *s, Processor_t *p) {
+	SeqAnswer_t adtnAdds0(String_t *s, Processor_t *p) {
+		SeqAnswer_t adtnAdd(String_t *s, Processor_t *p) {
 			return Bind(
 				Parser_AddOpr, Parser_Term,
 
@@ -214,7 +214,7 @@ static Answer_t Parser_SimpleExpr(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_RelOpr(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_RelOpr(String_t *s, Processor_t *p) {
 	Seq_t *rels = Seq.New();
 	rels->Add(rels, String.New(u8"<>"));
 	rels->Add(rels, String.New(u8"<="));
@@ -226,9 +226,9 @@ static Answer_t Parser_RelOpr(String_t *s, Processor_t *p) {
 	return Parsers.String.OneOf(rels, s, p);
 }
 
-static Answer_t Parser_Expr(String_t *s, Processor_t *p) {
-	Answer_t adtnSufExpr0(String_t *s, Processor_t *p) {
-		Answer_t adtnSufExpr(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_Expr(String_t *s, Processor_t *p) {
+	SeqAnswer_t adtnSufExpr0(String_t *s, Processor_t *p) {
+		SeqAnswer_t adtnSufExpr(String_t *s, Processor_t *p) {
 			return Bind(
 				Parser_RelOpr, Parser_SimpleExpr,
 
@@ -246,8 +246,8 @@ static Answer_t Parser_Expr(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_AssignStmt(String_t *s, Processor_t *p) {
-	Answer_t assign(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_AssignStmt(String_t *s, Processor_t *p) {
+	SeqAnswer_t assign(String_t *s, Processor_t *p) {
 		return Parsers.String.Match(String.New(u8":="), s, p);
 	}
 
@@ -258,19 +258,19 @@ static Answer_t Parser_AssignStmt(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_Stmt(String_t *s, Processor_t *p);
-static Answer_t Parser_CondStmt(String_t *s, Processor_t *p) {
-	Answer_t if_kwd(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_Stmt(String_t *s, Processor_t *p);
+static SeqAnswer_t Parser_CondStmt(String_t *s, Processor_t *p) {
+	SeqAnswer_t if_kwd(String_t *s, Processor_t *p) {
 		return Parsers.String.Match(String.New(u8"if"), s, p);
 	}
 
-	Answer_t then_kwd(String_t *s, Processor_t *p) {
+	SeqAnswer_t then_kwd(String_t *s, Processor_t *p) {
 		return Parsers.String.Match(String.New(u8"then"), s, p);
 	}
 
-	Answer_t elseSecX(String_t *s, Processor_t *p) {
-		Answer_t elseSec(String_t *s, Processor_t *p) {
-			Answer_t else_kwd(String_t *s, Processor_t *p) {
+	SeqAnswer_t elseSecX(String_t *s, Processor_t *p) {
+		SeqAnswer_t elseSec(String_t *s, Processor_t *p) {
+			SeqAnswer_t else_kwd(String_t *s, Processor_t *p) {
 				return Parsers.String.Match(String.New(u8"else"), s, p);
 			}
 
@@ -291,12 +291,12 @@ static Answer_t Parser_CondStmt(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_IterStmt(String_t *s, Processor_t *p) {
-	Answer_t while_kwd(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_IterStmt(String_t *s, Processor_t *p) {
+	SeqAnswer_t while_kwd(String_t *s, Processor_t *p) {
 		return Parsers.String.Match(String.New(u8"while"), s, p);
 	}
 
-	Answer_t do_kwd(String_t *s, Processor_t *p) {
+	SeqAnswer_t do_kwd(String_t *s, Processor_t *p) {
 		return Parsers.String.Match(String.New(u8"do"), s, p);
 	}
 
@@ -307,14 +307,14 @@ static Answer_t Parser_IterStmt(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_ExitStmt(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_ExitStmt(String_t *s, Processor_t *p) {
 	return Parsers.String.Match(String.New(u8"break"), s, p);
 }
 
-static Answer_t Parser_Exprs(String_t *s, Processor_t *p) {
-	Answer_t adtnExprs0(String_t *s, Processor_t *p) {
-		Answer_t adtnExpr(String_t *s, Processor_t *p) {
-			Answer_t comma(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_Exprs(String_t *s, Processor_t *p) {
+	SeqAnswer_t adtnExprs0(String_t *s, Processor_t *p) {
+		SeqAnswer_t adtnExpr(String_t *s, Processor_t *p) {
+			SeqAnswer_t comma(String_t *s, Processor_t *p) {
 				return Parsers.Char.Match(',', s, p);
 			}
 
@@ -334,18 +334,18 @@ static Answer_t Parser_Exprs(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_CallStmt(String_t *s, Processor_t *p) {
-	Answer_t call(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_CallStmt(String_t *s, Processor_t *p) {
+	SeqAnswer_t call(String_t *s, Processor_t *p) {
 		return Parsers.String.Match(String.New(u8"if"), s, p);
 	}
 
-	Answer_t paramX(String_t *s, Processor_t *p) {
-		Answer_t param(String_t *s, Processor_t *p) {
-			Answer_t open(String_t *s, Processor_t *p) {
+	SeqAnswer_t paramX(String_t *s, Processor_t *p) {
+		SeqAnswer_t param(String_t *s, Processor_t *p) {
+			SeqAnswer_t open(String_t *s, Processor_t *p) {
 				return Parsers.Char.Match('(', s, p);
 			}
 
-			Answer_t close(String_t *s, Processor_t *p) {
+			SeqAnswer_t close(String_t *s, Processor_t *p) {
 				return Parsers.Char.Match(')', s, p);
 			}
 
@@ -366,12 +366,12 @@ static Answer_t Parser_CallStmt(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_RetStmt(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_RetStmt(String_t *s, Processor_t *p) {
 	return Parsers.String.Match(String.New(u8"return"), s, p);
 }
 
-static Answer_t Parser_InputStmt(String_t *s, Processor_t *p) {
-	Answer_t embeddedInst(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_InputStmt(String_t *s, Processor_t *p) {
+	SeqAnswer_t embeddedInst(String_t *s, Processor_t *p) {
 		Seq_t *insts = Seq.New();
 		insts->Add(insts, String.New(u8"readln"));
 		insts->Add(insts, String.New(u8"read"));
@@ -379,15 +379,15 @@ static Answer_t Parser_InputStmt(String_t *s, Processor_t *p) {
 		return Parsers.String.OneOf(insts, s, p);
 	}
 
-	Answer_t paramX(String_t *s, Processor_t *p) {
-		Answer_t param(String_t *s, Processor_t *p) {
-			Answer_t open(String_t *s, Processor_t *p) {
+	SeqAnswer_t paramX(String_t *s, Processor_t *p) {
+		SeqAnswer_t param(String_t *s, Processor_t *p) {
+			SeqAnswer_t open(String_t *s, Processor_t *p) {
 				return Parsers.Char.Match('(', s, p);
 			}
 
-			Answer_t adtnVars0(String_t *s, Processor_t *p) {
-				Answer_t adtnVar(String_t *s, Processor_t *p) {
-					Answer_t comma(String_t *s, Processor_t *p) {
+			SeqAnswer_t adtnVars0(String_t *s, Processor_t *p) {
+				SeqAnswer_t adtnVar(String_t *s, Processor_t *p) {
+					SeqAnswer_t comma(String_t *s, Processor_t *p) {
 						return Parsers.Char.Match(',', s, p);
 					}
 
@@ -401,7 +401,7 @@ static Answer_t Parser_InputStmt(String_t *s, Processor_t *p) {
 				return Many0(adtnVar, s, p);
 			}
 
-			Answer_t close(String_t *s, Processor_t *p) {
+			SeqAnswer_t close(String_t *s, Processor_t *p) {
 				return Parsers.Char.Match(')', s, p);
 			}
 
@@ -422,11 +422,11 @@ static Answer_t Parser_InputStmt(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_OutputStmt(String_t *s, Processor_t *p) {
-	Answer_t number(String_t *s, Processor_t *p) {
-		Answer_t optX(String_t *s, Processor_t *p) {
-			Answer_t opt(String_t *s, Processor_t *p) {
-				Answer_t colon(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_OutputStmt(String_t *s, Processor_t *p) {
+	SeqAnswer_t number(String_t *s, Processor_t *p) {
+		SeqAnswer_t optX(String_t *s, Processor_t *p) {
+			SeqAnswer_t opt(String_t *s, Processor_t *p) {
+				SeqAnswer_t colon(String_t *s, Processor_t *p) {
 					return Parsers.Char.Match(':', s, p);
 				}
 
@@ -455,8 +455,8 @@ static Answer_t Parser_OutputStmt(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_OutputFmt(String_t *s, Processor_t *p) {
-	Answer_t embeddedInst(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_OutputFmt(String_t *s, Processor_t *p) {
+	SeqAnswer_t embeddedInst(String_t *s, Processor_t *p) {
 		Seq_t *insts = Seq.New();
 		insts->Add(insts, String.New(u8"writeln"));
 		insts->Add(insts, String.New(u8"write"));
@@ -464,15 +464,15 @@ static Answer_t Parser_OutputFmt(String_t *s, Processor_t *p) {
 		return Parsers.String.OneOf(insts, s, p);
 	}
 
-	Answer_t paramX(String_t *s, Processor_t *p) {
-		Answer_t param(String_t *s, Processor_t *p) {
-			Answer_t open(String_t *s, Processor_t *p) {
+	SeqAnswer_t paramX(String_t *s, Processor_t *p) {
+		SeqAnswer_t param(String_t *s, Processor_t *p) {
+			SeqAnswer_t open(String_t *s, Processor_t *p) {
 				return Parsers.Char.Match('(', s, p);
 			}
 
-			Answer_t adtnOutputFmts0(String_t *s, Processor_t *p) {
-				Answer_t adtnOutputFmt(String_t *s, Processor_t *p) {
-					Answer_t comma(String_t *s, Processor_t *p) {
+			SeqAnswer_t adtnOutputFmts0(String_t *s, Processor_t *p) {
+				SeqAnswer_t adtnOutputFmt(String_t *s, Processor_t *p) {
+					SeqAnswer_t comma(String_t *s, Processor_t *p) {
 						return Parsers.Char.Match(',', s, p);
 					}
 
@@ -486,7 +486,7 @@ static Answer_t Parser_OutputFmt(String_t *s, Processor_t *p) {
 				return Many0(adtnOutputFmt, s, p);
 			}
 
-			Answer_t close(String_t *s, Processor_t *p) {
+			SeqAnswer_t close(String_t *s, Processor_t *p) {
 				return Parsers.Char.Match(')', s, p);
 			}
 
@@ -507,18 +507,18 @@ static Answer_t Parser_OutputFmt(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_Stmt(String_t *s, Processor_t *p);
-static Answer_t Parser_CompoundStmt(String_t *s, Processor_t *p) {
-	Answer_t begin(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_Stmt(String_t *s, Processor_t *p);
+static SeqAnswer_t Parser_CompoundStmt(String_t *s, Processor_t *p) {
+	SeqAnswer_t begin(String_t *s, Processor_t *p) {
 		return Parsers.String.Match(String.New(u8"begin"), s, p);
 	}
 
-	Answer_t adtnStmts(String_t *s, Processor_t *p) {
-		Answer_t semicolon(String_t *s, Processor_t *p) {
+	SeqAnswer_t adtnStmts(String_t *s, Processor_t *p) {
+		SeqAnswer_t semicolon(String_t *s, Processor_t *p) {
 			return Parsers.Char.Match(';', s, p);
 		}
 
-		Answer_t adtnStmt(String_t *s, Processor_t *p) {
+		SeqAnswer_t adtnStmt(String_t *s, Processor_t *p) {
 			return Bind(
 				semicolon, Parser_Stmt,
 
@@ -529,8 +529,18 @@ static Answer_t Parser_CompoundStmt(String_t *s, Processor_t *p) {
 		return Many0(adtnStmt, s, p);
 	}
 
-	Answer_t end(String_t *s, Processor_t *p) {
-		return Parsers.String.Match(String.New(u8"end"), s, p);
+	SeqSeqAnswer_t end(Seq_t *seq, Processor_t *p) {
+		SeqAnswer_t end_p(String_t *s, Processor_t *p) {
+			return Parsers.String.Match(String.New(u8"end"), s, p);
+		}
+
+		SeqSeqAnswer_t r = SeqParsers.Complete(end_p, seq, p);
+		****************************************
+		if (r.Reply == Reply.Ok)
+			printf(u8"end");
+		****************************************
+
+		return r;
 	}
 
 	return Bind4(
@@ -540,11 +550,11 @@ static Answer_t Parser_CompoundStmt(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_EmptyStmt(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_EmptyStmt(String_t *s, Processor_t *p) {
 	return Basis.Ok(s, p);
 }
 
-static Answer_t Parser_Stmt(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_Stmt(String_t *s, Processor_t *p) {
 	return Choise10(
 		Parser_AssignStmt,
 		Parser_CondStmt,
@@ -561,10 +571,10 @@ static Answer_t Parser_Stmt(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_VarNames(String_t *s, Processor_t *p) {
-	Answer_t adtnVarNames(String_t *s, Processor_t *p) {
-		Answer_t comma(String_t *s, Processor_t *p) {
-			Answer_t r = Parsers.Char.Match(',', s, p);
+static SeqAnswer_t Parser_VarNames(String_t *s, Processor_t *p) {
+	SeqAnswer_t adtnVarNames(String_t *s, Processor_t *p) {
+		SeqAnswer_t comma(String_t *s, Processor_t *p) {
+			SeqAnswer_t r = Parsers.Char.Match(',', s, p);
 
 			if (r.Reply == Reply.Ok)
 				printf(u8",");
@@ -582,20 +592,20 @@ static Answer_t Parser_VarNames(String_t *s, Processor_t *p) {
 	return Bind(Parser_VarName, adtnVarNames, s, p);
 }
 
-static Answer_t Parser_ArrType(String_t *s, Processor_t *p) {
-	Answer_t array(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_ArrType(String_t *s, Processor_t *p) {
+	SeqAnswer_t array(String_t *s, Processor_t *p) {
 		return Parsers.String.Match(String.New(u8"array"), s, p);
 	}
 
-	Answer_t open(String_t *s, Processor_t *p) {
+	SeqAnswer_t open(String_t *s, Processor_t *p) {
 		return Parsers.Char.Match('[', s, p);
 	}
 
-	Answer_t close(String_t *s, Processor_t *p) {
+	SeqAnswer_t close(String_t *s, Processor_t *p) {
 		return Parsers.Char.Match(']', s, p);
 	}
 
-	Answer_t of(String_t *s, Processor_t *p) {
+	SeqAnswer_t of(String_t *s, Processor_t *p) {
 		return Parsers.String.Match(String.New(u8"of"), s, p);
 	}
 
@@ -606,7 +616,7 @@ static Answer_t Parser_ArrType(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_Type(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_Type(String_t *s, Processor_t *p) {
 	return Combinator.Choise(
 		Parser_StdType,
 		Parser_ArrType,
@@ -615,9 +625,9 @@ static Answer_t Parser_Type(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_VarDecl(String_t *s, Processor_t *p) {
-	Answer_t var(String_t *s, Processor_t *p) {
-		Answer_t r = Parsers.String.Match(String.New(u8"var"), s, p);
+static SeqAnswer_t Parser_VarDecl(String_t *s, Processor_t *p) {
+	SeqAnswer_t var(String_t *s, Processor_t *p) {
+		SeqAnswer_t r = Parsers.String.Match(String.New(u8"var"), s, p);
 
 		if (r.Reply == Reply.Ok)
 			printf(u8"\tvar");
@@ -625,9 +635,9 @@ static Answer_t Parser_VarDecl(String_t *s, Processor_t *p) {
 		return r;
 	}
 
-	Answer_t VarDecl(String_t *s, Processor_t *p) {
-		Answer_t colon(String_t *s, Processor_t *p) {
-			Answer_t r = Parsers.Char.Match(':', s, p);
+	SeqAnswer_t VarDecl(String_t *s, Processor_t *p) {
+		SeqAnswer_t colon(String_t *s, Processor_t *p) {
+			SeqAnswer_t r = Parsers.Char.Match(':', s, p);
 
 			if (r.Reply == Reply.Ok)
 				printf(u8" :");
@@ -635,8 +645,8 @@ static Answer_t Parser_VarDecl(String_t *s, Processor_t *p) {
 			return r;
 		}
 
-		Answer_t semicolon(String_t *s, Processor_t *p) {
-			Answer_t r = Parsers.Char.Match(';', s, p);
+		SeqAnswer_t semicolon(String_t *s, Processor_t *p) {
+			SeqAnswer_t r = Parsers.Char.Match(';', s, p);
 
 			if (r.Reply == Reply.Ok)
 				printf(u8";\n");
@@ -651,7 +661,7 @@ static Answer_t Parser_VarDecl(String_t *s, Processor_t *p) {
 		);
 	}
 
-	Answer_t VarDecls(String_t *s, Processor_t *p) {
+	SeqAnswer_t VarDecls(String_t *s, Processor_t *p) {
 		return Many0(VarDecl, s, p);
 	}
 
@@ -663,21 +673,21 @@ static Answer_t Parser_VarDecl(String_t *s, Processor_t *p) {
 	);
 }
 
-static Answer_t Parser_FormalParam(String_t *s, Processor_t *p) {
-	Answer_t open(String_t *s, Processor_t *p) {
+static SeqAnswer_t Parser_FormalParam(String_t *s, Processor_t *p) {
+	SeqAnswer_t open(String_t *s, Processor_t *p) {
 		return Parsers.Char.Match('(', s, p);
 	}
 
-	Answer_t colon(String_t *s, Processor_t *p) {
+	SeqAnswer_t colon(String_t *s, Processor_t *p) {
 		return Parsers.Char.Match(':', s, p);
 	}
 
-	Answer_t adtnParams(String_t *s, Processor_t *p) {
-		Answer_t semicolon(String_t *s, Processor_t *p) {
+	SeqAnswer_t adtnParams(String_t *s, Processor_t *p) {
+		SeqAnswer_t semicolon(String_t *s, Processor_t *p) {
 			return Parsers.Char.Match(';', s, p);
 		}
 
-		Answer_t adtnParam(String_t *s, Processor_t *p) {
+		SeqAnswer_t adtnParam(String_t *s, Processor_t *p) {
 			return Bind4(
 				semicolon, Parser_VarNames, colon, Parser_Type,
 
@@ -688,7 +698,7 @@ static Answer_t Parser_FormalParam(String_t *s, Processor_t *p) {
 		return Many0(adtnParam, s, p);
 	}
 
-	Answer_t close(String_t *s, Processor_t *p) {
+	SeqAnswer_t close(String_t *s, Processor_t *p) {
 		return Parsers.Char.Match(')', s, p);
 	}
 
@@ -699,56 +709,60 @@ static Answer_t Parser_FormalParam(String_t *s, Processor_t *p) {
 		s, p
 	);
 }
-
-static Answer_t Parser_SubProgDecl(String_t *s, Processor_t *p) {
-	Answer_t procedure(String_t *s, Processor_t *p) {
-		return Parsers.String.Match(String.New(u8"procedure"), s, p);
+*/
+static SeqAnswer_t SeqParser_SubProgDecl(Seq_t *seq, Processor_t *p) {
+	SeqAnswer_t procedure(Seq_t *seq, Processor_t *p) {
+		return SeqParsers.Match(String.New(u8"procedure"), seq, p);
 	}
 
-	Answer_t Parser_FormalParamX(String_t *s, Processor_t *p) {
-		return Combinator.Possibly(Parser_FormalParam, s, p);
+	SeqAnswer_t SeqParser_FormalParamX(Seq_t *seq, Processor_t *p) {
+		return SeqCombinator.Possibly(SeqParser_FormalParam, seq, p);
 	}
 
-	Answer_t semicolon(String_t *s, Processor_t *p) {
-		return Parsers.Char.Match(';', s, p);
+	SeqAnswer_t semicolon(Seq_t *seq, Processor_t *p) {
+		return SeqParsers.Match(String.New(u8";"), seq, p);
 	}
 
-	Answer_t Parser_VarDeclX(String_t *s, Processor_t *p) {
-		return Combinator.Possibly(Parser_VarDecl, s, p);
+	SeqAnswer_t SeqParser_VarDeclX(Seq_t *seq, Processor_t *p) {
+		return SeqCombinator.Possibly(SeqParser_VarDecl, seq, p);
 	}
 
-	return Bind7(
-		procedure, Parser_ProcName, Parser_FormalParamX, semicolon,
-			Parser_VarDeclX,
-			Parser_CompoundStmt,
-		semicolon,
-
-		s, p
-	);
-}
-
-static Answer_t Parser_Block(String_t *s, Processor_t *p) {
-	Answer_t VarDecl_or_SubProgDecl(String_t *s, Processor_t *p) {
-		return Choise(
-			Parser_VarDecl,
-			Parser_SubProgDecl,
-
-			s, p
+	SeqAnswer_t decl(Seq_t *seq, Processor_t *p) {
+		return SeqCombinator.Bind4(
+			procedure, SeqParser_ProcName, SeqParser_FormalParamX, semicolon,
+			seq, p
 		);
 	}
 
-	Answer_t Repeat_VarDecl_or_SubProgDecl(String_t *s, Processor_t *p) {
-		return Many0(VarDecl_or_SubProgDecl, s, p);
-	}
-
-	return Bind(
-		Repeat_VarDecl_or_SubProgDecl,
-		Parser_CompoundStmt,
-
-		s, p
+	return SeqCombinator.Bind4(
+		decl,
+			SeqParser_VarDeclX,
+			SeqParser_CompoundStmt,
+		semicolon,
+		seq, p
 	);
 }
-*/
+
+static SeqAnswer_t SeqParser_Block(Seq_t *seq, Processor_t *p) {
+	SeqAnswer_t VarDecl_or_SubProgDecl(Seq_t *seq, Processor_t *p) {
+		return SeqCombinator.Choise(
+			SeqParser_VarDecl,
+			SeqParser_SubProgDecl,
+			seq, p
+		);
+	}
+
+	SeqAnswer_t Repeat_VarDecl_or_SubProgDecl(Seq_t *seq, Processor_t *p) {
+		return SeqCombinator.Many0(VarDecl_or_SubProgDecl, seq, p);
+	}
+
+	return SeqCombinator.Bind(
+		Repeat_VarDecl_or_SubProgDecl,
+		SeqParser_CompoundStmt,
+		seq, p
+	);
+}
+
 static SeqAnswer_t SeqParser_Program(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t program(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8"program"), seq, p);
@@ -791,20 +805,6 @@ static SeqAnswer_t SeqParser_Program(Seq_t *seq, Processor_t *p) {
 		return r;
 	}
 
-	SeqAnswer_t end(Seq_t *seq, Processor_t *p) {
-		Answer_t end_p(String_t *s, Processor_t *p) {
-			return Parsers.String.Match(String.New(u8"end"), s, p);
-		}
-
-		SeqAnswer_t r = SeqParsers.Complete(end_p, seq, p);
-		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8"end");
-		/****************************************/
-
-		return r;
-	}
-
 	SeqAnswer_t dot(Seq_t *seq, Processor_t *p) {
 		Answer_t dot_p(String_t *s, Processor_t *p) {
 			return Parsers.Char.Match('.', s, p);
@@ -821,8 +821,7 @@ static SeqAnswer_t SeqParser_Program(Seq_t *seq, Processor_t *p) {
 
 	return SeqCombinator.Bind5(
 		program, name, semicolon,
-		/*Parser_Block,*/
-		end, dot,
+		SeqParser_Block, dot,
 		seq, p
 	);
 }
