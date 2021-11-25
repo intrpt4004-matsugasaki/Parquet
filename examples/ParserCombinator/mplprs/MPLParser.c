@@ -751,24 +751,20 @@ static Answer_t Parser_Block(String_t *s, Processor_t *p) {
 
 static SeqAnswer_t SeqParser_Program(List_t *seq, Processor_t *p) {
 	SeqAnswer_t program(List_t *seq, Processor_t *p) {
-		if (seq->IsEmpty(seq)) return SeqBasis.Err(seq);
+		SeqAnswer_t r = SeqParsers.Match(String.New(u8"program", seq, p));
 
-		Answer_t p_program(String_t *s, Processor_t *p) {
-			return Parsers.String.Match(String.New(u8"program"), s, p);
-		}
-
-		String_t *s = seq->Get(seq, 0);
-		Answer_t r = Invoker.Invoke(program_s, s, p);
 		/****************************************/
 		if (r.Reply == Reply.Ok)
 			printf(u8"program");
 		/****************************************/
 
-		return (r.Reply == Reply.Ok) ? SeqBasis.OkRead1(seq) : SeqBasis.Err(seq);
+		return r;
 	}
 
 	Answer_t name(String_t *s, Processor_t *p) {
-		Answer_t r = Many1(Parser_Name, s, p);
+		Answer_t p_name(String_t *s, Processor_t *p) {
+			return Combinator.Many1(MPLLexer.Parser_Name, s, p);
+		}
 
 		if (r.Reply == Reply.Ok)
 			printf(u8" %s", String.GetPrimitive(r.Precipitate));
