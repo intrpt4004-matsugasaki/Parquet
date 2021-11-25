@@ -33,8 +33,8 @@ static any *Get(Seq_t *seq, const uint32_t idx) {
 	return seq->_Item[idx];
 }
 
-static any *GetLast(Seq_t *seq) {
-	return seq->_Item[seq->_Length - 1];
+static any *GetHead(Seq_t *seq) {
+	return seq->_Item[0];
 }
 
 static Seq_t *GetHeadSeq(Seq_t *seq) {
@@ -85,7 +85,7 @@ static Seq_t *New(String_t *(* stringiser)(any *item)) {
 	seq->AddAll					= AddAll;
 	seq->GetLength				= GetLength;
 	seq->Get					= Get;
-	seq->GetLast				= GetLast;
+	seq->GetHead				= GetHead;
 	seq->GetHeadSeq				= GetHeadSeq;
 	seq->GetTailSeq				= GetTailSeq;
 	seq->Duplicate				= Duplicate;
@@ -114,7 +114,7 @@ _Seq Seq = {
 	.GetLength					= GetLength,
 	.Get						= Get,
 
-	.GetLast					= GetLast,
+	.GetHead					= GetHead,
 
 	.GetHeadSeq					= GetHeadSeq,
 	.GetTailSeq					= GetTailSeq,

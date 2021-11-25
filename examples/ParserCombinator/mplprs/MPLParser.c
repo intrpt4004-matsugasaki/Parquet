@@ -6,7 +6,7 @@ static SeqAnswer_t SeqParser_VarName(Seq_t *seq, Processor_t *p) {
 	/****************************************/
 	if (r.Reply == Reply.Ok)
 		printf(u8" %s", String.GetPrimitive(
-			(seq->GetStringiser(seq))(Seq.GetLast(seq))
+			(seq->GetStringiser(seq))(Seq.GetHead(seq))
 		));
 	/****************************************/
 
@@ -19,7 +19,7 @@ static SeqAnswer_t SeqParser_ProcName(Seq_t *seq, Processor_t *p) {
 	/****************************************/
 	if (r.Reply == Reply.Ok)
 		printf(u8" %s", String.GetPrimitive(
-			(seq->GetStringiser(seq))(Seq.GetLast(seq))
+			(seq->GetStringiser(seq))(Seq.GetHead(seq))
 		));
 	/****************************************/
 
@@ -37,7 +37,7 @@ static SeqAnswer_t SeqParser_StdType(Seq_t *seq, Processor_t *p) {
 	/****************************************/
 	if (r.Reply == Reply.Ok)
 		printf(u8" %s", String.GetPrimitive(
-			(seq->GetStringiser(seq))(Seq.GetLast(seq))
+			(seq->GetStringiser(seq))(Seq.GetHead(seq))
 		));
 	/****************************************/
 
@@ -808,7 +808,7 @@ static SeqAnswer_t SeqParser_Program(Seq_t *seq, Processor_t *p) {
 		/****************************************/
 		if (r.Reply == Reply.Ok)
 			printf(u8" %s", String.GetPrimitive(
-				(seq->GetStringiser(seq))(Seq.GetLast(seq))
+				(seq->GetStringiser(seq))(Seq.GetHead(seq))
 			));
 		/****************************************/
 

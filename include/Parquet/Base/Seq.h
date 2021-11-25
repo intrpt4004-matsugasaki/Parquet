@@ -23,7 +23,7 @@ typedef struct Seq_t {
 	uint32_t (* GetLength)(struct Seq_t *);
 	any *(* Get)(struct Seq_t *, const uint32_t idx);
 
-	any *(* GetLast)(struct Seq_t *);
+	any *(* GetHead)(struct Seq_t *);
 
 	struct Seq_t *(* GetHeadSeq)(struct Seq_t *);
 	struct Seq_t *(* GetTailSeq)(struct Seq_t *);
@@ -51,7 +51,7 @@ typedef struct {
 	uint32_t (* GetLength)(Seq_t *);
 	any *(* Get)(Seq_t *, const uint32_t idx);
 
-	any *(* GetLast)(Seq_t *);
+	any *(* GetHead)(Seq_t *);
 
 	Seq_t *(* GetHeadSeq)(Seq_t *);
 	Seq_t *(* GetTailSeq)(Seq_t *);
