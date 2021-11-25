@@ -36,6 +36,8 @@ typedef struct Seq_t {
 typedef struct {
 	uint32_t _ALLOCATION_BLOCK_SIZE;
 
+	String_t *(* STRINGISER_STRING)(any *item);
+
 	Seq_t *(* New)(String_t *(* stringiser)(any *item));
 	void (* Delete)(Seq_t *);
 

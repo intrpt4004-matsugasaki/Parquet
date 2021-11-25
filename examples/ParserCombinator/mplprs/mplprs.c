@@ -25,7 +25,7 @@ void main(const int32_t argc, uint8_t *argv[]) {
 	/* parse */
 	List_t *tokens = TokenCollector.Get(collector);
 
-	List_t *t = List.New();
+	List_t *seq = Seq.New(Seq.STRINGISER_STRING);
 	for (uint32_t i = 0; i < List.GetLength(tokens); i++) {
 		Token_t *tkn = tokens->Get(tokens, i);
 		t->Add(t, tkn->GetEntity(tkn));

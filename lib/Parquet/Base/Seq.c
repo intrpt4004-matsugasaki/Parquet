@@ -90,8 +90,13 @@ static Seq_t *New(String_t *(* stringiser)(any *item)) {
 	return seq;
 }
 
+static String_t *STRINGISER_STRING(any *item) {
+	return item;
+}
+
 _Seq Seq = {
 	._ALLOCATION_BLOCK_SIZE		= 1000,
+	.STRINGISER_STRING			= STRINGISER_STRING,
 
 	.New						= New,
 	.Delete						= Delete,

@@ -31,29 +31,50 @@ SeqAnswer_t program_then_test(Seq_t *seq, Processor_t *p) {
 	);
 }
 
-void main() {
-	String_t *ret(any *a) { return a; }
+SeqAnswer_t digit(Seq_t *seq, Processor_t *p) {
+	return SeqParsers.Complete(
+		Parsers.Char.Digit,
+		seq, p
+	);
+}
 
-	Seq_t *seq = Seq.New(ret);
+void main() {
+	Seq_t *seq = Seq.New(Seq.STRINGISER_STRING);
 	seq->Add(seq, String.New(u8"program"));
 	SeqInvoker.ParseTest(program, seq);
 	seq->Delete(seq);
 
-	seq = Seq.New(ret);
+	seq = Seq.New(Seq.STRINGISER_STRING);
 	seq->Add(seq, String.New(u8"p"));
 	SeqInvoker.ParseTest(program, seq);
 	seq->Delete(seq);
 
-	seq = Seq.New(ret);
+	seq = Seq.New(Seq.STRINGISER_STRING);
 	seq->Add(seq, String.New(u8"test"));
 	seq->Add(seq, String.New(u8";"));
 	SeqInvoker.ParseTest(program_or_test, seq);
 	seq->Delete(seq);
 
-	seq = Seq.New(ret);
+	seq = Seq.New(Seq.STRINGISER_STRING);
 	seq->Add(seq, String.New(u8"program"));
 	seq->Add(seq, String.New(u8"test"));
 	seq->Add(seq, String.New(u8";"));
 	SeqInvoker.ParseTest(program_then_test, seq);
+	seq->Delete(seq);
+
+	seq = Seq.New(Seq.STRINGISER_STRING);
+	seq->Add(seq, String.New(u8"3"));
+	SeqInvoker.ParseTest(digit, seq);
+	seq->Delete(seq);
+
+	seq = Seq.New(Seq.STRINGISER_STRING);
+	seq->Add(seq, String.New(u8"3"));
+	seq->Add(seq, String.New(u8"3"));
+	SeqInvoker.ParseTest(digit, seq);
+	seq->Delete(seq);
+
+	seq = Seq.New(Seq.STRINGISER_STRING);
+	seq->Add(seq, String.New(u8"31"));
+	SeqInvoker.ParseTest(digit, seq);
 	seq->Delete(seq);
 }
