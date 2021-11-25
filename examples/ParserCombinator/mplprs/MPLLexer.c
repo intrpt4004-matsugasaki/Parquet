@@ -17,14 +17,11 @@ static Answer_t Parser_Comment(String_t *s, Processor_t *p) {
 			return Parsers.Char.Match('{', s, p);
 		}
 
-		Answer_t nonClose(String_t *s, Processor_t *p) {
-			return Parsers.Char.NoneOf(
-				String.New(u8"}"),
-				s, p
-			);
-		}
-
 		Answer_t content(String_t *s, Processor_t *p) {
+			Answer_t nonClose(String_t *s, Processor_t *p) {
+				return Parsers.Char.UnMatch('}', s, p);
+			}
+
 			return Combinator.Many0(nonClose, s, p);
 		}
 
@@ -33,9 +30,7 @@ static Answer_t Parser_Comment(String_t *s, Processor_t *p) {
 		}
 
 		return Combinator.Bind3(
-			open,
-			content,
-			close,
+			open, content, close,
 			s, p
 		);
 	}
@@ -48,14 +43,14 @@ static Answer_t Parser_Comment(String_t *s, Processor_t *p) {
 			);
 		}
 
-		Answer_t nonClose(String_t *s, Processor_t *p) {
-			return Parsers.String.UnMatch(
-				String.New(u8"*/"),
-				s, p
-			);
-		}
-
 		Answer_t content(String_t *s, Processor_t *p) {
+			Answer_t nonClose(String_t *s, Processor_t *p) {
+				return Parsers.String.UnMatch(
+					String.New(u8"*/"),
+					s, p
+				);
+			}
+
 			return Combinator.Many0(nonClose, s, p);
 		}
 
@@ -67,9 +62,7 @@ static Answer_t Parser_Comment(String_t *s, Processor_t *p) {
 		}
 
 		return Combinator.Bind3(
-			open,
-			content,
-			close,
+			open, content, close,
 			s, p
 		);
 	}
@@ -78,13 +71,11 @@ static Answer_t Parser_Comment(String_t *s, Processor_t *p) {
 }
 
 static Answer_t Parser_Separator(String_t *s, Processor_t *p) {
-	Answer_t space_tab(String_t *s, Processor_t *p) {
-		List_t *seps = List.New();
-		seps->Add(seps, String.New(u8" "));
-		seps->Add(seps, String.New(u8"\t"));
+	Answer_t space_or_tab(String_t *s, Processor_t *p) {
+		return Combinator.Choise(
+			Parsers.Char.Space,
+			Parsers.Char.Tab,
 
-		return Parsers.String.OneOf(
-			seps,
 			s, p
 		);
 	}
@@ -101,15 +92,16 @@ static Answer_t Parser_Separator(String_t *s, Processor_t *p) {
 			s, p
 		);
 
-/****************************************/
-		if (result.Reply == Reply.Ok) (((TokenCollector_t *)(p)))->NewLine(p);
-/****************************************/
+		/****************************************/
+		if (result.Reply == Reply.Ok)
+			(((TokenCollector_t *)(p)))->NewLine(p);
+		/****************************************/
 
 		return result;
 	}
 
 	return Combinator.Choise3(
-		space_tab,
+		space_or_tab,
 		newline,
 		Parser_Comment,
 		s, p
@@ -150,41 +142,41 @@ static Answer_t Parser_Symbol(String_t *s, Processor_t *p) {
 		s, p
 	);
 
-/****************************************/
+	/****************************************/
 	if (result.Reply == Reply.Ok)
 		((TokenCollector_t *)(p))->Add(p, result.Precipitate, Token_Symbol);
-/****************************************/
+	/****************************************/
 
 	return result;
 }
 
 static Answer_t Parser_String(String_t *s, Processor_t *p) {
-	Answer_t apostr(String_t *s, Processor_t *p) {
+	Answer_t apostrophe(String_t *s, Processor_t *p) {
 		return Parsers.Char.Match('\'', s, p);
 	}
 
-	Answer_t nonapostr(String_t *s, Processor_t *p) {
-		return Parsers.Char.NoneOf(
-			String.New(u8"'"),
-			s, p
-		);
-	}
-
 	Answer_t content(String_t *s, Processor_t *p) {
-		return Combinator.Many0(nonapostr, s, p);
+		Answer_t nonApostrophe(String_t *s, Processor_t *p) {
+			return Parsers.Char.NoneOf(
+				String.New(u8"'"),
+				s, p
+			);
+		}
+
+		return Combinator.Many0(nonApostrophe, s, p);
 	}
 
 	Answer_t result = Combinator.Bind3(
-		apostr,
+		apostrophe,
 		content,
-		apostr,
+		apostrophe,
 		s, p
 	);
 
-/****************************************/
+	/****************************************/
 	if (result.Reply == Reply.Ok)
 		((TokenCollector_t *)(p))->Add(p, result.Precipitate, Token_String);
-/****************************************/
+	/****************************************/
 
 	return result;
 }
@@ -192,10 +184,10 @@ static Answer_t Parser_String(String_t *s, Processor_t *p) {
 static Answer_t Parser_UInt(String_t *s, Processor_t *p) {
 	Answer_t result = Combinator.Many1(Parser_Digit, s, p);
 
-/****************************************/
+	/****************************************/
 	if (result.Reply == Reply.Ok)
 		((TokenCollector_t *)(p))->Add(p, result.Precipitate, Token_UInt);
-/****************************************/
+	/****************************************/
 
 	return result;
 }
@@ -234,16 +226,16 @@ static Answer_t Parser_Keyword(String_t *s, Processor_t *p) {
 		s, p
 	);
 
-/****************************************/
+	/****************************************/
 	if (result.Reply == Reply.Ok)
 		((TokenCollector_t *)(p))->Add(p, result.Precipitate, Token_Keyword);
-/****************************************/
+	/****************************************/
 
 	return result;
 }
 
 static Answer_t Parser_Name(String_t *s, Processor_t *p) {
-	Answer_t al_num(String_t *s, Processor_t *p) {
+	Answer_t Alpha_or_Num(String_t *s, Processor_t *p) {
 		return Combinator.Choise(
 			Parser_Alphabet,
 			Parser_Digit,
@@ -251,20 +243,19 @@ static Answer_t Parser_Name(String_t *s, Processor_t *p) {
 		);
 	}
 
-	Answer_t al_num_Rep(String_t *s, Processor_t *p) {
-		return Combinator.Many0(al_num, s, p);
+	Answer_t AlphaNums0(String_t *s, Processor_t *p) {
+		return Combinator.Many0(Alpha_or_Num, s, p);
 	}
 
 	Answer_t result = Combinator.Bind(
-		al_num,
-		al_num_Rep,
+		Alpha_or_Num, AlphaNums0,
 		s, p
 	);
 
-/****************************************/
+	/****************************************/
 	if (result.Reply == Reply.Ok)
 		((TokenCollector_t *)(p))->Add(p, result.Precipitate, Token_Name);
-/****************************************/
+	/****************************************/
 
 	return result;
 }
@@ -281,7 +272,7 @@ static Answer_t Parser_Token(String_t *s, Processor_t *p) {
 }
 
 static Answer_t Parser_Program(String_t *s, Processor_t *p) {
-	Answer_t tok_sep(String_t *s, Processor_t *p) {
+	Answer_t Separator_or_Token(String_t *s, Processor_t *p) {
 		return Combinator.Choise(
 			Parser_Separator,
 			Parser_Token,
@@ -289,7 +280,7 @@ static Answer_t Parser_Program(String_t *s, Processor_t *p) {
 		);
 	}
 
-	return Combinator.Many0(tok_sep, s, p);
+	return Combinator.Many0(Separator_or_Token, s, p);
 }
 
 _MPLLexer MPLLexer = {

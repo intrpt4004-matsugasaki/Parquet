@@ -8,7 +8,7 @@ void main(const int32_t argc, uint8_t *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	Answer_t r = Invoker.Invoke(Parser_Program, String.FromFile(argv[1]), TokenCollector.New());
+	Answer_t r = Invoker.Invoke(MPLLexer.Parser_Program, String.FromFile(argv[1]), TokenCollector.New());
 	TokenCollector_t *collector = (TokenCollector_t *)(r.Processor);
 
 	if (r.Reply == Reply.Err) {
@@ -25,7 +25,7 @@ void main(const int32_t argc, uint8_t *argv[]) {
 
 		printf("(%s)[%s %d] ",
 			String.GetPrimitive(tkn->GetEntity(tkn)),
-			String.GetPrimitive(TokenTypeString(tkn)),
+			String.GetPrimitive(MPLLexer.TokenTypeString(tkn)),
 			tkn->GetLine(tkn)
 		);
 	}
