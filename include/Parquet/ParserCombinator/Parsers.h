@@ -11,8 +11,8 @@
 typedef struct {
 	Answer_t (* Match)(uint8_t c, String_t *, Processor_t *);
 	Answer_t (* UnMatch)(uint8_t c, String_t *, Processor_t *);
-	Answer_t (* OneOf)(String_t *list, String_t *, Processor_t *);
-	Answer_t (* NoneOf)(String_t *list, String_t *, Processor_t *);
+	Answer_t (* OneOf)(String_t *cs, String_t *, Processor_t *);
+	Answer_t (* NoneOf)(String_t *cs, String_t *, Processor_t *);
 
 	Answer_t (* Upper)(String_t *, Processor_t *);
 	Answer_t (* Lower)(String_t *, Processor_t *);
@@ -38,7 +38,7 @@ typedef struct {
 typedef struct {
 	Answer_t (* Match)(String_t *pat, String_t *, Processor_t *);
 	Answer_t (* UnMatch)(String_t *pat, String_t *, Processor_t *);
-	Answer_t (* OneOf)(List_t *list, String_t *, Processor_t *);
+	Answer_t (* OneOf)(List_t *pats, String_t *, Processor_t *);
 } _String_;
 
 typedef struct {

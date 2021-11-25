@@ -16,11 +16,11 @@ static Answer_t UnMatch(uint8_t c, String_t *s, Processor_t *p) {
 	return Basis.OkRead1(s, p);
 }
 
-static Answer_t OneOf(String_t *list, String_t *s, Processor_t *p) {
+static Answer_t OneOf(String_t *cs, String_t *s, Processor_t *p) {
 	if (s->IsEmpty(s)) return Basis.Err(s, p);
 
-	for (uint32_t i = 0; i < list->GetLength(list); i++) {
-		if (list->GetCharAt(list, i) == s->GetHeadChar(s)) {
+	for (uint32_t i = 0; i < cs->GetLength(cs); i++) {
+		if (cs->GetCharAt(cs, i) == s->GetHeadChar(s)) {
 			return Basis.OkRead1(s, p);
 		}
 	}
@@ -28,11 +28,11 @@ static Answer_t OneOf(String_t *list, String_t *s, Processor_t *p) {
 	return Basis.Err(s, p);
 }
 
-static Answer_t NoneOf(String_t *list, String_t *s, Processor_t *p) {
+static Answer_t NoneOf(String_t *cs, String_t *s, Processor_t *p) {
 	if (s->IsEmpty(s)) return Basis.Err(s, p);
 
-	for (uint32_t i = 0; i < list->GetLength(list); i++) {
-		if (list->GetCharAt(list, i) == s->GetHeadChar(s)) {
+	for (uint32_t i = 0; i < cs->GetLength(cs); i++) {
+		if (cs->GetCharAt(cs, i) == s->GetHeadChar(s)) {
 			return Basis.Err(s, p);
 		}
 	}
@@ -178,14 +178,14 @@ static Answer_t String_UnMatch(String_t *pat, String_t *s, Processor_t *p) {
 	return Basis.OkRead1(s, p);
 }
 
-static Answer_t String_OneOf(List_t *list, String_t *s, Processor_t *p) {
-	for (uint32_t i = 0; i < list->GetLength(list); i++)
-		if (s->StartsWith(s, list->Get(list, i)))
+static Answer_t String_OneOf(List_t *pats, String_t *s, Processor_t *p) {
+	for (uint32_t i = 0; i < pats->GetLength(pats); i++)
+		if (s->StartsWith(s, pats->Get(pats, i)))
 			return (Answer_t){
 				.Reply			= Reply.Ok,
-				.Precipitate	= String.Copy(list->Get(list, i)),
+				.Precipitate	= String.Copy(pats->Get(pats, i)),
 				.Subsequent		= String.Substring(s,
-					String.GetLength(list->Get(list, i)),
+					String.GetLength(pats->Get(pats, i)),
 					String.GetLength(s) + 1
 				),
 			};

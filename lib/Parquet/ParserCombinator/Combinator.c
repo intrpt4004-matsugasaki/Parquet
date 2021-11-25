@@ -2,12 +2,12 @@
 
 static Answer_t Bind(Answer_t (* parser1)(String_t *, Processor_t *), Answer_t (* parser2)(String_t *, Processor_t *), String_t *s, Processor_t *p) {
 	Answer_t result = parser1(s, p);
-	  if (result.Reply == Reply.Err) return Basis.Err(s, p);
-	  String_t *precip = result.Precipitate;
+	if (result.Reply == Reply.Err) return Basis.Err(s, p);
+	String_t *precip = result.Precipitate;
 
 	result = parser2(result.Subsequent, p);
-	  if (result.Reply == Reply.Err) return Basis.Err(s, p);
-	  precip = String.Concat(precip, result.Precipitate);
+	if (result.Reply == Reply.Err) return Basis.Err(s, p);
+	precip = String.Concat(precip, result.Precipitate);
 
 	return (Answer_t){
 		.Reply			= Reply.Ok,
@@ -19,12 +19,12 @@ static Answer_t Bind(Answer_t (* parser1)(String_t *, Processor_t *), Answer_t (
 
 static Answer_t Bind3(Answer_t (* parser1)(String_t *, Processor_t *), Answer_t (* parser2)(String_t *, Processor_t *), Answer_t (* parser3)(String_t *, Processor_t *), String_t *s, Processor_t *p) {
 	Answer_t result = Combinator.Bind(parser1, parser2, s, p);
-	  if (result.Reply == Reply.Err) return Basis.Err(s, p);
-	  String_t *precip = result.Precipitate;
+	if (result.Reply == Reply.Err) return Basis.Err(s, p);
+	String_t *precip = result.Precipitate;
 
 	result = parser3(result.Subsequent, p);
-	  if (result.Reply == Reply.Err) return Basis.Err(s, p);
-	  precip = String.Concat(precip, result.Precipitate);
+	if (result.Reply == Reply.Err) return Basis.Err(s, p);
+	precip = String.Concat(precip, result.Precipitate);
 
 	return (Answer_t){
 		.Reply			= Reply.Ok,
@@ -36,12 +36,12 @@ static Answer_t Bind3(Answer_t (* parser1)(String_t *, Processor_t *), Answer_t 
 
 static Answer_t Bind4(Answer_t (* parser1)(String_t *, Processor_t *), Answer_t (* parser2)(String_t *, Processor_t *), Answer_t (* parser3)(String_t *, Processor_t *), Answer_t (* parser4)(String_t *, Processor_t *), String_t *s, Processor_t *p) {
 	Answer_t result = Combinator.Bind3(parser1, parser2, parser3, s, p);
-	  if (result.Reply == Reply.Err) return Basis.Err(s, p);
-	  String_t *precip = result.Precipitate;
+	if (result.Reply == Reply.Err) return Basis.Err(s, p);
+	String_t *precip = result.Precipitate;
 
 	result = parser4(result.Subsequent, p);
-	  if (result.Reply == Reply.Err) return Basis.Err(s, p);
-	  precip = String.Concat(precip, result.Precipitate);
+	if (result.Reply == Reply.Err) return Basis.Err(s, p);
+	precip = String.Concat(precip, result.Precipitate);
 
 	return (Answer_t){
 		.Reply			= Reply.Ok,
@@ -53,12 +53,12 @@ static Answer_t Bind4(Answer_t (* parser1)(String_t *, Processor_t *), Answer_t 
 
 static Answer_t Bind5(Answer_t (* parser1)(String_t *, Processor_t *), Answer_t (* parser2)(String_t *, Processor_t *), Answer_t (* parser3)(String_t *, Processor_t *), Answer_t (* parser4)(String_t *, Processor_t *), Answer_t (* parser5)(String_t *, Processor_t *), String_t *s, Processor_t *p) {
 	Answer_t result = Combinator.Bind4(parser1, parser2, parser3, parser4, s, p);
-	  if (result.Reply == Reply.Err) return Basis.Err(s, p);
-	  String_t *precip = result.Precipitate;
+	if (result.Reply == Reply.Err) return Basis.Err(s, p);
+	String_t *precip = result.Precipitate;
 
 	result = parser5(result.Subsequent, p);
-	  if (result.Reply == Reply.Err) return Basis.Err(s, p);
-	  precip = String.Concat(precip, result.Precipitate);
+	if (result.Reply == Reply.Err) return Basis.Err(s, p);
+	precip = String.Concat(precip, result.Precipitate);
 
 	return (Answer_t){
 		.Reply			= Reply.Ok,
@@ -70,8 +70,8 @@ static Answer_t Bind5(Answer_t (* parser1)(String_t *, Processor_t *), Answer_t 
 
 static Answer_t Bind6(Answer_t (* parser1)(String_t *, Processor_t *), Answer_t (* parser2)(String_t *, Processor_t *), Answer_t (* parser3)(String_t *, Processor_t *), Answer_t (* parser4)(String_t *, Processor_t *), Answer_t (* parser5)(String_t *, Processor_t *), Answer_t (* parser6)(String_t *, Processor_t *), String_t *s, Processor_t *p) {
 	Answer_t result = Combinator.Bind5(parser1, parser2, parser3, parser4, parser5, s, p);
-	  if (result.Reply == Reply.Err) return Basis.Err(s, p);
-	  String_t *precip = result.Precipitate;
+	if (result.Reply == Reply.Err) return Basis.Err(s, p);
+	String_t *precip = result.Precipitate;
 
 	result = parser6(result.Subsequent, p);
 	  if (result.Reply == Reply.Err) return Basis.Err(s, p);

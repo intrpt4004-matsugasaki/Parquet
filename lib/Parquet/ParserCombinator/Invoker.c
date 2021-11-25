@@ -11,12 +11,12 @@ static Answer_t Parse(Answer_t (* parser)(String_t *, Processor_t *), String_t *
 static void InvokeTest(Answer_t (* parser)(String_t *, Processor_t *), String_t *s, Processor_t *p) {
 	Answer_t result = Invoker.Invoke(parser, s, p);
 	if (result.Reply == Reply.Err) {
-		printf("Parser.InvokeTest: parse failed.\n");
+		printf("Invoker.InvokeTest: parse failed.\n");
 		return;
 	}
 
 	if (!result.Subsequent->IsEmpty(result.Subsequent)) {
-		printf("Parser.InvokeTest: parse incorrect.\n");
+		printf("Invoker.InvokeTest: parse incorrect.\n");
 		printf("\"%s\" [%s]\n", String.GetPrimitive(result.Precipitate), String.GetPrimitive(result.Subsequent));
 		return;
 	}
@@ -27,12 +27,12 @@ static void InvokeTest(Answer_t (* parser)(String_t *, Processor_t *), String_t 
 static void ParseTest(Answer_t (* parser)(String_t *, Processor_t *), String_t *s) {
 	Answer_t result = Invoker.Parse(parser, s);
 	if (result.Reply == Reply.Err) {
-		printf("Parser.ParseTest: parse failed.\n");
+		printf("Invoker.ParseTest: parse failed.\n");
 		return;
 	}
 
 	if (!result.Subsequent->IsEmpty(result.Subsequent)) {
-		printf("Parser.ParseTest: parse incorrect.\n");
+		printf("Invoker.ParseTest: parse incorrect.\n");
 		printf("\"%s\" [%s]\n", String.GetPrimitive(result.Precipitate), String.GetPrimitive(result.Subsequent));
 		return;
 	}
