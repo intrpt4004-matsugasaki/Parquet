@@ -13,6 +13,7 @@ target_sources(Parquet
     Parquet/Base/Memory.c
     Parquet/Base/String.c
     Parquet/Base/List.c
+    Parquet/Base/Seq.c
 
     Parquet/ParserCombinator/Parser.c
     Parquet/ParserCombinator/Basis.c

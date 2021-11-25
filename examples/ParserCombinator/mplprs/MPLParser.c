@@ -1,5 +1,5 @@
 #include "MPLParser.h"
-
+/*
 static Answer_t Parser_VarName(String_t *s, Processor_t *p) {
 	Answer_t r = Parser_Name(s, p);
 
@@ -748,7 +748,7 @@ static Answer_t Parser_Block(String_t *s, Processor_t *p) {
 		s, p
 	);
 }
-
+*/
 static SeqAnswer_t SeqParser_Program(List_t *seq, Processor_t *p) {
 	SeqAnswer_t program(List_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8"program", seq, p));
@@ -761,17 +761,18 @@ static SeqAnswer_t SeqParser_Program(List_t *seq, Processor_t *p) {
 		return r;
 	}
 
-	SeqAnswer_t name(String_t *s, Processor_t *p) {
+	SeqAnswer_t name(List_t *seq, Processor_t *p) {
 		if (seq->IsEmpty(seq)) return SeqBasis.Err(seq, p);
 
-		String_t *s = List.Get(seq, 0);
-
-		Answer_t p_name(String_t *s, Processor_t *p) {
+		Answer_t name_p(String_t *s, Processor_t *p) {
 			return Combinator.Many1(MPLLexer.Parser_Name, s, p);
 		}
 
+		SeqAnswer_t r = SeqParsers.Complete(name_p, seq, p);
+		/****************************************/
 		if (r.Reply == Reply.Ok)
 			printf(u8" %s", String.GetPrimitive(r.Precipitate));
+		/****************************************/
 
 		return r;
 	}

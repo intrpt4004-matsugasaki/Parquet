@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Parquet/Base/List.h"
+#include "Parquet/Base/Seq.h"
 #include "Parquet/ParserCombinator/Parser.h"
 
 typedef struct {
 	__Reply Reply;
 
-	List_t *Precipitate;
-	List_t *Subsequent;
+	Seq_t *Precipitate;
+	Seq_t *Subsequent;
 
 	Processor_t *Processor;
 } SeqAnswer_t;
