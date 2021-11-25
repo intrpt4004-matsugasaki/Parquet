@@ -7,6 +7,6 @@
 typedef struct {
 	void (* DeployAll)(String_t *AsmFilePath, String_t *ObjFilePath, String_t *ExecFilePath);
 	void (* Deploy)(String_t *AsmFilePath, String_t *ExecFilePath);
-} _ExecutablePreparer;
+} _ExecBinPreparer;
 
-extern _ExecutablePreparer ExecutablePreparer;
+extern _ExecBinPreparer ExecBinPreparer;

@@ -59,7 +59,7 @@ target_link_libraries(mplprs
     Parquet
 )
 
-add_executable(CreateExecutable ExecutablePreparer/CreateExecutable.c)
+add_executable(CreateExecutable ExecBinPreparer/CreateExecutable.c)
 target_link_libraries(CreateExecutable
     Parquet
 )

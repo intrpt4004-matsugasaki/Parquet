@@ -1,4 +1,4 @@
-#include "Parquet/ExecutablePreparer.h"
+#include "Parquet/ExecBinPreparer.h"
 
 static void DeployAll(String_t *AsmFilePath, String_t *ObjFilePath, String_t *ExecFilePath) {
 	/* Assemble */
@@ -9,7 +9,7 @@ static void DeployAll(String_t *AsmFilePath, String_t *ObjFilePath, String_t *Ex
 	int32_t statusCode = system(String.GetPrimitive(cmd));
 
 	if (!WIFEXITED(statusCode))
-		Error.Panic(u8"\e[91m", u8"ExecutablePreparer#Deploy/as");
+		Error.Panic(u8"\e[91m", u8"ExecBinPreparer#Deploy/as");
 
 
 	/* Link */
@@ -20,12 +20,12 @@ static void DeployAll(String_t *AsmFilePath, String_t *ObjFilePath, String_t *Ex
 	statusCode = system(String.GetPrimitive(cmd));
 
 	if (!WIFEXITED(statusCode))
-		Error.Panic(u8"\e[91m", u8"ExecutablePreparer#Deploy/ld");
+		Error.Panic(u8"\e[91m", u8"ExecBinPreparer#Deploy/ld");
 }
 
 static void Deploy(String_t *AsmFilePath, String_t *ExecFilePath) {
 	String_t *obj = String.Concat(ExecFilePath, String.New(u8".o"));
-	ExecutablePreparer.DeployAll(AsmFilePath, obj, ExecFilePath);
+	ExecBinPreparer.DeployAll(AsmFilePath, obj, ExecFilePath);
 
 	/* Remove .o */
 	int32_t statusCode = system(String.GetPrimitive(
@@ -33,10 +33,10 @@ static void Deploy(String_t *AsmFilePath, String_t *ExecFilePath) {
 	));
 
 	if (!WIFEXITED(statusCode))
-		Error.Panic(u8"\e[91m", u8"ExecutablePreparer#DeployExecutable/rm");
+		Error.Panic(u8"\e[91m", u8"ExecBinPreparer#DeployExecutable/rm");
 }
 
-_ExecutablePreparer ExecutablePreparer = {
+_ExecBinPreparer ExecBinPreparer = {
 	.DeployAll	= DeployAll,
 	.Deploy		= Deploy,
 };
