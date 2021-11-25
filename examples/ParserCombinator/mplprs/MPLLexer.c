@@ -91,7 +91,6 @@ static Answer_t Parser_Separator(String_t *s, Processor_t *p) {
 			nls,
 			s, p
 		);
-
 		/****************************************/
 		if (result.Reply == Reply.Ok)
 			(((TokenCollector_t *)(p)))->NewLine(p);
@@ -141,7 +140,6 @@ static Answer_t Parser_Symbol(String_t *s, Processor_t *p) {
 		syms,
 		s, p
 	);
-
 	/****************************************/
 	if (result.Reply == Reply.Ok)
 		((TokenCollector_t *)(p))->Add(p, result.Precipitate, Token_Symbol);
@@ -172,7 +170,6 @@ static Answer_t Parser_String(String_t *s, Processor_t *p) {
 		apostrophe,
 		s, p
 	);
-
 	/****************************************/
 	if (result.Reply == Reply.Ok)
 		((TokenCollector_t *)(p))->Add(p, result.Precipitate, Token_String);
@@ -183,7 +180,6 @@ static Answer_t Parser_String(String_t *s, Processor_t *p) {
 
 static Answer_t Parser_UInt(String_t *s, Processor_t *p) {
 	Answer_t result = Combinator.Many1(Parser_Digit, s, p);
-
 	/****************************************/
 	if (result.Reply == Reply.Ok)
 		((TokenCollector_t *)(p))->Add(p, result.Precipitate, Token_UInt);
@@ -225,7 +221,6 @@ static Answer_t Parser_Keyword(String_t *s, Processor_t *p) {
 		keywords,
 		s, p
 	);
-
 	/****************************************/
 	if (result.Reply == Reply.Ok)
 		((TokenCollector_t *)(p))->Add(p, result.Precipitate, Token_Keyword);
@@ -251,7 +246,6 @@ static Answer_t Parser_Name(String_t *s, Processor_t *p) {
 		Alpha_or_Num, AlphaNums0,
 		s, p
 	);
-
 	/****************************************/
 	if (result.Reply == Reply.Ok)
 		((TokenCollector_t *)(p))->Add(p, result.Precipitate, Token_Name);

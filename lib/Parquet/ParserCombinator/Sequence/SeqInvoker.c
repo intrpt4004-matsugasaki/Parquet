@@ -20,10 +20,10 @@ static void InvokeTest(SeqAnswer_t (* seqParser)(List_t *, Processor_t *), List_
 
 		for (uint32_t i = 0; i < List.GetLength(result.Precipitate); i++)
 			printf("(%s) ", String.GetPrimitive(List.Get(result.Precipitate, i)));
-		printf("\n");
 
 		for (uint32_t i = 0; i < List.GetLength(result.Subsequent); i++)
 			printf("[%s] ", String.GetPrimitive(List.Get(result.Subsequent, i)));
+
 		printf("\n");
 
 		return;
@@ -31,6 +31,7 @@ static void InvokeTest(SeqAnswer_t (* seqParser)(List_t *, Processor_t *), List_
 
 	for (uint32_t i = 0; i < List.GetLength(result.Precipitate); i++)
 		printf("(%s) ", String.GetPrimitive(List.Get(result.Precipitate, i)));
+
 	printf("\n");
 }
 
@@ -46,10 +47,10 @@ static void ParseTest(SeqAnswer_t (* seqParser)(List_t *, Processor_t *), List_t
 
 		for (uint32_t i = 0; i < List.GetLength(result.Precipitate); i++)
 			printf("(%s) ", String.GetPrimitive(List.Get(result.Precipitate, i)));
-		printf("\n");
 
 		for (uint32_t i = 0; i < List.GetLength(result.Subsequent); i++)
 			printf("[%s] ", String.GetPrimitive(List.Get(result.Subsequent, i)));
+
 		printf("\n");
 
 		return;
@@ -57,6 +58,7 @@ static void ParseTest(SeqAnswer_t (* seqParser)(List_t *, Processor_t *), List_t
 
 	for (uint32_t i = 0; i < List.GetLength(result.Precipitate); i++)
 		printf("(%s) ", String.GetPrimitive(List.Get(result.Precipitate, i)));
+
 	printf("\n");
 }
 

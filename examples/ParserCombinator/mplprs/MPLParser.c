@@ -749,14 +749,22 @@ static Answer_t Parser_Block(String_t *s, Processor_t *p) {
 	);
 }
 
-static SeqAnswer_t Parser_Program(List_t *seq, Processor_t *p) {
-	Answer_t program(String_t *s, Processor_t *p) {
-		Answer_t r = Parsers.String.Match(String.New(u8"program"), s, p);
+static SeqAnswer_t SeqParser_Program(List_t *seq, Processor_t *p) {
+	SeqAnswer_t program(List_t *seq, Processor_t *p) {
+		if (seq->IsEmpty(seq)) return SeqBasis.Err(seq);
 
+		Answer_t p_program(String_t *s, Processor_t *p) {
+			return Parsers.String.Match(String.New(u8"program"), s, p);
+		}
+
+		String_t *s = seq->Get(seq, 0);
+		Answer_t r = Invoker.Invoke(program_s, s, p);
+		/****************************************/
 		if (r.Reply == Reply.Ok)
 			printf(u8"program");
+		/****************************************/
 
-		return r;
+		return (r.Reply == Reply.Ok) ? SeqBasis.OkRead1(seq) : SeqBasis.Err(seq);
 	}
 
 	Answer_t name(String_t *s, Processor_t *p) {
@@ -795,15 +803,14 @@ static SeqAnswer_t Parser_Program(List_t *seq, Processor_t *p) {
 		return r;
 	}
 
-	return Bind7(
+	return SeqCombinator.Bind6(
 		program, name, semicolon,
 		Parser_Block,
-		end, dot, _Separators0,
-
+		end, dot,
 		s, p
 	);
 }
 
 _MPLParser MPLParser = {
-	.Parser_Program	= Parser_Program,
+	.SeqParser_Program	= SeqParser_Program,
 };

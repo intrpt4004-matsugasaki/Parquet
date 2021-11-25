@@ -7,6 +7,7 @@ add_dependencies(examples
 
 	AnyChar3-6-12
 	DeclVar
+	SeqParse
 	MPL
 	mpltok
 	mplprs
@@ -41,6 +42,11 @@ target_link_libraries(AnyChar3-6-12
 
 add_executable(DeclVar ParserCombinator/DeclVar.c)
 target_link_libraries(DeclVar
+    Parquet
+)
+
+add_executable(SeqParse ParserCombinator/SeqParse.c)
+target_link_libraries(SeqParse
     Parquet
 )
 

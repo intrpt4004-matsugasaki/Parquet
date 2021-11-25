@@ -24,11 +24,16 @@ void main(const int32_t argc, uint8_t *argv[]) {
 
 	/* parse */
 	List_t *tokens = TokenCollector.Get(collector);
-	// ListAnswer_t a = ListInvoker.Invoke(Parser_Program, tokens, NULL);
+
+	List_t *t = List.New();
+	for (uint32_t i = 0; i < List.GetLength(tokens); i++) {
+		Token_t *tkn = tokens->Get(tokens, i);
+		t->Add(t, tkn->GetEntity(tkn));
+	}
+
+	SeqAnswer_t sr = SeqInvoker.Invoke(MPLParser.SeqParser_Program, t, NULL);
 
 	// old...
-	ParseResult_t res = MPLParser.Execute(String.FromFile(argv[1]));
-
 	/*if (!res.Succeeded) {
 		printf("\e[91m[error]\e[0m parse failed at line %d.\n\n", res.ErrorLine);
 		printf("\e[2m%s\e[0m", String.GetPrimitive(res.Precipitate));
