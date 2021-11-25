@@ -3,7 +3,7 @@
 static SeqAnswer_t Match(String_t *pat, List_t *seq, Processor_t *p) {
 	if (seq->IsEmpty(seq)) return SeqBasis.Err(seq, p);
 
-	String_t *s = List.Get(seq, 0);
+	String_t *s = List.GetStringiser(seq)(List.Get(seq, 0));
 
 	return (s->Equals(s, pat)) ? SeqBasis.OkRead1(seq, p) : SeqBasis.Err(seq, p);
 }
@@ -11,7 +11,7 @@ static SeqAnswer_t Match(String_t *pat, List_t *seq, Processor_t *p) {
 static SeqAnswer_t UnMatch(String_t *pat, List_t *seq, Processor_t *p) {
 	if (seq->IsEmpty(seq)) return SeqBasis.Err(seq, p);
 
-	String_t *s = List.Get(seq, 0);
+	String_t *s = List.GetStringiser(seq)(List.Get(seq, 0));
 
 	return (!s->Equals(s, pat)) ? SeqBasis.OkRead1(seq, p) : SeqBasis.Err(seq, p);
 }
@@ -19,7 +19,7 @@ static SeqAnswer_t UnMatch(String_t *pat, List_t *seq, Processor_t *p) {
 static SeqAnswer_t OneOf(List_t *pats, List_t *seq, Processor_t *p) {
 	if (seq->IsEmpty(seq)) return SeqBasis.Err(seq, p);
 
-	String_t *s = List.Get(seq, 0);
+	String_t *s = List.GetStringiser(seq)(List.Get(seq, 0));
 	for (uint32_t i = 0; i < pats->GetLength(pats); i++)
 		if (s->Equals(s, pats->Get(pats, i)))
 			return SeqBasis.OkRead1(seq, p);

@@ -761,7 +761,11 @@ static SeqAnswer_t SeqParser_Program(List_t *seq, Processor_t *p) {
 		return r;
 	}
 
-	Answer_t name(String_t *s, Processor_t *p) {
+	SeqAnswer_t name(String_t *s, Processor_t *p) {
+		if (seq->IsEmpty(seq)) return SeqBasis.Err(seq, p);
+
+		String_t *s = List.Get(seq, 0);
+
 		Answer_t p_name(String_t *s, Processor_t *p) {
 			return Combinator.Many1(MPLLexer.Parser_Name, s, p);
 		}

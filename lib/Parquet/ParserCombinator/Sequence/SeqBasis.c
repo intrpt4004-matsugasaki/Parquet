@@ -3,7 +3,7 @@
 static SeqAnswer_t Err(List_t *seq, Processor_t *p) {
 	return (SeqAnswer_t){
 		.Reply			= Reply.Err,
-		.Precipitate	= List.New(),
+		.Precipitate	= seq->GetListWhoseBasisWasDuplicated(seq),
 		.Subsequent		= seq,
 		.Processor		= p,
 	};
@@ -12,7 +12,7 @@ static SeqAnswer_t Err(List_t *seq, Processor_t *p) {
 static SeqAnswer_t Ok(List_t *seq, Processor_t *p) {
 	return (SeqAnswer_t){
 		.Reply 			= Reply.Ok,
-		.Precipitate	= List.New(),
+		.Precipitate	= seq->GetListWhoseBasisWasDuplicated(seq),
 		.Subsequent		= seq,
 		.Processor		= p
 	};

@@ -1,5 +1,18 @@
 #include "Parquet/Base/List.h"
 
+static bool ContainsStringiser(List_t *l) {
+	return l->_ContainsStringiser;
+}
+
+static void SetStringiser(List_t *l, String_t *(* stringiser)(any *item)) {
+	l->_ContainsStringiser = true;
+	l->_Stringiser = stringiser;
+}
+
+static String_t *(* GetStringiser(List_t *l))(any *item) {
+	return l->_Stringiser;
+}
+
 static void Add(List_t *l, any *item) {
 	if (List.GetLength(l) + 1 >= l->_Size) {
 		l->_Size += List._ALLOCATION_BLOCK_SIZE;
@@ -34,19 +47,27 @@ static List_t *GetHeadList(List_t *l) {
 		Error.Panic(u8"\e[35m", u8"List.GetHeadList");
 	}
 
-	List_t *head = List.New();
+	List_t *head = List.GetListWhoseBasisWasDuplicated(l);
 	List.Add(head, List.Get(l, 0));
 
 	return head;
 }
 
 static List_t *GetTailList(List_t *l) {
-	List_t *tail = List.New();
+	List_t *tail = List.GetListWhoseBasisWasDuplicated(l);
 
 	for (uint32_t i = 1; i < List.GetLength(l); i++)
 		List.Add(tail, l->Get(l, i));
 
 	return tail;
+}
+
+static List_t *GetListWhoseBasisWasDuplicated(List_t *l) {
+	List_t *dup = List.New();
+	if (List.ContainsStringiser(l))
+		List.SetStringiser(dup, List.GetStringiser(l));
+
+	return dup;
 }
 
 static bool IsEmpty(List_t *l) {
@@ -67,32 +88,51 @@ static List_t *New() {
 	l->_Length		= 0;
 	l->_Item		= Memory.CountedAllocate(List._ALLOCATION_BLOCK_SIZE, sizeof(any *));
 
-	l->Add			= Add;
-	l->AddAll		= AddAll;
-	l->GetLength	= GetLength;
-	l->Get			= Get;
-	l->GetHeadList	= GetHeadList;
-	l->GetTailList	= GetTailList;
-	l->IsEmpty		= IsEmpty;
-	l->Delete		= Delete;
+	l->ContainsStringiser				= ContainsStringiser;
+	l->SetStringiser					= SetStringiser;
+	l->GetStringiser					= GetStringiser;
+	l->Add								= Add;
+	l->AddAll							= AddAll;
+	l->GetLength						= GetLength;
+	l->Get								= Get;
+	l->GetHeadList						= GetHeadList;
+	l->GetTailList						= GetTailList;
+	l->GetListWhoseBasisWasDuplicated	= GetListWhoseBasisWasDuplicated;
+	l->IsEmpty							= IsEmpty;
+	l->Delete							= Delete;
+
+	return l;
+}
+
+static List_t *NewWithStringiser(String_t *(* stringiser)(any *item)) {
+	List_t *l = List.New();
+
+	l->SetStringiser(l, stringiser);
 
 	return l;
 }
 
 _List List = {
-	._ALLOCATION_BLOCK_SIZE		= 1000,
+	._ALLOCATION_BLOCK_SIZE			= 1000,
 
-	.New						= New,
-	.Delete						= Delete,
+	.New							= New,
+	.NewWithStringiser				= NewWithStringiser,
+	.Delete							= Delete,
 
-	.Add						= Add,
-	.AddAll						= AddAll,
+	.ContainsStringiser				= ContainsStringiser,
+	.SetStringiser					= SetStringiser,
+	.GetStringiser					= GetStringiser,
 
-	.GetLength					= GetLength,
-	.Get						= Get,
+	.Add							= Add,
+	.AddAll							= AddAll,
 
-	.GetHeadList				= GetHeadList,
-	.GetTailList				= GetTailList,
+	.GetLength						= GetLength,
+	.Get							= Get,
 
-	.IsEmpty					= IsEmpty,
+	.GetHeadList					= GetHeadList,
+	.GetTailList					= GetTailList,
+
+	.GetListWhoseBasisWasDuplicated	= GetListWhoseBasisWasDuplicated,
+
+	.IsEmpty						= IsEmpty,
 };

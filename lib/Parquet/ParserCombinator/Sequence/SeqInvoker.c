@@ -19,10 +19,14 @@ static void InvokeTest(SeqAnswer_t (* seqParser)(List_t *, Processor_t *), List_
 		printf("SeqInvoker.InvokeTest: parse incorrect.\n");
 
 		for (uint32_t i = 0; i < List.GetLength(result.Precipitate); i++)
-			printf("(%s) ", String.GetPrimitive(List.Get(result.Precipitate, i)));
+			printf("(%s) ", String.GetPrimitive(
+				List.GetStringiser(result.Precipitate)(List.Get(result.Precipitate, i))
+			));
 
 		for (uint32_t i = 0; i < List.GetLength(result.Subsequent); i++)
-			printf("[%s] ", String.GetPrimitive(List.Get(result.Subsequent, i)));
+			printf("[%s] ", String.GetPrimitive(
+				List.GetStringiser(result.Precipitate)(List.Get(result.Subsequent, i))
+			));
 
 		printf("\n");
 
@@ -30,7 +34,9 @@ static void InvokeTest(SeqAnswer_t (* seqParser)(List_t *, Processor_t *), List_
 	}
 
 	for (uint32_t i = 0; i < List.GetLength(result.Precipitate); i++)
-		printf("(%s) ", String.GetPrimitive(List.Get(result.Precipitate, i)));
+		printf("(%s) ", String.GetPrimitive(
+			List.GetStringiser(result.Precipitate)(List.Get(result.Precipitate, i))
+		));
 
 	printf("\n");
 }
@@ -46,10 +52,14 @@ static void ParseTest(SeqAnswer_t (* seqParser)(List_t *, Processor_t *), List_t
 		printf("SeqInvoker.ParseTest: parse incorrect.\n");
 
 		for (uint32_t i = 0; i < List.GetLength(result.Precipitate); i++)
-			printf("(%s) ", String.GetPrimitive(List.Get(result.Precipitate, i)));
+			printf("(%s) ", String.GetPrimitive(
+				List.GetStringiser(result.Precipitate)(List.Get(result.Precipitate, i))
+			));
 
 		for (uint32_t i = 0; i < List.GetLength(result.Subsequent); i++)
-			printf("[%s] ", String.GetPrimitive(List.Get(result.Subsequent, i)));
+			printf("[%s] ", String.GetPrimitive(
+				List.GetStringiser(result.Precipitate)(List.Get(result.Subsequent, i))
+			));
 
 		printf("\n");
 
@@ -57,7 +67,9 @@ static void ParseTest(SeqAnswer_t (* seqParser)(List_t *, Processor_t *), List_t
 	}
 
 	for (uint32_t i = 0; i < List.GetLength(result.Precipitate); i++)
-		printf("(%s) ", String.GetPrimitive(List.Get(result.Precipitate, i)));
+		printf("(%s) ", String.GetPrimitive(
+			List.GetStringiser(result.Precipitate)(List.Get(result.Precipitate, i))
+		));
 
 	printf("\n");
 }
