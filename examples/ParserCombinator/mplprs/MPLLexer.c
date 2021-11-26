@@ -82,6 +82,7 @@ static Answer_t Parser_Separator(String_t *s, Processor_t *p) {
 
 	Answer_t newline(String_t *s, Processor_t *p) {
 		List_t *nls = List.New();
+
 		nls->Add(nls, String.New(u8"\r\n"));
 		nls->Add(nls, String.New(u8"\r"));
 		nls->Add(nls, String.New(u8"\n\r"));
@@ -117,6 +118,7 @@ static Answer_t Parser_Alphabet(String_t *s, Processor_t *p) {
 
 static Answer_t Parser_Symbol(String_t *s, Processor_t *p) {
 	List_t *syms = List.New();
+
 	syms->Add(syms, String.New(u8"+"));
 	syms->Add(syms, String.New(u8"-"));
 	syms->Add(syms, String.New(u8"*"));
@@ -190,6 +192,7 @@ static Answer_t Parser_UInt(String_t *s, Processor_t *p) {
 
 static Answer_t Parser_Keyword(String_t *s, Processor_t *p) {
 	List_t *keywords = List.New();
+
 	keywords->Add(keywords, String.New(u8"program"));
 	keywords->Add(keywords, String.New(u8"var"));
 	keywords->Add(keywords, String.New(u8"array"));
@@ -243,7 +246,7 @@ static Answer_t Parser_Name(String_t *s, Processor_t *p) {
 	}
 
 	Answer_t result = Combinator.Bind(
-		Alpha_or_Num, AlphaNums0,
+		Parser_Alphabet, AlphaNums0,
 		s, p
 	);
 	/****************************************/

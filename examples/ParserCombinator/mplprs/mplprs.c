@@ -3,6 +3,10 @@
 #include "MPLLexer.h"
 #include "MPLParser.h"
 
+String_t *Token2String(any *item) {
+	return Token.GetEntity(item);
+}
+
 void main(const int32_t argc, uint8_t *argv[]) {
 	/* check args */
 	if (argc != 2) {
@@ -25,16 +29,13 @@ void main(const int32_t argc, uint8_t *argv[]) {
 	/* parse */
 	List_t *tokens = TokenCollector.Get(collector);
 
-	Seq_t *seq = Seq.New(Seq.STRINGISER_STRING);
-	for (uint32_t i = 0; i < List.GetLength(tokens); i++) {
-		Token_t *tkn = tokens->Get(tokens, i);
-		seq->Add(seq, tkn->GetEntity(tkn));
-	}
+	Seq_t *seq = Seq.New(Token2String);
+	for (uint32_t i = 0; i < List.GetLength(tokens); i++)
+		seq->Add(seq, tokens->Get(tokens, i));
 
 	SeqAnswer_t sr = SeqInvoker.Invoke(MPLParser.SeqParser_Program, seq, NULL);
 
-	// old...
-	/*if (!res.Succeeded) {
+/*	if (!r.Reply == Reply.Err) {
 		printf("\e[91m[error]\e[0m parse failed at line %d.\n\n", res.ErrorLine);
 		printf("\e[2m%s\e[0m", String.GetPrimitive(res.Precipitate));
 		//printf("\e[1m\e[3m\e[4m\e[6m%c\e[0m\n", String.GetCharAt(res.Subsequent, 0));
