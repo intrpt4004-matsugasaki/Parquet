@@ -4,7 +4,7 @@
 #include "MPLParser.h"
 #include "Printer.h"
 
-String_t *Token2String(any *item) {
+String_t *TokenToString(any *item) {
 	return Token.GetEntity(item);
 }
 
@@ -35,26 +35,23 @@ void main(const int32_t argc, uint8_t *argv[]) {
 	SeqAnswer_t sr = SeqInvoker.Invoke(
 		MPLParser.SeqParser_Program,
 		Seq.FromList(
-			Token2String,
+			TokenToString,
 			TokenCollector.Get(collector)
 		),
 		Printer.New()
 	);
 	Printer_t *printer = (Printer_t *)(sr.Processor);
 
-	if (sr.Reply == Reply.Err) return;
-
-	printer->Dump(printer);
-
-/*	if (!r.Reply == Reply.Err) {
-		printf("\e[91m[error]\e[0m parse failed at line %d.\n\n", res.ErrorLine);
-		printf("\e[2m%s\e[0m", String.GetPrimitive(res.Precipitate));
-		//printf("\e[1m\e[3m\e[4m\e[6m%c\e[0m\n", String.GetCharAt(res.Subsequent, 0));
-		printf("\e[1m\e[3m\e[4m\e[6m%c\e[0m", String.GetCharAt(res.Subsequent, 0));
-		printf("\e[2m%s\n", String.GetPrimitive(String.Substring(res.Subsequent, 1, String.GetLength(res.Subsequent))));
+	if (sr.Reply == Reply.Err) {
+		printf("\e[91m[error]\e[0m parse failed at line %d.\n", -1);
+		printf("\e[4m                                                                      \e[0m\n");
+//		printf("\e[2m%s\e[0m", String.GetPrimitive(r.Precipitate));
+		printer->Dump(printer);
+		printf("%s", Seq.GetStringiser(sr.Subsequent)(Seq.GetHead(sr.Subsequent)));
+//		printf("\e[1m\e[3m\e[4m\e[6m%c\e[0m\n", String.GetCharAt(r.Subsequent, 0));
+		printf("\n");
 		exit(EXIT_FAILURE);
 	}
 
-	printf("\e[2m%s\e[0m", String.GetPrimitive(res.Precipitate));
-	printf("\e[1m\e[3m\e[4m\e[6m%c\e[0m\n", String.GetCharAt(res.Subsequent, 0));*/
+	printer->Dump(printer);
 }
