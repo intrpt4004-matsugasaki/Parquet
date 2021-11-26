@@ -198,6 +198,7 @@ static Answer_t Parser_Keyword(String_t *s, Processor_t *p) {
 	keywords->Add(keywords, String.New(u8"array"));
 	keywords->Add(keywords, String.New(u8"of"));
 	keywords->Add(keywords, String.New(u8"begin"));
+	keywords->Add(keywords, String.New(u8"end"));
 	keywords->Add(keywords, String.New(u8"if"));
 	keywords->Add(keywords, String.New(u8"then"));
 	keywords->Add(keywords, String.New(u8"else"));

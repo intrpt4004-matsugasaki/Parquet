@@ -2,6 +2,7 @@
 
 #include "MPLLexer.h"
 #include "MPLParser.h"
+#include "Printer.h"
 
 String_t *Token2String(any *item) {
 	return Token.GetEntity(item);
@@ -15,7 +16,11 @@ void main(const int32_t argc, uint8_t *argv[]) {
 	}
 
 	/* tokenise */
-	Answer_t r = Invoker.Invoke(MPLLexer.Parser_Program, String.FromFile(argv[1]), TokenCollector.New());
+	Answer_t r = Invoker.Invoke(
+		MPLLexer.Parser_Program,
+		String.FromFile(argv[1]),
+		TokenCollector.New()
+	);
 	TokenCollector_t *collector = (TokenCollector_t *)(r.Processor);
 
 	if (r.Reply == Reply.Err) {
@@ -27,13 +32,19 @@ void main(const int32_t argc, uint8_t *argv[]) {
 	}
 
 	/* parse */
-	List_t *tokens = TokenCollector.Get(collector);
+	SeqAnswer_t sr = SeqInvoker.Invoke(
+		MPLParser.SeqParser_Program,
+		Seq.FromList(
+			Token2String,
+			TokenCollector.Get(collector)
+		),
+		Printer.New()
+	);
+//	Printer_t *printer = (Printer_t *)(sr.Processor);
 
-	Seq_t *seq = Seq.New(Token2String);
-	for (uint32_t i = 0; i < List.GetLength(tokens); i++)
-		seq->Add(seq, tokens->Get(tokens, i));
+//	if (sr.Reply == Reply.Err) return;
 
-	SeqAnswer_t sr = SeqInvoker.Invoke(MPLParser.SeqParser_Program, seq, NULL);
+//	printer->Dump(printer);
 
 /*	if (!r.Reply == Reply.Err) {
 		printf("\e[91m[error]\e[0m parse failed at line %d.\n\n", res.ErrorLine);

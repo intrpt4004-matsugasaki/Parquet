@@ -60,7 +60,7 @@ target_link_libraries(mpltok
     Parquet
 )
 
-add_executable(mplprs ParserCombinator/mplprs/mplprs.c ParserCombinator/mplprs/MPLParser.c ParserCombinator/mplprs/MPLLexer.c)
+add_executable(mplprs ParserCombinator/mplprs/mplprs.c ParserCombinator/mplprs/MPLParser.c ParserCombinator/mplprs/MPLLexer.c ParserCombinator/mplprs/Printer.c)
 target_link_libraries(mplprs
     Parquet
 )

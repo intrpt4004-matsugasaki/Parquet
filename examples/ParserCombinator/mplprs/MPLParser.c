@@ -502,7 +502,7 @@ static SeqAnswer_t SeqParser_IterStmt(Seq_t *seq, Processor_t *p) {
 
 		/****************************************/
 		if (r.Reply == Reply.Ok)
-			printf(u8" do");
+			printf(u8" do\n");
 		/****************************************/
 
 		return r;
@@ -679,11 +679,11 @@ static SeqAnswer_t SeqParser_InputStmt(Seq_t *seq, Processor_t *p) {
 			}
 
 			SeqAnswer_t close(Seq_t *seq, Processor_t *p) {
-				SeqAnswer_t r = SeqParsers.Match(String.New(u8"("), seq, p);
+				SeqAnswer_t r = SeqParsers.Match(String.New(u8")"), seq, p);
 
 				/****************************************/
 				if (r.Reply == Reply.Ok)
-					printf(u8"(");
+					printf(u8")");
 				/****************************************/
 
 				return r;
@@ -704,7 +704,7 @@ static SeqAnswer_t SeqParser_InputStmt(Seq_t *seq, Processor_t *p) {
 	);
 }
 
-static SeqAnswer_t SeqParser_OutputStmt(Seq_t *seq, Processor_t *p) {
+static SeqAnswer_t SeqParser_OutputFmt(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t number(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t optX(Seq_t *seq, Processor_t *p) {
 			SeqAnswer_t opt(Seq_t *seq, Processor_t *p) {
@@ -720,7 +720,7 @@ static SeqAnswer_t SeqParser_OutputStmt(Seq_t *seq, Processor_t *p) {
 				}
 
 				SeqAnswer_t uint_lit(Seq_t *seq, Processor_t *p) {
-					SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_UInt, seq, p);
+					SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_UInt, seq, NULL);
 
 					/****************************************/
 					if (r.Reply == Reply.Ok)
@@ -748,7 +748,7 @@ static SeqAnswer_t SeqParser_OutputStmt(Seq_t *seq, Processor_t *p) {
 	}
 
 	SeqAnswer_t str_lit(Seq_t *seq, Processor_t *p) {
-		SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_String, seq, p);
+		SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_String, seq, NULL);
 
 		/****************************************/
 		if (r.Reply == Reply.Ok)
@@ -768,7 +768,7 @@ static SeqAnswer_t SeqParser_OutputStmt(Seq_t *seq, Processor_t *p) {
 	);
 }
 
-static SeqAnswer_t SeqParser_OutputFmt(Seq_t *seq, Processor_t *p) {
+static SeqAnswer_t SeqParser_OutputStmt(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t embeddedInst(Seq_t *seq, Processor_t *p) {
 		Seq_t *insts = Seq.New(Seq.STRINGISER_STRING);
 
@@ -861,9 +861,16 @@ static SeqAnswer_t SeqParser_CompoundStmt(Seq_t *seq, Processor_t *p) {
 		return r;
 	}
 
-	SeqAnswer_t adtnStmts(Seq_t *seq, Processor_t *p) {
+	SeqAnswer_t adtnStmts0(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t semicolon(Seq_t *seq, Processor_t *p) {
-			return SeqParsers.Match(String.New(u8";"), seq, p);
+			SeqAnswer_t r = SeqParsers.Match(String.New(u8";"), seq, p);
+
+			/****************************************/
+			if (r.Reply == Reply.Ok)
+				printf(u8";\n");
+			/****************************************/
+
+			return r;
 		}
 
 		SeqAnswer_t adtnStmt(Seq_t *seq, Processor_t *p) {
@@ -881,14 +888,14 @@ static SeqAnswer_t SeqParser_CompoundStmt(Seq_t *seq, Processor_t *p) {
 
 		/****************************************/
 		if (r.Reply == Reply.Ok)
-			printf(u8"end");
+			printf(u8"end\n");
 		/****************************************/
 
 		return r;
 	}
 
 	return SeqCombinator.Bind4(
-		begin, SeqParser_Stmt, adtnStmts, end,
+		begin, SeqParser_Stmt, adtnStmts0, end,
 		seq, p
 	);
 }
@@ -967,10 +974,11 @@ static SeqAnswer_t SeqParser_ArrType(Seq_t *seq, Processor_t *p) {
 		/****************************************/
 
 		return r;
-	}
+	}printf("~");
+
 
 	SeqAnswer_t uint_lit(Seq_t *seq, Processor_t *p) {
-		SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_UInt, seq, p);
+		SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_UInt, seq, NULL);
 
 		/****************************************/
 		if (r.Reply == Reply.Ok)
@@ -1215,7 +1223,7 @@ static SeqAnswer_t SeqParser_Program(Seq_t *seq, Processor_t *p) {
 
 	SeqAnswer_t name(Seq_t *seq, Processor_t *p) {
 		Answer_t name_p(String_t *s, Processor_t *p) {
-			return Combinator.Many1(MPLLexer.Parser_Name, s, p);
+			return Combinator.Many1(MPLLexer.Parser_Name, s, NULL);
 		}
 
 		SeqAnswer_t r = SeqParsers.Complete(name_p, seq, p);

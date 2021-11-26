@@ -8,6 +8,7 @@
 #include "Parquet/Base/Error.h"
 #include "Parquet/Base/Memory.h"
 #include "Parquet/Base/String.h"
+#include "Parquet/Base/List.h"
 
 typedef struct Seq_t {
 	uint32_t _Size;
@@ -41,6 +42,7 @@ typedef struct {
 	String_t *(* STRINGISER_STRING)(any *item);
 
 	Seq_t *(* New)(String_t *(* stringiser)(any *item));
+	Seq_t *(* FromList)(String_t *(* stringiser)(any *item), List_t *);
 	void (* Delete)(Seq_t *);
 
 	String_t *(*(* GetStringiser)(Seq_t *)) (any *item);

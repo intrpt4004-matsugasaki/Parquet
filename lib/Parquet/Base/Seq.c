@@ -95,6 +95,15 @@ static Seq_t *New(String_t *(* stringiser)(any *item)) {
 	return seq;
 }
 
+static Seq_t *FromList(String_t *(* stringiser)(any *item), List_t *l) {
+	Seq_t *seq = Seq.New(stringiser);
+
+	for (uint32_t i = 0; i < List.GetLength(l); i++)
+		Seq.Add(seq, List.Get(l, i));
+
+	return seq;
+}
+
 static String_t *STRINGISER_STRING(any *item) {
 	return item;
 }
@@ -104,6 +113,7 @@ _Seq Seq = {
 	.STRINGISER_STRING			= STRINGISER_STRING,
 
 	.New						= New,
+	.FromList					= FromList,
 	.Delete						= Delete,
 
 	.GetStringiser				= GetStringiser,
