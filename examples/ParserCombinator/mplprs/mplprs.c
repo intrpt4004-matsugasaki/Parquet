@@ -40,11 +40,11 @@ void main(const int32_t argc, uint8_t *argv[]) {
 		),
 		Printer.New()
 	);
-//	Printer_t *printer = (Printer_t *)(sr.Processor);
+	Printer_t *printer = (Printer_t *)(sr.Processor);
 
-//	if (sr.Reply == Reply.Err) return;
+	if (sr.Reply == Reply.Err) return;
 
-//	printer->Dump(printer);
+	printer->Dump(printer);
 
 /*	if (!r.Reply == Reply.Err) {
 		printf("\e[91m[error]\e[0m parse failed at line %d.\n\n", res.ErrorLine);

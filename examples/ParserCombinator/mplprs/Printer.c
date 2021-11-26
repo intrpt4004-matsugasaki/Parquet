@@ -10,7 +10,9 @@ static void Space(Printer_t *p) {
 
 static void Feed(Printer_t *p) {
 	List.Add(p->_Stack, String.New(u8"\n"));
+}
 
+static void Advance(Printer_t *p) {
 	for (uint32_t i = 0; i < p->_Indents; i++)
 		List.Add(p->_Stack, p->_Indent);
 }
@@ -27,7 +29,7 @@ static void Demote(Printer_t *p) {
 
 static void Dump(Printer_t *p) {
 	for (uint32_t i = 0; i < List.GetLength(p->_Stack); i++)
-		printf("%s", List.Get(p->_Stack, i));
+		printf("%s", String.GetPrimitive(List.Get(p->_Stack, i)));
 }
 
 static Printer_t *New() {
@@ -40,6 +42,7 @@ static Printer_t *New() {
 	p->Stack	= Stack;
 	p->Space	= Space;
 	p->Feed		= Feed;
+	p->Advance	= Advance;
 	p->Elevate	= Elevate;
 	p->Demote	= Demote;
 	p->Dump		= Dump;

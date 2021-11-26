@@ -3,6 +3,7 @@
 #include <Parquet.h>
 
 #include "MPLLexer.h"
+#include "Printer.h"
 
 typedef struct {
 	SeqAnswer_t (* SeqParser_VarName)(Seq_t *seq, Processor_t *p);

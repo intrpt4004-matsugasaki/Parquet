@@ -2,6 +2,8 @@
 
 #include <Parquet.h>
 
+#include <stdio.h>
+
 typedef struct Printer_t {
 	List_t *_Stack;
 
@@ -12,6 +14,7 @@ typedef struct Printer_t {
 
 	void (* Space)(struct Printer_t *);
 	void (* Feed)(struct Printer_t *);
+	void (* Advance)(struct Printer_t *);
 
 	void (* Elevate)(struct Printer_t *);
 	void (* Demote)(struct Printer_t *);

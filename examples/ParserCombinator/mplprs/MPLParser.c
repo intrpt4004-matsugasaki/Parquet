@@ -16,10 +16,9 @@ static SeqAnswer_t SeqParser_VarName(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_Name, seq, NULL);
 
 	/****************************************/
-	if (r.Reply == Reply.Ok)
-		printf(u8" %s", String.GetPrimitive(
-			(seq->GetStringiser(seq))(Seq.GetHead(seq))
-		));
+	if (r.Reply == Reply.Ok) {
+		((Printer_t *)(p))->Stack(p, (seq->GetStringiser(seq))(Seq.GetHead(seq)));
+	}
 	/****************************************/
 
 	return r;
@@ -31,10 +30,9 @@ static SeqAnswer_t SeqParser_ProcName(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_Name, seq, NULL);
 
 	/****************************************/
-	if (r.Reply == Reply.Ok)
-		printf(u8" %s", String.GetPrimitive(
-			(seq->GetStringiser(seq))(Seq.GetHead(seq))
-		));
+	if (r.Reply == Reply.Ok) {
+		((Printer_t *)(p))->Stack(p, (seq->GetStringiser(seq))(Seq.GetHead(seq)));
+	}
 	/****************************************/
 
 	return r;
@@ -114,10 +112,9 @@ static SeqAnswer_t SeqParser_StdType(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t r = SeqParsers.OneOf(types, seq, p);
 
 	/****************************************/
-	if (r.Reply == Reply.Ok)
-		printf(u8" %s", String.GetPrimitive(
-			(seq->GetStringiser(seq))(Seq.GetHead(seq))
-		));
+	if (r.Reply == Reply.Ok) {
+		((Printer_t *)(p))->Stack(p, (seq->GetStringiser(seq))(Seq.GetHead(seq)));
+	}
 	/****************************************/
 
 	return r;
@@ -135,10 +132,11 @@ static SeqAnswer_t SeqParser_AddOpr(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t r = SeqParsers.OneOf(adds, seq, p);
 
 	/****************************************/
-	if (r.Reply == Reply.Ok)
-		printf(u8" %s", String.GetPrimitive(
-			(seq->GetStringiser(seq))(Seq.GetHead(seq))
-		));
+	if (r.Reply == Reply.Ok) {
+		((Printer_t *)(p))->Space(p);
+		((Printer_t *)(p))->Stack(p, (seq->GetStringiser(seq))(Seq.GetHead(seq)));
+		((Printer_t *)(p))->Space(p);
+	}
 	/****************************************/
 
 	return r;
@@ -156,10 +154,10 @@ static SeqAnswer_t SeqParser_MulOpr(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t r = SeqParsers.OneOf(muls, seq, p);
 
 	/****************************************/
-	if (r.Reply == Reply.Ok)
-		printf(u8" %s", String.GetPrimitive(
-			(seq->GetStringiser(seq))(Seq.GetHead(seq))
-		));
+	if (r.Reply == Reply.Ok) {
+		((Printer_t *)(p))->Space(p);
+		((Printer_t *)(p))->Stack(p, (seq->GetStringiser(seq))(Seq.GetHead(seq)));
+	}
 	/****************************************/
 
 	return r;
@@ -180,10 +178,10 @@ static SeqAnswer_t SeqParser_RelOpr(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t r = SeqParsers.OneOf(rels, seq, p);
 
 	/****************************************/
-	if (r.Reply == Reply.Ok)
-		printf(u8" %s", String.GetPrimitive(
-			(seq->GetStringiser(seq))(Seq.GetHead(seq))
-		));
+	if (r.Reply == Reply.Ok) {
+		((Printer_t *)(p))->Space(p);
+		((Printer_t *)(p))->Stack(p, (seq->GetStringiser(seq))(Seq.GetHead(seq)));
+	}
 	/****************************************/
 
 	return r;
@@ -1032,8 +1030,12 @@ static SeqAnswer_t SeqParser_VarDecl(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8"var"), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8"\tvar");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Elevate(p);
+			((Printer_t *)(p))->Advance(p);
+			((Printer_t *)(p))->Stack(p, String.New(u8"var"));
+			((Printer_t *)(p))->Space(p);
+		}
 		/****************************************/
 
 		return r;
@@ -1044,8 +1046,11 @@ static SeqAnswer_t SeqParser_VarDecl(Seq_t *seq, Processor_t *p) {
 			SeqAnswer_t r = SeqParsers.Match(String.New(u8":"), seq, p);
 
 			/****************************************/
-			if (r.Reply == Reply.Ok)
-				printf(u8" :");
+			if (r.Reply == Reply.Ok) {
+				((Printer_t *)(p))->Space(p);
+				((Printer_t *)(p))->Stack(p, String.New(u8":"));
+				((Printer_t *)(p))->Space(p);
+			}
 			/****************************************/
 
 			return r;
@@ -1055,8 +1060,10 @@ static SeqAnswer_t SeqParser_VarDecl(Seq_t *seq, Processor_t *p) {
 			SeqAnswer_t r = SeqParsers.Match(String.New(u8";"), seq, p);
 
 			/****************************************/
-			if (r.Reply == Reply.Ok)
-				printf(u8";\n");
+			if (r.Reply == Reply.Ok) {
+				((Printer_t *)(p))->Stack(p, String.New(u8";"));
+				((Printer_t *)(p))->Feed(p);
+			}
 			/****************************************/
 
 			return r;
@@ -1214,8 +1221,10 @@ static SeqAnswer_t SeqParser_Program(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8"program"), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8"program");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, String.New(u8"program"));
+			((Printer_t *)(p))->Space(p);
+		}
 		/****************************************/
 
 		return r;
@@ -1230,9 +1239,7 @@ static SeqAnswer_t SeqParser_Program(Seq_t *seq, Processor_t *p) {
 
 		/****************************************/
 		if (r.Reply == Reply.Ok)
-			printf(u8" %s", String.GetPrimitive(
-				(seq->GetStringiser(seq))(Seq.GetHead(seq))
-			));
+			((Printer_t *)(p))->Stack(p, (seq->GetStringiser(seq))(Seq.GetHead(seq)));
 		/****************************************/
 
 		return r;
@@ -1242,8 +1249,10 @@ static SeqAnswer_t SeqParser_Program(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8";"), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8";\n");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, String.New(u8";"));
+			((Printer_t *)(p))->Feed(p);
+		}
 		/****************************************/
 
 		return r;
@@ -1253,8 +1262,11 @@ static SeqAnswer_t SeqParser_Program(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8"."), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8".\n");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, String.New(u8"."));
+			((Printer_t *)(p))->Demote(p);
+			((Printer_t *)(p))->Feed(p);
+		}
 		/****************************************/
 
 		return r;
