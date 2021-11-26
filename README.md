@@ -29,7 +29,7 @@ $ make install -j
 ```sh
 $ make examples -j
 $ examples/mpltok ../examples/ParserCombinator/mpltok/sum_err.mpl
-$ examples/mpltok ../examples/ParserCombinator/mpltok/sum.mpl
+$ examples/mplprs ../examples/ParserCombinator/mplprs/sum.mpl
 ```
 
 # Usage
