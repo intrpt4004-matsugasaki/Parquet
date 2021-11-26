@@ -2,6 +2,7 @@
 
 static void Stack(Printer_t *p, String_t *text) {
 	List.Add(p->_Stack, String.Copy(text));
+	p->_LastIndex++;
 }
 
 static void Space(Printer_t *p) {
@@ -10,6 +11,7 @@ static void Space(Printer_t *p) {
 
 static void Feed(Printer_t *p) {
 	List.Add(p->_Stack, String.New(u8"\n"));
+	p->_Line++;
 }
 
 static void Advance(Printer_t *p) {
@@ -29,23 +31,35 @@ static void Demote(Printer_t *p) {
 
 static void Dump(Printer_t *p) {
 	for (uint32_t i = 0; i < List.GetLength(p->_Stack); i++)
-		printf("%s", String.GetPrimitive(List.Get(p->_Stack, i)));
+		printf("\e[2m%s\e[0m", String.GetPrimitive(List.Get(p->_Stack, i)));
+}
+
+static uint32_t GetLine(Printer_t *p) {
+	return p->_Line;
+}
+
+static uint32_t GetLastIndex(Printer_t *p) {
+	return p->_LastIndex;
 }
 
 static Printer_t *New() {
 	Printer_t *p = (Printer_t *)(Memory.Allocate(sizeof(Printer_t)));
 
-	p->_Stack	= List.New();
-	p->_Indents	= 0;
-	p->_Indent	= String.New(u8"  ");
+	p->_Stack		= List.New();
+	p->_Indents		= 0;
+	p->_Indent		= String.New(u8"  ");
+	p->_Line		= 1;
+	p->_LastIndex	= 0;
 
-	p->Stack	= Stack;
-	p->Space	= Space;
-	p->Feed		= Feed;
-	p->Advance	= Advance;
-	p->Elevate	= Elevate;
-	p->Demote	= Demote;
-	p->Dump		= Dump;
+	p->Stack		= Stack;
+	p->Space		= Space;
+	p->Feed			= Feed;
+	p->Advance		= Advance;
+	p->Elevate		= Elevate;
+	p->Demote		= Demote;
+	p->Dump			= Dump;
+	p->GetLine		= GetLine;
+	p->GetLastIndex	= GetLastIndex;
 
 	return p;
 }

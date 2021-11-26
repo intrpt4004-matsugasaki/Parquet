@@ -32,24 +32,26 @@ void main(const int32_t argc, uint8_t *argv[]) {
 	}
 
 	/* parse */
+	List_t *tokens = TokenCollector.Get(collector);
 	SeqAnswer_t sr = SeqInvoker.Invoke(
 		MPLParser.SeqParser_Program,
-		Seq.FromList(
-			TokenToString,
-			TokenCollector.Get(collector)
-		),
+		Seq.FromList(TokenToString, tokens),
 		Printer.New()
 	);
 	Printer_t *printer = (Printer_t *)(sr.Processor);
 
 	if (sr.Reply == Reply.Err) {
-		printf("\e[91m[error]\e[0m parse failed at line %d.\n", -1);
+		printf("\e[91m[error]\e[0m parse failed at formatted line %d, source line %d.\n",
+			printer->GetLine(printer),
+			Token.GetLine(tokens->Get(tokens, printer->GetLastIndex(printer)))
+		);
 		printf("\e[4m                                                                      \e[0m\n");
-//		printf("\e[2m%s\e[0m", String.GetPrimitive(r.Precipitate));
 		printer->Dump(printer);
-		printf("%s", Seq.GetStringiser(sr.Subsequent)(Seq.GetHead(sr.Subsequent)));
-//		printf("\e[1m\e[3m\e[4m\e[6m%c\e[0m\n", String.GetCharAt(r.Subsequent, 0));
-		printf("\n");
+		printf("\e[1m\e[3m\e[4m\e[6m%s\e[0m\n", String.GetPrimitive(
+			TokenToString(tokens->Get(tokens, printer->GetLastIndex(printer)))
+		));
+		printf("\e[4m                                                                      \e[0m\n");
+		printf("%s\n", String.GetPrimitive(String.FromFile(argv[1])));
 		exit(EXIT_FAILURE);
 	}
 

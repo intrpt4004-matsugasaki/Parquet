@@ -10,6 +10,9 @@ typedef struct Printer_t {
 	uint32_t _Indents;
 	String_t *_Indent;
 
+	uint32_t _Line;
+	uint32_t _LastIndex;
+
 	void (* Stack)(struct Printer_t *, String_t *text);
 
 	void (* Space)(struct Printer_t *);
@@ -20,6 +23,8 @@ typedef struct Printer_t {
 	void (* Demote)(struct Printer_t *);
 
 	void (* Dump)(struct Printer_t *);
+	uint32_t (* GetLine)(struct Printer_t *);
+	uint32_t (* GetLastIndex)(struct Printer_t *);
 } Printer_t;
 
 typedef struct {
