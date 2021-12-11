@@ -181,6 +181,18 @@ static SeqAnswer_t Possibly(SeqAnswer_t (* seqParser)(Seq_t *, Processor_t *), S
 		result : SeqBasis.Ok(seq, p);
 }
 
+static SeqAnswer_t Predict(SeqAnswer_t (* seqParser)(Seq_t *, Processor_t *), Seq_t *seq, Processor_t *p) {
+	SeqAnswer_t result = seqParser(seq, p);
+	return (result.Reply == Reply.Ok) ?
+		SeqBasis.Ok(seq, p) : SeqBasis.Err(seq, p);
+}
+
+static SeqAnswer_t PredictNot(SeqAnswer_t (* seqParser)(Seq_t *, Processor_t *), Seq_t *seq, Processor_t *p) {
+	SeqAnswer_t result = seqParser(seq, p);
+	return (result.Reply == Reply.Ok) ?
+		SeqBasis.Ok(seq, p) : SeqBasis.Err(seq, p);
+}
+
 _SeqCombinator SeqCombinator = {
 	.Bind			= Bind,
 	.Bind3			= Bind3,
@@ -198,4 +210,7 @@ _SeqCombinator SeqCombinator = {
 	.Many1			= Many1,
 
 	.Possibly		= Possibly,
+
+	.Predict		= Predict,
+	.PredictNot		= PredictNot,
 };

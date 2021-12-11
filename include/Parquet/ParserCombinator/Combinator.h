@@ -5,6 +5,7 @@
 #include "Parquet/ParserCombinator/Basis.h"
 
 typedef struct {
+	/* >> */
 	Answer_t (* Bind)(
 		Answer_t (* parser1)(String_t *, Processor_t *),
 		Answer_t (* parser2)(String_t *, Processor_t *),
@@ -40,6 +41,7 @@ typedef struct {
 		Answer_t (* parser6)(String_t *, Processor_t *),
 		String_t *, Processor_t *);
 
+	/* / */
 	Answer_t (* Choise)(
 		Answer_t (* parser1)(String_t *, Processor_t *),
 		Answer_t (* parser2)(String_t *, Processor_t *),
@@ -75,17 +77,31 @@ typedef struct {
 		Answer_t (* parser6)(String_t *, Processor_t *),
 		String_t *, Processor_t *);
 
+	/* * */
 	Answer_t (* Many0)(
 		Answer_t (* parser)(String_t *, Processor_t *),
 		String_t *, Processor_t *);
 
+	/* + */
 	Answer_t (* Many1)(
 		Answer_t (* parser)(String_t *, Processor_t *),
 		String_t *, Processor_t *);
 
+	/* ? */
 	Answer_t (* Possibly)(
 		Answer_t (* parser)(String_t *, Processor_t *),
 		String_t *, Processor_t *);
+
+	/* & */
+	Answer_t (* Predict)(
+		Answer_t (* parser)(String_t *, Processor_t *),
+		String_t *, Processor_t *);
+
+	/* ! */
+	Answer_t (* PredictNot)(
+		Answer_t (* parser)(String_t *, Processor_t *),
+		String_t *, Processor_t *);
+
 } _Combinator;
 
 extern _Combinator Combinator;

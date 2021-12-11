@@ -29,7 +29,7 @@ target_sources(Parquet
     Parquet/ParserCombinator/Sequence/SeqParsers.c
     Parquet/ParserCombinator/Sequence/SeqInvoker.c
 
-    Parquet/ExecBinPreparer.c
+    Parquet/ExecBinaryPreparer.c
 )
 
 target_include_directories(Parquet

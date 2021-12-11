@@ -181,6 +181,18 @@ static Answer_t Possibly(Answer_t (* parser)(String_t *, Processor_t *), String_
 		result : Basis.Ok(s, p);
 }
 
+static Answer_t Predict(Answer_t (* parser)(String_t *, Processor_t *), String_t *s, Processor_t *p) {
+	Answer_t result = parser(s, p);
+	return (result.Reply == Reply.Ok) ?
+		Basis.Ok(s, p) : Basis.Err(s, p);
+}
+
+static Answer_t PredictNot(Answer_t (* parser)(String_t *, Processor_t *), String_t *s, Processor_t *p) {
+	Answer_t result = parser(s, p);
+	return (result.Reply == Reply.Ok) ?
+		Basis.Err(s, p) : Basis.Ok(s, p);
+}
+
 _Combinator Combinator = {
 	.Bind			= Bind,
 	.Bind3			= Bind3,
@@ -198,4 +210,7 @@ _Combinator Combinator = {
 	.Many1			= Many1,
 
 	.Possibly		= Possibly,
+
+	.Predict		= Predict,
+	.PredictNot		= PredictNot,
 };

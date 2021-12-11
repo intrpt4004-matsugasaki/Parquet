@@ -5,6 +5,7 @@
 #include "Parquet/ParserCombinator/Sequence/SeqBasis.h"
 
 typedef struct {
+	/* >> */
 	SeqAnswer_t (* Bind)(
 		SeqAnswer_t (* seqParser1)(Seq_t *, Processor_t *),
 		SeqAnswer_t (* seqParser2)(Seq_t *, Processor_t *),
@@ -40,6 +41,7 @@ typedef struct {
 		SeqAnswer_t (* seqParser6)(Seq_t *, Processor_t *),
 		Seq_t *, Processor_t *);
 
+	/* / */
 	SeqAnswer_t (* Choise)(
 		SeqAnswer_t (* seqParser1)(Seq_t *, Processor_t *),
 		SeqAnswer_t (* seqParser2)(Seq_t *, Processor_t *),
@@ -75,17 +77,31 @@ typedef struct {
 		SeqAnswer_t (* seqParser6)(Seq_t *, Processor_t *),
 		Seq_t *, Processor_t *);
 
+	/* * */
 	SeqAnswer_t (* Many0)(
 		SeqAnswer_t (* seqParser)(Seq_t *, Processor_t *),
 		Seq_t *, Processor_t *);
 
+	/* + */
 	SeqAnswer_t (* Many1)(
 		SeqAnswer_t (* seqParser)(Seq_t *, Processor_t *),
 		Seq_t *, Processor_t *);
 
+	/* ? */
 	SeqAnswer_t (* Possibly)(
 		SeqAnswer_t (* seqParser)(Seq_t *, Processor_t *),
 		Seq_t *, Processor_t *);
+
+	/* & */
+	SeqAnswer_t (* Predict)(
+		SeqAnswer_t (* seqParser)(Seq_t *, Processor_t *),
+		Seq_t *, Processor_t *);
+
+	/* ! */
+	SeqAnswer_t (* PredictNot)(
+		SeqAnswer_t (* seqParser)(Seq_t *, Processor_t *),
+		Seq_t *, Processor_t *);
+
 } _SeqCombinator;
 
 extern _SeqCombinator SeqCombinator;
