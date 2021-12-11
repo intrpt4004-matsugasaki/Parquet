@@ -191,40 +191,62 @@ static Answer_t Parser_UInt(String_t *s, Processor_t *p) {
 }
 
 static Answer_t Parser_Keyword(String_t *s, Processor_t *p) {
-	List_t *keywords = List.New();
+	Answer_t keywords(String_t *s, Processor_t *p) {
+		List_t *keywords_ = List.New();
 
-	keywords->Add(keywords, String.New(u8"program"));
-	keywords->Add(keywords, String.New(u8"var"));
-	keywords->Add(keywords, String.New(u8"array"));
-	keywords->Add(keywords, String.New(u8"of"));
-	keywords->Add(keywords, String.New(u8"begin"));
-	keywords->Add(keywords, String.New(u8"end"));
-	keywords->Add(keywords, String.New(u8"if"));
-	keywords->Add(keywords, String.New(u8"then"));
-	keywords->Add(keywords, String.New(u8"else"));
-	keywords->Add(keywords, String.New(u8"procedure"));
-	keywords->Add(keywords, String.New(u8"call"));
-	keywords->Add(keywords, String.New(u8"while"));
-	keywords->Add(keywords, String.New(u8"do"));
-	keywords->Add(keywords, String.New(u8"not"));
-	keywords->Add(keywords, String.New(u8"or"));
-	keywords->Add(keywords, String.New(u8"div"));
-	keywords->Add(keywords, String.New(u8"and"));
-	keywords->Add(keywords, String.New(u8"char"));
-	keywords->Add(keywords, String.New(u8"integer"));
-	keywords->Add(keywords, String.New(u8"boolean"));
-	keywords->Add(keywords, String.New(u8"readln"));
-	keywords->Add(keywords, String.New(u8"read"));
-	keywords->Add(keywords, String.New(u8"writeln"));
-	keywords->Add(keywords, String.New(u8"write"));
-	keywords->Add(keywords, String.New(u8"true"));
-	keywords->Add(keywords, String.New(u8"false"));
-	keywords->Add(keywords, String.New(u8"break"));
+		keywords_->Add(keywords_, String.New(u8"program"));
+		keywords_->Add(keywords_, String.New(u8"var"));
+		keywords_->Add(keywords_, String.New(u8"array"));
+		keywords_->Add(keywords_, String.New(u8"of"));
+		keywords_->Add(keywords_, String.New(u8"begin"));
+		keywords_->Add(keywords_, String.New(u8"end"));
+		keywords_->Add(keywords_, String.New(u8"if"));
+		keywords_->Add(keywords_, String.New(u8"then"));
+		keywords_->Add(keywords_, String.New(u8"else"));
+		keywords_->Add(keywords_, String.New(u8"procedure"));
+		keywords_->Add(keywords_, String.New(u8"call"));
+		keywords_->Add(keywords_, String.New(u8"while"));
+		keywords_->Add(keywords_, String.New(u8"do"));
+		keywords_->Add(keywords_, String.New(u8"not"));
+		keywords_->Add(keywords_, String.New(u8"or"));
+		keywords_->Add(keywords_, String.New(u8"div"));
+		keywords_->Add(keywords_, String.New(u8"and"));
+		keywords_->Add(keywords_, String.New(u8"char"));
+		keywords_->Add(keywords_, String.New(u8"integer"));
+		keywords_->Add(keywords_, String.New(u8"boolean"));
+		keywords_->Add(keywords_, String.New(u8"readln"));
+		keywords_->Add(keywords_, String.New(u8"read"));
+		keywords_->Add(keywords_, String.New(u8"writeln"));
+		keywords_->Add(keywords_, String.New(u8"write"));
+		keywords_->Add(keywords_, String.New(u8"true"));
+		keywords_->Add(keywords_, String.New(u8"false"));
+		keywords_->Add(keywords_, String.New(u8"break"));
 
-	Answer_t result = Parsers.String.OneOf(
-		keywords,
-		s, p
-	);
+		return Parsers.String.OneOf(keywords_, s, p);
+	}
+
+	Answer_t follow(String_t *s, Processor_t *p) {
+		return Combinator.Choise(
+			Parser_Alphabet,
+			Parser_Digit,
+
+			s, p
+		);
+	}
+
+	Answer_t XXXfollowXXX(String_t *s, Processor_t *p) {
+		return Combinator.PredictNot(follow, s, p);
+	}
+
+	Answer_t keywordsXXX(String_t *s, Processor_t *p) {
+		return Combinator.Bind(
+			keywords, XXXfollowXXX,
+
+			s, p
+		);
+	}	
+
+	Answer_t result = keywordsXXX(s, p);
 	/****************************************/
 	if (p != NULL && result.Reply == Reply.Ok)
 		((TokenCollector_t *)(p))->Add(p, result.Precipitate, Token_Keyword);
