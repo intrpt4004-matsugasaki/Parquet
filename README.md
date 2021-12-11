@@ -1,5 +1,5 @@
 # Parquet
-Compiler Creation Support Library in C (C11/GCC-Extension)
+Compiler Creation Support Library in C (C23 / gcc-extension)
 - Basic Types (String, List) : ( [header](https://github.com/rot-E/Parquet/tree/main/include/Parquet/Base/) [source](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/Base/) [examples](https://github.com/rot-E/Parquet/tree/main/examples/Base/) )
 - Parser Combinator : ( [header](https://github.com/rot-E/Parquet/tree/main/include/Parquet/ParserCombinator/) [source](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/ParserCombinator/)  [examples](https://github.com/rot-E/Parquet/tree/main/examples/ParserCombinator/) )
 - AST

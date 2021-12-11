@@ -16,5 +16,5 @@ void main() {
 	printf("%d %d\n", s->Equals(s, e), String.Equals(e, e));
 
 	printf("%d %d\n", s->StartsWith(s, String.New("hello")), String.StartsWith(s, String.New("hel")));
-	printf("%d %d\n", s->StartsWithChar(s, 'h'), String.StartsWithChar(s, 'e'));
+	printf("%d %d\n", s->StartsWithChar(s, u8'h'), String.StartsWithChar(s, u8'e'));
 }

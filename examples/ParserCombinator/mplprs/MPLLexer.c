@@ -14,19 +14,19 @@ static String_t *TokenTypeString(Token_t *t) {
 static Answer_t Parser_Comment(String_t *s, Processor_t *p) {
 	Answer_t line(String_t *s, Processor_t *p) {
 		Answer_t open(String_t *s, Processor_t *p) {
-			return Parsers.Char.Match('{', s, p);
+			return Parsers.Char.Match(u8'{', s, p);
 		}
 
 		Answer_t content(String_t *s, Processor_t *p) {
 			Answer_t nonClose(String_t *s, Processor_t *p) {
-				return Parsers.Char.UnMatch('}', s, p);
+				return Parsers.Char.UnMatch(u8'}', s, p);
 			}
 
 			return Combinator.Many0(nonClose, s, p);
 		}
 
 		Answer_t close(String_t *s, Processor_t *p) {
-			return Parsers.Char.Match('}', s, p);
+			return Parsers.Char.Match(u8'}', s, p);
 		}
 
 		return Combinator.Bind3(
@@ -152,7 +152,7 @@ static Answer_t Parser_Symbol(String_t *s, Processor_t *p) {
 
 static Answer_t Parser_String(String_t *s, Processor_t *p) {
 	Answer_t apostrophe(String_t *s, Processor_t *p) {
-		return Parsers.Char.Match('\'', s, p);
+		return Parsers.Char.Match(u8'\'', s, p);
 	}
 
 	Answer_t content(String_t *s, Processor_t *p) {

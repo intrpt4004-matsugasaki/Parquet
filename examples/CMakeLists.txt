@@ -1,3 +1,6 @@
+# compiler options
+set(CMAKE_C_FLAGS "-std=gnu2x -g3 -O0")
+
 add_custom_target(examples)
 add_dependencies(examples
 	Error
@@ -69,6 +72,3 @@ add_executable(CreateExecutable ExecBinaryPreparer/CreateExecutable.c)
 target_link_libraries(CreateExecutable
     Parquet
 )
-
-# debug
-set(CMAKE_C_FLAGS "-g3 -O0")

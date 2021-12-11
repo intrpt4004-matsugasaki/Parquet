@@ -1,3 +1,6 @@
+# compiler options
+set(CMAKE_C_FLAGS "-std=gnu2x -g3 -O0")
+
 option(Parquet_BUILD_SHARED_LIBS "build Parquet as a shared library" OFF)
 
 if (PARQUET_BUILD_SHARED_LIBS)
@@ -50,6 +53,3 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     FILES_MATCHING PATTERN "*.h"
 )
-
-# debug
-set(CMAKE_C_FLAGS "-g3 -O0")

@@ -155,7 +155,7 @@ static String_t *FromFile(const uint8_t *path) {
 }
 
 _String String = {
-	.NUL						= '\0',
+	.NUL						= u8'\0',
 
 	.New						= New,
 	.FromChar					= FromChar,

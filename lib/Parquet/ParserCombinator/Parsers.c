@@ -90,12 +90,12 @@ static Answer_t HexDigit(String_t *s, Processor_t *p) {
 
 static bool isodigit(uint8_t c) {
 	return isdigit(c)
-		|| c == 'a'
-		|| c == 'b'
-		|| c == 'c'
-		|| c == 'd'
-		|| c == 'e'
-		|| c == 'f';
+		|| c == u8'a'
+		|| c == u8'b'
+		|| c == u8'c'
+		|| c == u8'd'
+		|| c == u8'e'
+		|| c == u8'f';
 }
 
 static Answer_t OctDigit(String_t *s, Processor_t *p) {
@@ -123,7 +123,7 @@ static Answer_t Satisfy(bool (* judge)(uint8_t c), String_t *s, Processor_t *p) 
 static Answer_t Space(String_t *s, Processor_t *p) {
 	if (s->IsEmpty(s)) return Basis.Err(s, p);
 
-	return Parsers.Char.Match(' ', s, p);
+	return Parsers.Char.Match(u8' ', s, p);
 }
 
 static Answer_t Spaces0(String_t *s, Processor_t *p) {
@@ -137,7 +137,7 @@ static Answer_t Spaces1(String_t *s, Processor_t *p) {
 static Answer_t LF(String_t *s, Processor_t *p) {
 	if (s->IsEmpty(s)) return Basis.Err(s, p);
 
-	return Parsers.Char.Match('\n', s, p);
+	return Parsers.Char.Match(u8'\n', s, p);
 }
 
 static Answer_t CRLF(String_t *s, Processor_t *p) {
@@ -155,7 +155,7 @@ static Answer_t EndOfLine(String_t *s, Processor_t *p) {
 static Answer_t Tab(String_t *s, Processor_t *p) {
 	if (s->IsEmpty(s)) return Basis.Err(s, p);
 
-	return Parsers.Char.Match('\t', s, p);
+	return Parsers.Char.Match(u8'\t', s, p);
 }
 
 static Answer_t String_Match(String_t *pat, String_t *s, Processor_t *p) {	

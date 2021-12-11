@@ -34,7 +34,7 @@ Answer_t declVar(String_t *s, Processor_t *p) {
 	}
 
 	Answer_t semic(String_t *s, Processor_t *p) {
-		return Parsers.Char.Match(';', s, p);
+		return Parsers.Char.Match(u8';', s, p);
 	}
 
 	Answer_t result = Invoker.Parse(var_space, s);
