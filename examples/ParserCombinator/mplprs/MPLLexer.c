@@ -151,68 +151,45 @@ static Answer_t Parser_Symbol(String_t *s, Processor_t *p) {
 }
 
 static Answer_t Parser_String(String_t *s, Processor_t *p) {
-	/*
-		Answer_t elementsOfString(String_t *s, Processor_t *p) {
-			Answer_t nonApostrophe(String_t *s, Processor_t *p) {
-				return Parsers.Char.UnMatch(u8'\'', s, p);
-			}
-
-			Answer_t nonNewLine(String_t *s, Processor_t *p) {
-				List_t *nls = List.New();
-
-				nls->Add(nls, String.New(u8"\r\n"));
-				nls->Add(nls, String.New(u8"\r"));
-				nls->Add(nls, String.New(u8"\n\r"));
-				nls->Add(nls, String.New(u8"\n"));
-
-				return Parsers.String.NoneOf(nls, s, p);
-			}
-
-			Answer_t nons(String_t *s, Processor_t *p) {
-				return Combinator.Choise(
-					nonApostrophe,
-					nonNewLine,
-
-					s, p
-				);
-			}
-
-			return Combinator.Many0(nons, s, p);
-		}
-
-		Answer_t closeAfterOpen(String_t *s, Processor_t *p) {
-			return Combinator.Bind(
-				apostrophe, apostrophe,
-				s, p
-			);
-		}
-
-		return Combinator.Choise(
-			elementsOfString,
-			closeAfterOpen,
-
-			s, p
-		);
-	*/
-
 	Answer_t apostrophe(String_t *s, Processor_t *p) {
 		return Parsers.Char.Match(u8'\'', s, p);
 	}
 
-	Answer_t content(String_t *s, Processor_t *p) {
-		Answer_t nonApostrophe(String_t *s, Processor_t *p) {
-			return Parsers.Char.NoneOf(
-				String.New(u8"'"),
+	Answer_t contents0(String_t *s, Processor_t *p) {
+		Answer_t content(String_t *s, Processor_t *p) {
+			Answer_t elementOfString(String_t *s, Processor_t *p) {
+				List_t *xs = List.New();
+
+				xs->Add(xs, String.New(u8"\'"));
+				xs->Add(xs, String.New(u8"\r\n"));
+				xs->Add(xs, String.New(u8"\r"));
+				xs->Add(xs, String.New(u8"\n\r"));
+				xs->Add(xs, String.New(u8"\n"));
+
+				return Parsers.String.NoneOf(xs, s, p);
+			}
+
+			Answer_t closeThenOpen(String_t *s, Processor_t *p) {
+				return Combinator.Bind(
+					apostrophe, apostrophe,
+					s, p
+				);
+			}
+
+			return Combinator.Choise(
+				elementOfString,
+				closeThenOpen,
+
 				s, p
 			);
 		}
 
-		return Combinator.Many0(nonApostrophe, s, p);
+		return Combinator.Many0(content, s, p);
 	}
 
 	Answer_t result = Combinator.Bind3(
 		apostrophe,
-		content,
+		contents0,
 		apostrophe,
 		s, p
 	);

@@ -6,6 +6,7 @@ add_dependencies(examples
 	List
 
 	AnyChar3-6-12
+	StringNoneOf
 	DeclVar
 	SeqParse
 	MPL
@@ -37,6 +38,11 @@ target_link_libraries(List
 
 add_executable(AnyChar3-6-12 ParserCombinator/AnyChar3-6-12.c)
 target_link_libraries(AnyChar3-6-12
+    Parquet
+)
+
+add_executable(StringNoneOf ParserCombinator/StringNoneOf.c)
+target_link_libraries(StringNoneOf
     Parquet
 )
 

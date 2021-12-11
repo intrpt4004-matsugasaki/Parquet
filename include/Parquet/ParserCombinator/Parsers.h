@@ -40,6 +40,7 @@ typedef struct {
 	Answer_t (* Match)(String_t *pat, String_t *, Processor_t *);
 	Answer_t (* UnMatch)(String_t *pat, String_t *, Processor_t *);
 	Answer_t (* OneOf)(List_t *pats, String_t *, Processor_t *);
+	Answer_t (* NoneOf)(List_t *pats, String_t *, Processor_t *);
 } _String_;
 
 typedef struct {

@@ -179,18 +179,32 @@ static Answer_t String_UnMatch(String_t *pat, String_t *s, Processor_t *p) {
 }
 
 static Answer_t String_OneOf(List_t *pats, String_t *s, Processor_t *p) {
-	for (uint32_t i = 0; i < pats->GetLength(pats); i++)
-		if (s->StartsWith(s, pats->Get(pats, i)))
-			return (Answer_t){
-				.Reply			= Reply.Ok,
-				.Precipitate	= String.Copy(pats->Get(pats, i)),
-				.Subsequent		= String.Substring(s,
-					String.GetLength(pats->Get(pats, i)),
-					String.GetLength(s) + 1
-				),
-			};
+	for (uint32_t i = 0; i < pats->GetLength(pats); i++) {
+		String_t *pat = pats->Get(pats, i);
+
+		if (pat->GetLength(pat) > s->GetLength(s))
+			continue;
+
+		if (s->StartsWith(s, pat)) {
+			return Basis.OkReadString(pat, s, p);
+		}
+	}
 
 	return Basis.Err(s, p);
+}
+
+static Answer_t String_NoneOf(List_t *pats, String_t *s, Processor_t *p) {
+	for (uint32_t i = 0; i < pats->GetLength(pats); i++) {
+		String_t *pat = pats->Get(pats, i);
+
+		if (pat->GetLength(pat) > s->GetLength(s))
+			continue;
+
+		if (s->StartsWith(s, pat))
+			return Basis.Err(s, p);
+	}
+
+	return Basis.OkRead1(s, p);
 }
 
 _Parsers Parsers = {
@@ -223,5 +237,6 @@ _Parsers Parsers = {
 		.Match			= String_Match,
 		.UnMatch		= String_UnMatch,
 		.OneOf			= String_OneOf,
+		.NoneOf			= String_NoneOf,
 	},
 };

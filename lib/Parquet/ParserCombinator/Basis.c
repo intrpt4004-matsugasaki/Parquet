@@ -27,8 +27,21 @@ static Answer_t OkRead1(String_t *s, Processor_t *p) {
 	};
 }
 
+static Answer_t OkReadString(String_t *read, String_t *s, Processor_t *p) {
+	return (Answer_t){
+		.Reply			= Reply.Ok,
+		.Precipitate	= String.Copy(read),
+		.Subsequent		= String.Substring(s,
+						      String.GetLength(read),
+						      String.GetLength(s) + 1
+						  ),
+		.Processor		= p
+	};
+}
+
 _Basis Basis = {
-	.Err		= Err,
-	.Ok			= Ok,
-	.OkRead1	= OkRead1,
+	.Err			= Err,
+	.Ok				= Ok,
+	.OkRead1		= OkRead1,
+	.OkReadString	= OkReadString,
 };
