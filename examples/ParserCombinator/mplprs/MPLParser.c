@@ -1018,8 +1018,9 @@ static SeqAnswer_t SeqParser_ArrType(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8"array"), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8"array");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, String.New(u8"array"));
+		}
 		/****************************************/
 
 		return r;
@@ -1029,13 +1030,13 @@ static SeqAnswer_t SeqParser_ArrType(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8"["), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8"[");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, String.New(u8"["));
+		}
 		/****************************************/
 
 		return r;
-	}printf("~");
-
+	}
 
 	SeqAnswer_t uint_lit(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_UInt, seq, NULL);
@@ -1054,19 +1055,23 @@ static SeqAnswer_t SeqParser_ArrType(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8"]"), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8"]");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, String.New(u8"]"));
+		}
 		/****************************************/
 
 		return r;
 	}
 
 	SeqAnswer_t of(Seq_t *seq, Processor_t *p) {
-		SeqAnswer_t r = SeqParsers.Match(String.New(u8"or"), seq, p);
+		SeqAnswer_t r = SeqParsers.Match(String.New(u8"of"), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8" or");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Space(p);
+			((Printer_t *)(p))->Stack(p, String.New(u8"of"));
+			((Printer_t *)(p))->Space(p);
+		}
 		/****************************************/
 
 		return r;
@@ -1151,8 +1156,9 @@ static SeqAnswer_t SeqParser_FormalParam(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8"("), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8"(");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, String.New(u8"("));
+		}
 		/****************************************/
 
 		return r;
@@ -1162,8 +1168,10 @@ static SeqAnswer_t SeqParser_FormalParam(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8":"), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8" :");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Space(p);
+			((Printer_t *)(p))->Stack(p, String.New(u8":"));
+		}
 		/****************************************/
 
 		return r;
@@ -1174,8 +1182,11 @@ static SeqAnswer_t SeqParser_FormalParam(Seq_t *seq, Processor_t *p) {
 			SeqAnswer_t r = SeqParsers.Match(String.New(u8";"), seq, p);
 
 			/****************************************/
-			if (r.Reply == Reply.Ok)
-				printf(u8";");
+			if (r.Reply == Reply.Ok) {
+				((Printer_t *)(p))->Stack(p, String.New(u8";"));
+				((Printer_t *)(p))->Feed(p);
+				((Printer_t *)(p))->Advance(p);
+			}
 			/****************************************/
 
 			return r;
@@ -1195,8 +1206,9 @@ static SeqAnswer_t SeqParser_FormalParam(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8")"), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8")");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, String.New(u8")"));
+		}
 		/****************************************/
 
 		return r;
@@ -1215,8 +1227,10 @@ static SeqAnswer_t SeqParser_SubProgDecl(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8"procedure"), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8"procedure");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Elevate(p);
+			((Printer_t *)(p))->Stack(p, String.New(u8"procedure"));
+		}
 		/****************************************/
 
 		return r;
@@ -1230,8 +1244,11 @@ static SeqAnswer_t SeqParser_SubProgDecl(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8";"), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8";");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, String.New(u8";"));
+			((Printer_t *)(p))->Feed(p);
+			((Printer_t *)(p))->Advance(p);
+		}
 		/****************************************/
 
 		return r;
