@@ -4,10 +4,8 @@
    but I introduced it to complete the process
    as quickly as possible. */
 static bool mismatch(Seq_t *seq, TokenType type) {
-	return (
-		seq->IsEmpty(seq)
-			|| Token.GetType(seq->GetHead(seq)) != type
-	);
+	return seq->IsEmpty(seq)
+		|| Token.GetType(seq->GetHead(seq)) != type;
 }
 
 static SeqAnswer_t SeqParser_VarName(Seq_t *seq, Processor_t *p) {
@@ -196,19 +194,21 @@ static SeqAnswer_t SeqParser_Var(Seq_t *seq, Processor_t *p) {
 				SeqAnswer_t r = SeqParsers.Match(String.New(u8"["), seq, p);
 
 				/****************************************/
-				if (r.Reply == Reply.Ok)
-					printf(u8"(");
+				if (r.Reply == Reply.Ok) {
+					((Printer_t *)(p))->Stack(p, String.New(u8"["));
+				}
 				/****************************************/
 
 				return r;
 			}
 
 			SeqAnswer_t close(Seq_t *seq, Processor_t *p) {
-				SeqAnswer_t r = SeqParsers.Match(String.New(u8"["), seq, p);
+				SeqAnswer_t r = SeqParsers.Match(String.New(u8"]"), seq, p);
 
 				/****************************************/
-				if (r.Reply == Reply.Ok)
-					printf(u8")");
+				if (r.Reply == Reply.Ok) {
+					((Printer_t *)(p))->Stack(p, String.New(u8"]"));
+				}
 				/****************************************/
 
 				return r;
@@ -232,22 +232,24 @@ static SeqAnswer_t SeqParser_Var(Seq_t *seq, Processor_t *p) {
 static SeqAnswer_t SeqParser_Factor(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t exprZ(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t open(Seq_t *seq, Processor_t *p) {
-			SeqAnswer_t r = SeqParsers.Match(String.New(u8"["), seq, p);
+			SeqAnswer_t r = SeqParsers.Match(String.New(u8"("), seq, p);
 
 			/****************************************/
-			if (r.Reply == Reply.Ok)
-				printf(u8"(");
+			if (r.Reply == Reply.Ok) {
+				((Printer_t *)(p))->Stack(p, String.New(u8"("));
+			}
 			/****************************************/
 
 			return r;
 		}
 
 		SeqAnswer_t close(Seq_t *seq, Processor_t *p) {
-			SeqAnswer_t r = SeqParsers.Match(String.New(u8"["), seq, p);
+			SeqAnswer_t r = SeqParsers.Match(String.New(u8")"), seq, p);
 
 			/****************************************/
-			if (r.Reply == Reply.Ok)
-				printf(u8")");
+			if (r.Reply == Reply.Ok) {
+				((Printer_t *)(p))->Stack(p, String.New(u8")"));
+			}
 			/****************************************/
 
 			return r;
@@ -264,8 +266,10 @@ static SeqAnswer_t SeqParser_Factor(Seq_t *seq, Processor_t *p) {
 			SeqAnswer_t r = SeqParsers.Match(String.New(u8"not"), seq, p);
 
 			/****************************************/
-			if (r.Reply == Reply.Ok)
-				printf(u8" not");
+			if (r.Reply == Reply.Ok) {
+				((Printer_t *)(p))->Stack(p, String.New(u8"not"));
+				((Printer_t *)(p))->Space(p);
+			}
 			/****************************************/
 
 			return r;
@@ -279,22 +283,24 @@ static SeqAnswer_t SeqParser_Factor(Seq_t *seq, Processor_t *p) {
 
 	SeqAnswer_t stdTexprZ(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t open(Seq_t *seq, Processor_t *p) {
-			SeqAnswer_t r = SeqParsers.Match(String.New(u8"["), seq, p);
+			SeqAnswer_t r = SeqParsers.Match(String.New(u8"("), seq, p);
 
 			/****************************************/
-			if (r.Reply == Reply.Ok)
-				printf(u8"(");
+			if (r.Reply == Reply.Ok) {
+				((Printer_t *)(p))->Stack(p, String.New(u8"("));
+			}
 			/****************************************/
 
 			return r;
 		}
 
 		SeqAnswer_t close(Seq_t *seq, Processor_t *p) {
-			SeqAnswer_t r = SeqParsers.Match(String.New(u8"["), seq, p);
+			SeqAnswer_t r = SeqParsers.Match(String.New(u8")"), seq, p);
 
 			/****************************************/
-			if (r.Reply == Reply.Ok)
-				printf(u8")");
+			if (r.Reply == Reply.Ok) {
+				((Printer_t *)(p))->Stack(p, String.New(u8")"));
+			}
 			/****************************************/
 
 			return r;
@@ -345,8 +351,10 @@ static SeqAnswer_t SeqParser_SimpleExpr(Seq_t *seq, Processor_t *p) {
 			SeqAnswer_t r = SeqParsers.Match(String.New(u8"+"), seq, p);
 
 			/****************************************/
-			if (r.Reply == Reply.Ok)
-				printf(u8" +");
+			if (r.Reply == Reply.Ok) {
+				((Printer_t *)(p))->Stack(p, String.New(u8"+"));
+				((Printer_t *)(p))->Space(p);
+			}
 			/****************************************/
 
 			return r;
@@ -356,8 +364,10 @@ static SeqAnswer_t SeqParser_SimpleExpr(Seq_t *seq, Processor_t *p) {
 			SeqAnswer_t r = SeqParsers.Match(String.New(u8"-"), seq, p);
 
 			/****************************************/
-			if (r.Reply == Reply.Ok)
-				printf(u8" -");
+			if (r.Reply == Reply.Ok) {
+				((Printer_t *)(p))->Stack(p, String.New(u8"-"));
+				((Printer_t *)(p))->Space(p);
+			}
 			/****************************************/
 
 			return r;
@@ -439,8 +449,10 @@ static SeqAnswer_t SeqParser_CondStmt(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8"if"), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8" if");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, String.New(u8"if"));
+			((Printer_t *)(p))->Space(p);
+		}
 		/****************************************/
 
 		return r;
@@ -450,8 +462,13 @@ static SeqAnswer_t SeqParser_CondStmt(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8"then"), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8" then");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Space(p);
+			((Printer_t *)(p))->Stack(p, String.New(u8"then"));
+			((Printer_t *)(p))->Elevate(p);
+			((Printer_t *)(p))->Feed(p);
+			((Printer_t *)(p))->Advance(p);
+		}
 		/****************************************/
 
 		return r;
@@ -463,8 +480,15 @@ static SeqAnswer_t SeqParser_CondStmt(Seq_t *seq, Processor_t *p) {
 				SeqAnswer_t r = SeqParsers.Match(String.New(u8"else"), seq, p);
 
 				/****************************************/
-				if (r.Reply == Reply.Ok)
-					printf(u8" else");
+				if (r.Reply == Reply.Ok) {
+					((Printer_t *)(p))->Demote(p);
+					((Printer_t *)(p))->Feed(p);
+					((Printer_t *)(p))->Advance(p);
+					((Printer_t *)(p))->Stack(p, String.New(u8"else"));
+					((Printer_t *)(p))->Elevate(p);
+					((Printer_t *)(p))->Feed(p);
+					((Printer_t *)(p))->Advance(p);
+				}
 				/****************************************/
 
 				return r;

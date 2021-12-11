@@ -1,6 +1,3 @@
-# compiler options
-set(CMAKE_C_FLAGS "-std=gnu2x -g3 -O0")
-
 add_custom_target(examples)
 add_dependencies(examples
 	Error
