@@ -88,7 +88,7 @@ typedef struct {
 		String_t *, Processor_t *);
 
 	/* ? */
-	Answer_t (* Possibly)(
+	Answer_t (* Optional)(
 		Answer_t (* parser)(String_t *, Processor_t *),
 		String_t *, Processor_t *);
 

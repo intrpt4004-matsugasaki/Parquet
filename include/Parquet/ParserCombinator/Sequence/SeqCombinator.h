@@ -88,7 +88,7 @@ typedef struct {
 		Seq_t *, Processor_t *);
 
 	/* ? */
-	SeqAnswer_t (* Possibly)(
+	SeqAnswer_t (* Optional)(
 		SeqAnswer_t (* seqParser)(Seq_t *, Processor_t *),
 		Seq_t *, Processor_t *);
 

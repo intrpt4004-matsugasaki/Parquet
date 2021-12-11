@@ -220,7 +220,7 @@ static SeqAnswer_t SeqParser_Var(Seq_t *seq, Processor_t *p) {
 			);
 		}
 
-		return SeqCombinator.Possibly(arrayIndex, seq, p);
+		return SeqCombinator.Optional(arrayIndex, seq, p);
 	}
 
 	return SeqCombinator.Bind(
@@ -372,7 +372,7 @@ static SeqAnswer_t SeqParser_SimpleExpr(Seq_t *seq, Processor_t *p) {
 	}
 
 	SeqAnswer_t plus_or_minusX(Seq_t *seq, Processor_t *p) {
-		return SeqCombinator.Possibly(plus_or_minus, seq, p);
+		return SeqCombinator.Optional(plus_or_minus, seq, p);
 	}
 
 	SeqAnswer_t adtnAdds0(Seq_t *seq, Processor_t *p) {
@@ -476,7 +476,7 @@ static SeqAnswer_t SeqParser_CondStmt(Seq_t *seq, Processor_t *p) {
 			);
 		}
 
-		return SeqCombinator.Possibly(elseSec, seq, p);
+		return SeqCombinator.Optional(elseSec, seq, p);
 	}
 
 	return SeqCombinator.Bind5(
@@ -603,7 +603,7 @@ static SeqAnswer_t SeqParser_CallStmt(Seq_t *seq, Processor_t *p) {
 			);
 		}
 
-		return SeqCombinator.Possibly(param, seq, p);
+		return SeqCombinator.Optional(param, seq, p);
 	}
 
 	return SeqCombinator.Bind3(
@@ -715,7 +715,7 @@ static SeqAnswer_t SeqParser_InputStmt(Seq_t *seq, Processor_t *p) {
 			);
 		}
 
-		return SeqCombinator.Possibly(param, seq, p);
+		return SeqCombinator.Optional(param, seq, p);
 	}
 
 	return SeqCombinator.Bind(
@@ -758,7 +758,7 @@ static SeqAnswer_t SeqParser_OutputFmt(Seq_t *seq, Processor_t *p) {
 				);
 			}
 
-			return SeqCombinator.Possibly(opt, seq, p);
+			return SeqCombinator.Optional(opt, seq, p);
 		}
 
 		return SeqCombinator.Bind(
@@ -862,7 +862,7 @@ static SeqAnswer_t SeqParser_OutputStmt(Seq_t *seq, Processor_t *p) {
 			);
 		}
 
-		return SeqCombinator.Possibly(param, seq, p);
+		return SeqCombinator.Optional(param, seq, p);
 	}
 
 	return SeqCombinator.Bind(
@@ -1199,7 +1199,7 @@ static SeqAnswer_t SeqParser_SubProgDecl(Seq_t *seq, Processor_t *p) {
 	}
 
 	SeqAnswer_t SeqParser_FormalParamX(Seq_t *seq, Processor_t *p) {
-		return SeqCombinator.Possibly(SeqParser_FormalParam, seq, p);
+		return SeqCombinator.Optional(SeqParser_FormalParam, seq, p);
 	}
 
 	SeqAnswer_t semicolon(Seq_t *seq, Processor_t *p) {
@@ -1214,7 +1214,7 @@ static SeqAnswer_t SeqParser_SubProgDecl(Seq_t *seq, Processor_t *p) {
 	}
 
 	SeqAnswer_t SeqParser_VarDeclX(Seq_t *seq, Processor_t *p) {
-		return SeqCombinator.Possibly(SeqParser_VarDecl, seq, p);
+		return SeqCombinator.Optional(SeqParser_VarDecl, seq, p);
 	}
 
 	SeqAnswer_t decl(Seq_t *seq, Processor_t *p) {

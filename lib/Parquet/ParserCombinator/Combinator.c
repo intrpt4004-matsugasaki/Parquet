@@ -175,7 +175,7 @@ static Answer_t Many1(Answer_t (* parser)(String_t *, Processor_t *), String_t *
 	}
 }
 
-static Answer_t Possibly(Answer_t (* parser)(String_t *, Processor_t *), String_t *s, Processor_t *p) {
+static Answer_t Optional(Answer_t (* parser)(String_t *, Processor_t *), String_t *s, Processor_t *p) {
 	Answer_t result = parser(s, p);
 	return (result.Reply == Reply.Ok) ?
 		result : Basis.Ok(s, p);
@@ -209,7 +209,7 @@ _Combinator Combinator = {
 	.Many0			= Many0,
 	.Many1			= Many1,
 
-	.Possibly		= Possibly,
+	.Optional		= Optional,
 
 	.Predict		= Predict,
 	.PredictNot		= PredictNot,

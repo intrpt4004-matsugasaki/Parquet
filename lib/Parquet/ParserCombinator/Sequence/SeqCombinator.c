@@ -175,7 +175,7 @@ static SeqAnswer_t Many1(SeqAnswer_t (* seqParser)(Seq_t *, Processor_t *), Seq_
 	}
 }
 
-static SeqAnswer_t Possibly(SeqAnswer_t (* seqParser)(Seq_t *, Processor_t *), Seq_t *seq, Processor_t *p) {
+static SeqAnswer_t Optional(SeqAnswer_t (* seqParser)(Seq_t *, Processor_t *), Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t result = seqParser(seq, p);
 	return (result.Reply == Reply.Ok) ?
 		result : SeqBasis.Ok(seq, p);
@@ -209,7 +209,7 @@ _SeqCombinator SeqCombinator = {
 	.Many0			= Many0,
 	.Many1			= Many1,
 
-	.Possibly		= Possibly,
+	.Optional		= Optional,
 
 	.Predict		= Predict,
 	.PredictNot		= PredictNot,
