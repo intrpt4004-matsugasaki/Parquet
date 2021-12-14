@@ -141,7 +141,7 @@ static SeqAnswer_t SeqParser_AddOpr(Seq_t *seq, Processor_t *p) {
 }
 
 static SeqAnswer_t SeqParser_MulOpr(Seq_t *seq, Processor_t *p) {
-	if (mismatch(seq, Token_Symbol)) return SeqBasis.Err(seq, p);
+	if (mismatch(seq, Token_Keyword) && mismatch(seq, Token_Symbol)) return SeqBasis.Err(seq, p);
 
 	Seq_t *muls = Seq.New(Seq.STRINGISER_STRING);
 
@@ -150,11 +150,11 @@ static SeqAnswer_t SeqParser_MulOpr(Seq_t *seq, Processor_t *p) {
 	muls->Add(muls, String.New(u8"*"));
 
 	SeqAnswer_t r = SeqParsers.OneOf(muls, seq, p);
-
 	/****************************************/
 	if (r.Reply == Reply.Ok) {
 		((Printer_t *)(p))->Space(p);
 		((Printer_t *)(p))->Stack(p, (seq->GetStringiser(seq))(Seq.GetHead(seq)));
+		((Printer_t *)(p))->Space(p);
 	}
 	/****************************************/
 
@@ -334,7 +334,6 @@ static SeqAnswer_t SeqParser_Term(Seq_t *seq, Processor_t *p) {
 
 		return SeqCombinator.Many0(adtnTerm, seq, p);
 	}
-((Printer_t *)(p))->Stack(p, String.New(u8"{Term}"));
 
 	return SeqCombinator.Bind(
 		SeqParser_Factor, adtnTerms0,
@@ -406,7 +405,6 @@ static SeqAnswer_t SeqParser_SimpleExpr(Seq_t *seq, Processor_t *p) {
 static SeqAnswer_t SeqParser_Expr(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t adtnSufExpr0(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t adtnSufExpr(Seq_t *seq, Processor_t *p) {
-((Printer_t *)(p))->Stack(p, String.New(u8"{adtnSufExpr}"));
 			return SeqCombinator.Bind(
 				SeqParser_RelOpr, SeqParser_SimpleExpr,
 				seq, p
