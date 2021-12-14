@@ -1,5 +1,5 @@
 # Parquet
-![](https://img.shields.io/badge/license-AGPLv3-blue?style=for-the-badge&logo=gnu)
+[![](https://img.shields.io/badge/license-AGPLv3-blue?style=for-the-badge&logo=gnu)](https://www.gnu.org/licenses/agpl-3.0.html)
 
 Compiler Creation Support Library in C (C23 / gcc-extension)
 - Basic Types (String, List) : ( [header](https://github.com/rot-E/Parquet/tree/main/include/Parquet/Base/) [source](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/Base/) [examples](https://github.com/rot-E/Parquet/tree/main/examples/Base/) )
