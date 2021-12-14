@@ -465,9 +465,14 @@ static SeqAnswer_t SeqParser_CondStmt(Seq_t *seq, Processor_t *p) {
 		if (r.Reply == Reply.Ok) {
 			((Printer_t *)(p))->Space(p);
 			((Printer_t *)(p))->Stack(p, String.New(u8"then"));
-			((Printer_t *)(p))->Elevate(p);
-			((Printer_t *)(p))->Feed(p);
-			((Printer_t *)(p))->Advance(p);
+			if (!String.Equals((seq->GetStringiser(seq))(Seq.Get(seq, 1)), String.New(u8"begin"))) {
+				((Printer_t *)(p))->Elevate(p);
+				((Printer_t *)(p))->Feed(p);
+				((Printer_t *)(p))->Advance(p);
+			} else {
+				((Printer_t *)(p))->Entry(p);
+				((Printer_t *)(p))->Space(p);
+			}
 		}
 		/****************************************/
 
@@ -481,13 +486,23 @@ static SeqAnswer_t SeqParser_CondStmt(Seq_t *seq, Processor_t *p) {
 
 				/****************************************/
 				if (r.Reply == Reply.Ok) {
-					((Printer_t *)(p))->Demote(p);
-					((Printer_t *)(p))->Feed(p);
-					((Printer_t *)(p))->Advance(p);
+					if (!((Printer_t *)(p))->CursorIsInInside(p)) {
+						((Printer_t *)(p))->Demote(p);
+						((Printer_t *)(p))->Feed(p);
+						((Printer_t *)(p))->Advance(p);
+					} else {
+						((Printer_t *)(p))->Escape(p);
+						((Printer_t *)(p))->Space(p);
+					}
 					((Printer_t *)(p))->Stack(p, String.New(u8"else"));
-					((Printer_t *)(p))->Elevate(p);
-					((Printer_t *)(p))->Feed(p);
-					((Printer_t *)(p))->Advance(p);
+					if (!String.Equals((seq->GetStringiser(seq))(Seq.Get(seq, 1)), String.New(u8"begin"))) {
+						((Printer_t *)(p))->Elevate(p);
+						((Printer_t *)(p))->Feed(p);
+						((Printer_t *)(p))->Advance(p);
+					} else {
+						((Printer_t *)(p))->Entry(p);
+						((Printer_t *)(p))->Space(p);
+					}
 				}
 				/****************************************/
 
@@ -950,8 +965,8 @@ static SeqAnswer_t SeqParser_CompoundStmt(Seq_t *seq, Processor_t *p) {
 
 		/****************************************/
 		if (r.Reply == Reply.Ok) {
-			((Printer_t *)(p))->Feed(p);
 			((Printer_t *)(p))->Demote(p);
+			((Printer_t *)(p))->Feed(p);
 			((Printer_t *)(p))->Advance(p);
 			((Printer_t *)(p))->Stack(p, String.New(u8"end"));
 		}
@@ -1264,6 +1279,8 @@ static SeqAnswer_t SeqParser_SubProgDecl(Seq_t *seq, Processor_t *p) {
 	}
 
 	SeqAnswer_t semicolon2(Seq_t *seq, Processor_t *p) {
+		((Printer_t *)(p))->Escape(p);
+
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8";"), seq, p);
 
 		/****************************************/

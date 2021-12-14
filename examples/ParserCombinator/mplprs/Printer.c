@@ -29,6 +29,19 @@ static void Demote(Printer_t *p) {
 	p->_Indents--;
 }
 
+static void Entry(Printer_t *p) {
+	p->_Entry = true;
+	//p->_IndentCnt = p->_Indents;
+}
+
+static bool CursorIsInInside(Printer_t *p) {
+	return p->_Entry;
+}
+
+static void Escape(Printer_t *p) {
+	p->_Entry = false;
+}
+
 static void Dump(Printer_t *p) {
 	for (uint32_t i = 0; i < List.GetLength(p->_Stack); i++)
 		printf("\e[2m%s\e[0m", String.GetPrimitive(List.Get(p->_Stack, i)));
@@ -48,18 +61,23 @@ static Printer_t *New() {
 	p->_Stack		= List.New();
 	p->_Indents		= 0;
 	p->_Indent		= String.New(u8"  ");
+	p->_Entry		= false;
+	p->_IndentCnt	= 0;
 	p->_Line		= 1;
 	p->_LastIndex	= 0;
 
-	p->Stack		= Stack;
-	p->Space		= Space;
-	p->Feed			= Feed;
-	p->Advance		= Advance;
-	p->Elevate		= Elevate;
-	p->Demote		= Demote;
-	p->Dump			= Dump;
-	p->GetLine		= GetLine;
-	p->GetLastIndex	= GetLastIndex;
+	p->Stack			= Stack;
+	p->Space			= Space;
+	p->Feed				= Feed;
+	p->Advance			= Advance;
+	p->Elevate			= Elevate;
+	p->Demote			= Demote;
+	p->Entry			= Entry;
+	p->CursorIsInInside	= CursorIsInInside;
+	p->Escape			= Escape;
+	p->Dump				= Dump;
+	p->GetLine			= GetLine;
+	p->GetLastIndex		= GetLastIndex;
 
 	return p;
 }

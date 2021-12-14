@@ -40,7 +40,8 @@ void main(const int32_t argc, uint8_t *argv[]) {
 	);
 	Printer_t *printer = (Printer_t *)(sr.Processor);
 
-	if (sr.Reply == Reply.Err) {
+if(false){
+//	if (sr.Reply == Reply.Err) {
 		printf("\e[91m[error]\e[0m parse failed at source line %d, formatted line %d.\n",
 			Token.GetLine(tokens->Get(tokens, printer->GetLastIndex(printer))),
 			printer->GetLine(printer)
