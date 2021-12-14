@@ -334,6 +334,7 @@ static SeqAnswer_t SeqParser_Term(Seq_t *seq, Processor_t *p) {
 
 		return SeqCombinator.Many0(adtnTerm, seq, p);
 	}
+((Printer_t *)(p))->Stack(p, String.New(u8"{Term}"));
 
 	return SeqCombinator.Bind(
 		SeqParser_Factor, adtnTerms0,
@@ -405,6 +406,7 @@ static SeqAnswer_t SeqParser_SimpleExpr(Seq_t *seq, Processor_t *p) {
 static SeqAnswer_t SeqParser_Expr(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t adtnSufExpr0(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t adtnSufExpr(Seq_t *seq, Processor_t *p) {
+((Printer_t *)(p))->Stack(p, String.New(u8"{adtnSufExpr}"));
 			return SeqCombinator.Bind(
 				SeqParser_RelOpr, SeqParser_SimpleExpr,
 				seq, p
@@ -549,8 +551,9 @@ static SeqAnswer_t SeqParser_ExitStmt(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t r = SeqParsers.Match(String.New(u8"break"), seq, p);
 
 	/****************************************/
-	if (r.Reply == Reply.Ok)
-		printf(u8" break");
+	if (r.Reply == Reply.Ok) {
+		((Printer_t *)(p))->Stack(p, String.New(u8"break"));
+	}
 	/****************************************/
 
 	return r;
@@ -563,8 +566,12 @@ static SeqAnswer_t SeqParser_Exprs(Seq_t *seq, Processor_t *p) {
 				SeqAnswer_t r = SeqParsers.Match(String.New(u8";"), seq, p);
 
 				/****************************************/
-				if (r.Reply == Reply.Ok)
-					printf(u8";\n");
+				if (r.Reply == Reply.Ok) {
+					((Printer_t *)(p))->Elevate(p);
+					((Printer_t *)(p))->Stack(p, String.New(u8";"));
+					((Printer_t *)(p))->Feed(p);
+					((Printer_t *)(p))->Advance(p);
+				}
 				/****************************************/
 
 				return r;
@@ -590,8 +597,10 @@ static SeqAnswer_t SeqParser_CallStmt(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Match(String.New(u8"call"), seq, p);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8" call");
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, String.New(u8"call"));
+			((Printer_t *)(p))->Space(p);
+		}
 		/****************************************/
 
 		return r;
@@ -603,8 +612,9 @@ static SeqAnswer_t SeqParser_CallStmt(Seq_t *seq, Processor_t *p) {
 				SeqAnswer_t r = SeqParsers.Match(String.New(u8"("), seq, p);
 
 				/****************************************/
-				if (r.Reply == Reply.Ok)
-					printf(u8"(");
+				if (r.Reply == Reply.Ok) {
+					((Printer_t *)(p))->Stack(p, String.New(u8"("));
+				}
 				/****************************************/
 
 				return r;
@@ -614,8 +624,9 @@ static SeqAnswer_t SeqParser_CallStmt(Seq_t *seq, Processor_t *p) {
 				SeqAnswer_t r = SeqParsers.Match(String.New(u8")"), seq, p);
 
 				/****************************************/
-				if (r.Reply == Reply.Ok)
-					printf(u8")");
+				if (r.Reply == Reply.Ok) {
+					((Printer_t *)(p))->Stack(p, String.New(u8")"));
+				}
 				/****************************************/
 
 				return r;
@@ -640,8 +651,9 @@ static SeqAnswer_t SeqParser_RetStmt(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t r = SeqParsers.Match(String.New(u8"return"), seq, p);
 
 	/****************************************/
-	if (r.Reply == Reply.Ok)
-		printf(u8"return");
+	if (r.Reply == Reply.Ok) {
+		((Printer_t *)(p))->Stack(p, String.New(u8"return"));
+	}
 	/****************************************/
 
 	return r;
@@ -1230,6 +1242,7 @@ static SeqAnswer_t SeqParser_SubProgDecl(Seq_t *seq, Processor_t *p) {
 		if (r.Reply == Reply.Ok) {
 			((Printer_t *)(p))->Elevate(p);
 			((Printer_t *)(p))->Stack(p, String.New(u8"procedure"));
+			((Printer_t *)(p))->Space(p);
 		}
 		/****************************************/
 
@@ -1254,6 +1267,21 @@ static SeqAnswer_t SeqParser_SubProgDecl(Seq_t *seq, Processor_t *p) {
 		return r;
 	}
 
+	SeqAnswer_t semicolon2(Seq_t *seq, Processor_t *p) {
+		SeqAnswer_t r = SeqParsers.Match(String.New(u8";"), seq, p);
+
+		/****************************************/
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, String.New(u8";"));
+			((Printer_t *)(p))->Demote(p);
+			((Printer_t *)(p))->Feed(p);
+			((Printer_t *)(p))->Advance(p);
+		}
+		/****************************************/
+
+		return r;
+	}
+
 	SeqAnswer_t SeqParser_VarDeclX(Seq_t *seq, Processor_t *p) {
 		return SeqCombinator.Optional(SeqParser_VarDecl, seq, p);
 	}
@@ -1269,7 +1297,7 @@ static SeqAnswer_t SeqParser_SubProgDecl(Seq_t *seq, Processor_t *p) {
 		decl,
 			SeqParser_VarDeclX,
 			SeqParser_CompoundStmt,
-		semicolon,
+		semicolon2,
 		seq, p
 	);
 }
