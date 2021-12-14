@@ -119,7 +119,7 @@ static SeqAnswer_t SeqParser_StdType(Seq_t *seq, Processor_t *p) {
 }
 
 static SeqAnswer_t SeqParser_AddOpr(Seq_t *seq, Processor_t *p) {
-	if (mismatch(seq, Token_Symbol)) return SeqBasis.Err(seq, p);
+	if (mismatch(seq, Token_Keyword) && mismatch(seq, Token_Symbol)) return SeqBasis.Err(seq, p);
 
 	Seq_t *adds = Seq.New(Seq.STRINGISER_STRING);
 
@@ -561,14 +561,12 @@ static SeqAnswer_t SeqParser_Exprs(Seq_t *seq, Processor_t *p) {
 	SeqAnswer_t adtnExprs0(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t adtnExpr(Seq_t *seq, Processor_t *p) {
 			SeqAnswer_t comma(Seq_t *seq, Processor_t *p) {
-				SeqAnswer_t r = SeqParsers.Match(String.New(u8";"), seq, p);
+				SeqAnswer_t r = SeqParsers.Match(String.New(u8","), seq, p);
 
 				/****************************************/
 				if (r.Reply == Reply.Ok) {
-					((Printer_t *)(p))->Elevate(p);
-					((Printer_t *)(p))->Stack(p, String.New(u8";"));
-					((Printer_t *)(p))->Feed(p);
-					((Printer_t *)(p))->Advance(p);
+					((Printer_t *)(p))->Stack(p, String.New(u8","));
+					((Printer_t *)(p))->Space(p);
 				}
 				/****************************************/
 
