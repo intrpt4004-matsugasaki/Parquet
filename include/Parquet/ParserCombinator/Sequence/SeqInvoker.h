@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Parquet/Base/Seq.h"
+#include "Parquet/ParserCombinator/Sequence/Seq.h"
 #include "Parquet/ParserCombinator/Parser.h"
 #include "Parquet/ParserCombinator/Sequence/SeqParser.h"
 

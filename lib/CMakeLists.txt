@@ -13,7 +13,6 @@ target_sources(Parquet
     Parquet/Base/Memory.c
     Parquet/Base/String.c
     Parquet/Base/List.c
-    Parquet/Base/Seq.c
 
     Parquet/ParserCombinator/Parser.c
     Parquet/ParserCombinator/Basis.c
@@ -24,6 +23,7 @@ target_sources(Parquet
     Parquet/ParserCombinator/Processors/TokenCollector/Token.c
     Parquet/ParserCombinator/Processors/TokenCollector/TokenCollector.c
 
+    Parquet/ParserCombinator/Sequence/Seq.c
     Parquet/ParserCombinator/Sequence/SeqBasis.c
     Parquet/ParserCombinator/Sequence/SeqCombinator.c
     Parquet/ParserCombinator/Sequence/SeqParsers.c

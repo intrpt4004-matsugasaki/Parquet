@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Parquet/Base/String.h"
-#include "Parquet/Base/Seq.h"
+#include "Parquet/ParserCombinator/Sequence/Seq.h"
 #include "Parquet/ParserCombinator/Invoker.h"
 #include "Parquet/ParserCombinator/Sequence/SeqParser.h"
 #include "Parquet/ParserCombinator/Sequence/SeqBasis.h"

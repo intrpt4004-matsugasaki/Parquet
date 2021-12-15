@@ -1,4 +1,4 @@
-#include "Parquet/Base/Seq.h"
+#include "Parquet/ParserCombinator/Sequence/Seq.h"
 
 static String_t *(* GetStringiser(Seq_t *seq))(any *item) {
 	return seq->_Stringiser;
