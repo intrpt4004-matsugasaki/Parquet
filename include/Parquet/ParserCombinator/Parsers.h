@@ -23,9 +23,7 @@ typedef struct {
 	Answer_t (* HexDigit)(String_t *, Processor_t *);
 	Answer_t (* OctDigit)(String_t *, Processor_t *);
 	Answer_t (* Any)(String_t *, Processor_t *);
-	Answer_t (* Satisfy)(
-		bool (* judge)(uint8_t c),
-		String_t *, Processor_t *);
+	Answer_t (* Satisfy)(bool (* judger)(uint8_t c), String_t *, Processor_t *);
 
 	Answer_t (* Space)(String_t *, Processor_t *);
 	Answer_t (* Spaces0)(String_t *, Processor_t *);

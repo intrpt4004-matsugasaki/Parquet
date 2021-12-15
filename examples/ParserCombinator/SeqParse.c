@@ -32,7 +32,7 @@ SeqAnswer_t program_then_test(Seq_t *seq, Processor_t *p) {
 }
 
 SeqAnswer_t digit(Seq_t *seq, Processor_t *p) {
-	return SeqParsers.Complete(
+	return SeqParsers.Satisfy(
 		Parsers.Char.Digit,
 		seq, p
 	);

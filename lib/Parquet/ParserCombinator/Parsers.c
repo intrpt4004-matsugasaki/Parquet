@@ -112,10 +112,10 @@ static Answer_t Any(String_t *s, Processor_t *p) {
 	return Basis.OkRead1(s, p);
 }
 
-static Answer_t Satisfy(bool (* judge)(uint8_t c), String_t *s, Processor_t *p) {	
+static Answer_t Satisfy(bool (* judger)(uint8_t c), String_t *s, Processor_t *p) {	
 	if (s->IsEmpty(s)) return Basis.Err(s, p);
 
-	if (!judge(s->GetHeadChar(s))) return Basis.Err(s, p);
+	if (!judger(s->GetHeadChar(s))) return Basis.Err(s, p);
 
 	return Basis.OkRead1(s, p);
 }

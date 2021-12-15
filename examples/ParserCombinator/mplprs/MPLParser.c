@@ -11,7 +11,7 @@ static bool mismatch(Seq_t *seq, TokenType type) {
 static SeqAnswer_t SeqParser_VarName(Seq_t *seq, Processor_t *p) {
 	if (mismatch(seq, Token_Name)) return SeqBasis.Err(seq, p);
 
-	SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_Name, seq, NULL);
+	SeqAnswer_t r = SeqParsers.Satisfy(MPLLexer.Parser_Name, seq, NULL);
 
 	/****************************************/
 	if (r.Reply == Reply.Ok) {
@@ -25,7 +25,7 @@ static SeqAnswer_t SeqParser_VarName(Seq_t *seq, Processor_t *p) {
 static SeqAnswer_t SeqParser_ProcName(Seq_t *seq, Processor_t *p) {
 	if (mismatch(seq, Token_Name)) return SeqBasis.Err(seq, p);
 
-	SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_Name, seq, NULL);
+	SeqAnswer_t r = SeqParsers.Satisfy(MPLLexer.Parser_Name, seq, NULL);
 
 	/****************************************/
 	if (r.Reply == Reply.Ok) {
@@ -41,7 +41,7 @@ static SeqAnswer_t SeqParser_Const(Seq_t *seq, Processor_t *p) {
 		return SeqBasis.Err(seq, p);
 
 	SeqAnswer_t uint_lit(Seq_t *seq, Processor_t *p) {
-		SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_UInt, seq, NULL);
+		SeqAnswer_t r = SeqParsers.Satisfy(MPLLexer.Parser_UInt, seq, NULL);
 
 		/****************************************/
 		if (r.Reply == Reply.Ok) {
@@ -77,7 +77,7 @@ static SeqAnswer_t SeqParser_Const(Seq_t *seq, Processor_t *p) {
 	}
 
 	SeqAnswer_t str_lit(Seq_t *seq, Processor_t *p) {
-		SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_String, seq, NULL);
+		SeqAnswer_t r = SeqParsers.Satisfy(MPLLexer.Parser_String, seq, NULL);
 
 		/****************************************/
 		if (r.Reply == Reply.Ok) {
@@ -789,7 +789,7 @@ static SeqAnswer_t SeqParser_OutputFmt(Seq_t *seq, Processor_t *p) {
 				}
 
 				SeqAnswer_t uint_lit(Seq_t *seq, Processor_t *p) {
-					SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_UInt, seq, NULL);
+					SeqAnswer_t r = SeqParsers.Satisfy(MPLLexer.Parser_UInt, seq, NULL);
 
 					/****************************************/
 					if (r.Reply == Reply.Ok) {
@@ -816,7 +816,7 @@ static SeqAnswer_t SeqParser_OutputFmt(Seq_t *seq, Processor_t *p) {
 	}
 
 	SeqAnswer_t str_lit(Seq_t *seq, Processor_t *p) {
-		SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_String, seq, NULL);
+		SeqAnswer_t r = SeqParsers.Satisfy(MPLLexer.Parser_String, seq, NULL);
 
 		/****************************************/
 		if (r.Reply == Reply.Ok) {
@@ -1062,7 +1062,7 @@ static SeqAnswer_t SeqParser_ArrType(Seq_t *seq, Processor_t *p) {
 	}
 
 	SeqAnswer_t uint_lit(Seq_t *seq, Processor_t *p) {
-		SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_UInt, seq, NULL);
+		SeqAnswer_t r = SeqParsers.Satisfy(MPLLexer.Parser_UInt, seq, NULL);
 
 		/****************************************/
 		if (r.Reply == Reply.Ok) {
@@ -1353,7 +1353,7 @@ static SeqAnswer_t SeqParser_Program(Seq_t *seq, Processor_t *p) {
 			return Combinator.Many1(MPLLexer.Parser_Name, s, NULL);
 		}
 
-		SeqAnswer_t r = SeqParsers.Complete(name_p, seq, p);
+		SeqAnswer_t r = SeqParsers.Satisfy(name_p, seq, p);
 
 		/****************************************/
 		if (r.Reply == Reply.Ok)
