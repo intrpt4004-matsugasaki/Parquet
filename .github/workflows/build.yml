@@ -20,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    -name: Setup
+    - name: Setup
       run: |
         sudo apt update
         sudo apt install gcc-11 g++-11
