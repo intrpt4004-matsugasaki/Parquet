@@ -1,5 +1,6 @@
 # Parquet
-[![](https://img.shields.io/badge/license-AGPLv3-blue?style=for-the-badge&logo=gnu)](LICENSE)
+[![Build](https://github.com/rot-E/Parquet/actions/workflows/build.yml/badge.svg)](https://github.com/rot-E/Parquet/actions/workflows/build.yml)
+[![](https://img.shields.io/badge/license-AGPLv3-blue?style=flat-square&logo=gnu)](LICENSE)
 
 Compiler Creation Support Library in C (C23 / gcc-extension)
 - Basic Types (String, List) : ( [header](https://github.com/rot-E/Parquet/tree/main/include/Parquet/Base/) [source](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/Base/) [examples](https://github.com/rot-E/Parquet/tree/main/examples/Base/) )
@@ -28,6 +29,7 @@ $ make install -j
 ```
 
 ## build examples
+[![Build](https://github.com/rot-E/Parquet/actions/workflows/build.yml/badge.svg)](https://github.com/rot-E/Parquet/actions/workflows/build.yml)
 ```sh
 $ make examples -j
 $ examples/mpltok ../examples/ParserCombinator/mpltok/sum_err.mpl
@@ -44,4 +46,6 @@ Semantic Analysis: [`examples/ParserCombinator/mplsema/*`](https://github.com/ro
 Compile: coming soon...
 
 # License
+[![](https://img.shields.io/badge/license-AGPLv3-blue?style=for-the-badge&logo=gnu)](LICENSE)
+
 &emsp;[`AGPLv3`](LICENSE)
