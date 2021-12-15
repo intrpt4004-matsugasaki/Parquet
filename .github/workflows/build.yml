@@ -26,7 +26,9 @@ jobs:
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       #run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
       run: |
-        cd ${{github.workspace}}/build
+        cd ${{github.workspace}}
+        mkdir build
+        cd build
         cmake ..
 
     - name: Make
