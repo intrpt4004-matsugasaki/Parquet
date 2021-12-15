@@ -22,18 +22,18 @@ $ cmake ..
 $ make -j
 ```
 
-## install
-```sh
-$ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$HOME/.local
-$ make install -j
-```
-
-## build examples
+## build examples & run
 [![Build-examples](https://github.com/rot-E/Parquet/actions/workflows/build-examples.yml/badge.svg)](https://github.com/rot-E/Parquet/actions/workflows/build-examples.yml)
 ```sh
 $ make examples -j
 $ examples/mpltok ../examples/ParserCombinator/mpltok/sum_err.mpl
 $ examples/mplprs ../examples/ParserCombinator/mplprs/sum.mpl
+```
+
+## install
+```sh
+$ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$HOME/.local
+$ make install -j
 ```
 
 # Usage
