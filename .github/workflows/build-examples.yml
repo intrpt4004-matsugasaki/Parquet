@@ -33,4 +33,4 @@ jobs:
         CC: gcc-11
       run: |
         cd ${{github.workspace}}/build
-        make -j
+        make examples -j
