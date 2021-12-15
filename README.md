@@ -40,4 +40,4 @@ Tokenise: [`examples/ParserCombinator/mpltok/*`](https://github.com/rot-E/Parque
 Parse: [`examples/ParserCombinator/mplprs/*`](https://github.com/rot-E/Parquet/tree/main/examples/ParserCombinator/mplprs)
 
 # License
-&emsp;[`AGPLv3`](https://www.gnu.org/licenses/agpl-3.0.html)
+&emsp;[`AGPLv3`](LICENSE)
