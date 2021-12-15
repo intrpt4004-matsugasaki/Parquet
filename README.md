@@ -10,7 +10,7 @@ Compiler Creation Support Library in C (C23 / gcc-extension)
 - Executable Binary Preparation : ( [header](https://github.com/rot-E/Parquet/tree/main/include/Parquet/ExecBinaryPreparer.h) [source](https://github.com/rot-E/Parquet/tree/main/lib/Parquet/ExecBinaryPreparer.c)  [examples](https://github.com/rot-E/Parquet/tree/main/examples/ExecBinaryPreparer/) )
   - dependencies: **`as` `ld`**
 
-## build
+# Build
 dependencies: **`git` `cmake` `make` `gcc`**
 <br><br>
 
@@ -30,7 +30,7 @@ $ examples/mpltok ../examples/ParserCombinator/mpltok/sum_err.mpl
 $ examples/mplprs ../examples/ParserCombinator/mplprs/sum.mpl
 ```
 
-## install
+# Install
 ```sh
 $ cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$HOME/.local
 $ make install -j
