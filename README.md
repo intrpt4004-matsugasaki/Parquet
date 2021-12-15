@@ -44,8 +44,8 @@ Parser: [`examples/ParserCombinator/mplprs/*`](https://github.com/rot-E/Parquet/
 Semantic Analyser: [`examples/ParserCombinator/mplsema/*`](https://github.com/rot-E/Parquet/tree/main/examples/ParserCombinator/mplsema) [work-in-progress]
 
 Compiler:
-  - [coming-soon]
-  - [Sedna](https://github.com/rot-E/Sedna) [coming-soon]
+  - [`examples/ParserCombinator/mplc/*`]() [coming-soon]
+  - [Sedna](https://github.com/rot-E/Sedna) [work-in-progress]
   - [Eris](https://github.com/rot-E/Eris) [coming-soon]
 
 # License
