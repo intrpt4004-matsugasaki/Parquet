@@ -46,7 +46,7 @@ Semantic Analyser: [`examples/ParserCombinator/mplsema/*`](https://github.com/ro
 Compiler:
   - [coming-soon]
   - [Sedna](https://github.com/rot-E/Sedna) [coming-soon]
-  - [Eris](https://github.com/rot-E/Sedna) [coming-soon]
+  - [Eris](https://github.com/rot-E/Eris) [coming-soon]
 
 # License
 [![](https://img.shields.io/badge/license-AGPLv3-blue?style=for-the-badge&logo=gnu)](LICENSE)
