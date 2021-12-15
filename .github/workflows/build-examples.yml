@@ -1,0 +1,36 @@
+name: Build-examples
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CC: gcc-11
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup
+      run: |
+        sudo apt update
+        sudo apt install gcc-11 g++-11
+
+    - name: CMake
+      run: |
+        cd ${{github.workspace}}
+        mkdir build
+        cd build
+        cmake ..
+
+    - name: Make
+      env:
+        CC: gcc-11
+      run: |
+        cd ${{github.workspace}}/build
+        make -j
