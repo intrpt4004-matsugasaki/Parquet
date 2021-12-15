@@ -39,7 +39,7 @@ Tokenise: [`examples/ParserCombinator/mpltok/*`](https://github.com/rot-E/Parque
 
 Parse: [`examples/ParserCombinator/mplprs/*`](https://github.com/rot-E/Parquet/tree/main/examples/ParserCombinator/mplprs)
 
-Semantic Analysis: [`examples/ParserCombinator/mplsem/*`](https://github.com/rot-E/Parquet/tree/main/examples/ParserCombinator/mplsema)
+Semantic Analysis: [`examples/ParserCombinator/mplsema/*`](https://github.com/rot-E/Parquet/tree/main/examples/ParserCombinator/mplsema)
 
 Compile: coming soon...
 
