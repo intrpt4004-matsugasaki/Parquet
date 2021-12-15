@@ -779,8 +779,10 @@ static SeqAnswer_t SeqParser_OutputFmt(Seq_t *seq, Processor_t *p) {
 					SeqAnswer_t r = SeqParsers.Match(String.New(u8":"), seq, p);
 
 					/****************************************/
-					if (r.Reply == Reply.Ok)
-						printf(u8" :");
+					if (r.Reply == Reply.Ok) {
+						((Printer_t *)(p))->Stack(p, String.New(u8":"));
+						((Printer_t *)(p))->Space(p);
+					}
 					/****************************************/
 
 					return r;
@@ -790,10 +792,9 @@ static SeqAnswer_t SeqParser_OutputFmt(Seq_t *seq, Processor_t *p) {
 					SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_UInt, seq, NULL);
 
 					/****************************************/
-					if (r.Reply == Reply.Ok)
-						printf(u8" %s", String.GetPrimitive(
-							(seq->GetStringiser(seq))(Seq.GetHead(seq))
-						));
+					if (r.Reply == Reply.Ok) {
+						((Printer_t *)(p))->Stack(p, (seq->GetStringiser(seq))(Seq.GetHead(seq)));
+					}
 					/****************************************/
 
 					return r;
@@ -818,10 +819,9 @@ static SeqAnswer_t SeqParser_OutputFmt(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_String, seq, NULL);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8" %s", String.GetPrimitive(
-				(seq->GetStringiser(seq))(Seq.GetHead(seq))
-			));
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, (seq->GetStringiser(seq))(Seq.GetHead(seq)));
+		}
 		/****************************************/
 
 		return r;
@@ -1065,10 +1065,9 @@ static SeqAnswer_t SeqParser_ArrType(Seq_t *seq, Processor_t *p) {
 		SeqAnswer_t r = SeqParsers.Complete(MPLLexer.Parser_UInt, seq, NULL);
 
 		/****************************************/
-		if (r.Reply == Reply.Ok)
-			printf(u8" %s", String.GetPrimitive(
-				(seq->GetStringiser(seq))(Seq.GetHead(seq))
-			));
+		if (r.Reply == Reply.Ok) {
+			((Printer_t *)(p))->Stack(p, (seq->GetStringiser(seq))(Seq.GetHead(seq)));
+		}
 		/****************************************/
 
 		return r;
