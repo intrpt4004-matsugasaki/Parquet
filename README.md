@@ -41,7 +41,7 @@ Parse: [`examples/ParserCombinator/mplprs/*`](https://github.com/rot-E/Parquet/t
 
 Semantic Analysis: [`examples/ParserCombinator/mplsem/*`](https://github.com/rot-E/Parquet/tree/main/examples/ParserCombinator/mplsema)
 
-Compile: comming soon...
+Compile: coming soon...
 
 # License
 &emsp;[`AGPLv3`](LICENSE)
