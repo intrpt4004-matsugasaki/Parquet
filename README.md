@@ -29,7 +29,7 @@ $ make install -j
 ```
 
 ## build examples
-[![Build](https://github.com/rot-E/Parquet/actions/workflows/build.yml/badge.svg)](https://github.com/rot-E/Parquet/actions/workflows/build.yml)
+[![Build-examples](https://github.com/rot-E/Parquet/actions/workflows/build-examples.yml/badge.svg)](https://github.com/rot-E/Parquet/actions/workflows/build-examples.yml)
 ```sh
 $ make examples -j
 $ examples/mpltok ../examples/ParserCombinator/mpltok/sum_err.mpl
